@@ -1,7 +1,6 @@
 var webpack = require('webpack');
 var path = require('path');
-var libraryName = 'library';
-var outputFile = libraryName + '.js';
+var outputFile = 'ng-hot-reload.js';
 
 var config = {
   entry: path.join(__dirname, 'src', 'index.js'),
@@ -9,7 +8,7 @@ var config = {
   output: {
     path: path.join(__dirname, 'dist'),
     filename: outputFile,
-    library: libraryName,
+    library: 'ngHotReload',
     libraryTarget: 'umd',
     umdNamedDefine: true
   },
