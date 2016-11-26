@@ -25,6 +25,4 @@ function create(module, type, name, def) {
   angular.module(module)[type](name, _def);
 }
 
-
-
 export { create };
