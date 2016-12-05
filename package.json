@@ -31,5 +31,8 @@
     "karma-webpack": "^1.8.0",
     "webpack": "^1.13.3",
     "yargs": "^6.5.0"
+  },
+  "dependencies": {
+    "rxjs": "^5.0.0-rc.4"
   }
 }

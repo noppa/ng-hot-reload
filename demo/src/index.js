@@ -1,7 +1,6 @@
-angular.module('hmr.demo', []);
 
-ngHotReload.create('hmr.demo', 'controller', 'DemoCtrl', ['$http', function(http) {
+angular.module('hot-reload-demo', []);
 
-  console.log('controllerrr', http);
-
-}])
+ngHotReload.ctrl.register('TestCtrl', function($http) {
+  console.log('It still works!', $http);
+});

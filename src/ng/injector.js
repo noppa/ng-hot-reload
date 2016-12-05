@@ -1,7 +1,7 @@
 import provideAngular from './angular';
 
 const provideInjector = () => {
-  return provideAngular().injector(['ng']);
+  return provideAngular().element(document).injector();
 };
 
 export default provideInjector;

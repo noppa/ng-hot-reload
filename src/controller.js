@@ -1,17 +1,18 @@
-
-import {getAngular} from './ng/angular';
-import {PubSub} from './pubsub';
+import angularProvider from './ng/angular';
 import {controllerUpdateError} from './error-handler';
+
+import {Subject} from 'rxjs/Subject';
+import 'rxjs/add/operator/filter';
 
 class ControllerProvider {
 
   constructor(moduleName) {
     this.moduleName = moduleName;
-    this.pubsub = new PubSub();
+    this.subject = new Subject();
   }
 
   register(name, controller) {
-    let {pubsub, moduleName} = this;
+    let {subject, moduleName} = this;
 
     Ctrl.$inject = [
       '$injector',
@@ -26,13 +27,24 @@ class ControllerProvider {
           controllerUpdateError(moduleName, name, err);
         }
       };
+      console.log(subject);
+      const disp = subject
+        .filter((c) => c.name === name)
+        .subscribe((update) => {
+          console.log('Woooo', update);
+        });
 
-      const token = pubsub.subscribe(name, (newDef) => {
-        console.log('woop update', newDef);
-      });
+      $scope.$on('$destroy', () => disp.dispose());
 
-      $scope.$on('$destroy', () => pubsub.unsubscribe(token));
+      create();
     }
+
+    angularProvider()
+      .module(this.moduleName)
+      .controller(name, Ctrl);
   }
 
 }
+
+
+export {ControllerProvider};
