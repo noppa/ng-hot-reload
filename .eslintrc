@@ -12,6 +12,8 @@
       "no-fallthrough": 2,
       "curly": [2, "multi-line"],
       "require-jsdoc": 0,
-      "one-var": 0
+      "one-var": 0,
+      "linebreak-style": 0,
+      "no-var": 0
   }
 }

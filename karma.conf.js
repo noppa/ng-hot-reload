@@ -8,13 +8,14 @@ module.exports = function(config) {
 
     files: [
       'node_modules/angular/angular.js',
-      'specs.webpack.js'
+      'node_modules/angular-mocks/angular-mocks.js',
+      'specs.webpack.js',
     ],
 
     exclude: [
     ],
     preprocessors: {
-      'specs.webpack.js': ['webpack']
+      'specs.webpack.js': ['webpack'],
     },
 
     webpack: require('./webpack.config.js'),
@@ -33,6 +34,6 @@ module.exports = function(config) {
 
     singleRun: !args.watch,
 
-    concurrency: Infinity
+    concurrency: Infinity,
   });
 };

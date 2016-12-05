@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack",
-    "pretest": "npm run build",
     "test": "karma start",
     "test:dev": "karma start --watch",
     "lint": "eslint src/ & exit 0",
@@ -15,6 +14,7 @@
   "license": "ISC",
   "devDependencies": {
     "angular": "^1.5.9",
+    "angular-mocks": "^1.5.9",
     "babel-core": "^6.18.2",
     "babel-jest": "^17.0.2",
     "babel-loader": "^6.2.8",

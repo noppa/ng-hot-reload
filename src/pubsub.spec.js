@@ -2,6 +2,9 @@ import {PubSub} from './pubsub';
 
 describe('PubSub class', () => {
   let pubSub, $timeout;
+
+  beforeEach(angular.mock.module('ng'));
+
   beforeEach(inject((_$timeout_) => {
     pubSub = new PubSub();
     $timeout = _$timeout_;

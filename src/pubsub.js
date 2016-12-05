@@ -1,4 +1,4 @@
-import $timeout from './ng/$timeout';
+import $timeoutProvider from './ng/$timeout';
 
 let uniqId = 0;
 
@@ -35,11 +35,13 @@ class PubSub {
 
   publish(topic, ...args) {
     if (!this.topics.has(topic)) return false;
+    const $timeout = $timeoutProvider();
+    console.log($timeout);
     $timeout(() => {
       for (let topic of this.topics.values()) {
         for (let {fun} of topic.slice()) fun(...args);
       }
-    }, 0);
+    });
   }
 
 }
