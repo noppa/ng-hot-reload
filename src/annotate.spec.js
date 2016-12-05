@@ -1,11 +1,10 @@
 import {annotate} from './annotate.js';
 
-const toString = val => Object.prototype.toString.call(val);
+const toString = (val) => Object.prototype.toString.call(val);
 
 describe('annotate function', () => {
-
   it('should return object with the correct values', () => {
-    var {inject, constr} = annotate((a) => a);
+    let {inject, constr} = annotate((a) => a);
     expect(toString(inject)).toBe('[object Array]');
     expect(toString(constr)).toBe('[object Function]');
   });
@@ -17,7 +16,7 @@ describe('annotate function', () => {
   });
 
   it('should work with comments', () => {
-    function TestController(a/*:, bb*/, ccc) {}
+    function TestController(a/* :, bb*/, ccc) {}
 
     expect(annotate(TestController).inject).toEqual(['a', 'ccc']);
   });
@@ -36,8 +35,7 @@ describe('annotate function', () => {
   });
 
   it('should work with function wrapped inside an array', () => {
-    var input = ['a', 'bb', function TestController(ddd, ffff) {}];
+    let input = ['a', 'bb', function TestController(ddd, ffff) {}];
     expect(annotate(input).inject).toEqual(['a', 'bb']);
   });
-
 });

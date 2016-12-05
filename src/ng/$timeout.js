@@ -5,4 +5,4 @@ const provideTimeout = () => {
 };
 
 
-export default timeout;
+export default provideTimeout;

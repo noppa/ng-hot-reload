@@ -1,14 +1,17 @@
 {
-    "parserOptions": {
-        "ecmaVersion": 6,
-        "sourceType": "module",
-        "ecmaFeatures": {
-            "jsx": false
-        }
-    },
-    "rules": {
-        "semi": 2,
-        "no-fallthrough": 2,
-        "curly": [2, "multi-line"]
-    }
+  "extends": "google",
+  "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module",
+      "ecmaFeatures": {
+          "jsx": false
+      }
+  },
+  "rules": {
+      "semi": 2,
+      "no-fallthrough": 2,
+      "curly": [2, "multi-line"],
+      "require-jsdoc": 0,
+      "one-var": 0
+  }
 }

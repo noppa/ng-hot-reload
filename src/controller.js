@@ -1,24 +1,38 @@
 
-import {annotate} from './annotate';
-import {getAngular} from './angular-provider';
+import {getAngular} from './ng/angular';
+import {PubSub} from './pubsub';
+import {controllerUpdateError} from './error-handler';
 
-const cache = [];
+class ControllerProvider {
 
-const create = (moduleName, name, def) =>  {
-  // Note that this is a mutable object,
-  // conf.def will be modified by other parts of the code
-  const conf = { moduleName, name, def: annotate(def) };
-
-  Ctrl.$inject = [
-    '$injector',
-    '$scope'
-  ];
-
-  function Ctrl() {
-    conf.constr.apply(this, arguments);
+  constructor(moduleName) {
+    this.moduleName = moduleName;
+    this.pubsub = new PubSub();
   }
 
-  getAngular()
-    .module(moduleName)
-    .controller(name, Ctrl);
-};
+  register(name, controller) {
+    let {pubsub, moduleName} = this;
+
+    Ctrl.$inject = [
+      '$injector',
+      '$scope',
+    ];
+
+    function Ctrl($injector, $scope) {
+      const create = () => {
+        try {
+          $injector.invoke(controller, this);
+        } catch(err) {
+          controllerUpdateError(moduleName, name, err);
+        }
+      };
+
+      const token = pubsub.subscribe(name, (newDef) => {
+        console.log('woop update', newDef);
+      });
+
+      $scope.$on('$destroy', () => pubsub.unsubscribe(token));
+    }
+  }
+
+}

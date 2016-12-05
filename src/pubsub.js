@@ -1,5 +1,6 @@
+import $timeout from './ng/$timeout';
 
-var uniqId = 0;
+let uniqId = 0;
 
 class PubSub {
 
@@ -9,12 +10,11 @@ class PubSub {
 
   subscribe(topic, fun) {
     const token = ++uniqId;
-    const config = { token, fun };
+    const config = {token, fun};
 
     if (!this.topics.has(topic)) {
       this.topics.set(topic, [config]);
-    }
-    else {
+    } else {
       this.topics.get(topic).push(config);
     }
 
@@ -35,9 +35,9 @@ class PubSub {
 
   publish(topic, ...args) {
     if (!this.topics.has(topic)) return false;
-    setTimeout(() => {
+    $timeout(() => {
       for (let topic of this.topics.values()) {
-        for (let {fun} of topic) fun.apply(undefined, args);
+        for (let {fun} of topic.slice()) fun(...args);
       }
     }, 0);
   }
