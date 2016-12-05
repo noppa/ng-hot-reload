@@ -1,8 +1,8 @@
-import {provideInjector} from './injector';
+import provideInjector from './injector';
 
-const provide$timeout = () => {
+const provideTimeout = () => {
   return provideInjector().get('$timeout');
 };
 
 
-export {provide$timeout};
+export default timeout;
