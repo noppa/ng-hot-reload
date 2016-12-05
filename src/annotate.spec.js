@@ -5,9 +5,9 @@ const toString = val => Object.prototype.toString.call(val);
 describe('annotate function', () => {
 
   it('should return object with the correct values', () => {
-    var {inject, fun} = annotate((a) => a);
+    var {inject, constr} = annotate((a) => a);
     expect(toString(inject)).toBe('[object Array]');
-    expect(toString(fun)).toBe('[object Function]');
+    expect(toString(constr)).toBe('[object Function]');
   });
 
   it('should parse function parameter names correctly', () => {
