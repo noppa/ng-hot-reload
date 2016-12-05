@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "karma start"
+    "build": "webpack",
+    "pretest": "npm run build",
+    "test": "karma start",
+    "test:dev": "karma start --watch"
   },
   "author": "Oskari Noppa",
   "license": "ISC",
@@ -23,6 +26,7 @@
     "karma-chrome-launcher": "^2.0.0",
     "karma-jasmine": "^1.0.2",
     "karma-webpack": "^1.8.0",
-    "webpack": "^1.13.3"
+    "webpack": "^1.13.3",
+    "yargs": "^6.5.0"
   }
 }
