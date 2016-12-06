@@ -1,6 +1,7 @@
 /** @module controller */
 import angularProvider from './ng/angular';
 import { errors } from './error-handler';
+import { annotate } from './annotate';
 
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/filter';
@@ -35,15 +36,22 @@ class ControllerProvider {
   */
   register(name, controller) {
     let { subject, moduleName } = this;
+    const angular = angularProvider();
+
+    const { inject } = annotate(controller);
 
     Ctrl.$inject = [
       '$controller',
       '$scope',
-    ];
+    ].concat(inject);
 
-    function Ctrl($controller, $scope) {
-      const angular = angularProvider();
-      const updateController = (locals, bindings) => {
+    function Ctrl($controller, $scope, ...deps) {
+      const create = () => {
+        var locals = {};
+        deps.forEach((value, i) => {
+         locals[inject[i]] = value;
+        });
+        console.log(locals);
         try {
           var init = $controller(controller, locals, true);
           var { instance } = init;
@@ -67,7 +75,7 @@ class ControllerProvider {
 
       $scope.$on('$destroy', () => disp.unsubscribe());
 
-      return updateController();
+      return create();
     }
 
     angular
