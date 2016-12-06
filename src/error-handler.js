@@ -24,8 +24,9 @@ forceRefresh
 exceptions
   .subscribe(({ recipeType, recipeName, action, err }) => {
     var msg = `Failed to ${action} ${recipeType} "${recipeName}"`;
-    console.error(msg);
-    console.error(err);
+    console.log(msg);
+    console.log(err.message);
+    console.log(err.stack);
   });
 
 export { errors, UnableToUpdateError };

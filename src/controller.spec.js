@@ -2,7 +2,7 @@ import { ControllerProvider } from './controller';
 
 const testModuleName = 'hot-reload-demo';
 
-describe('ControllerProvider', () => {
+fdescribe('ControllerProvider', () => {
   describe('creating a controller through the provider', () => {
     var ctrl;
 

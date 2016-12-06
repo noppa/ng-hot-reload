@@ -1,5 +1,5 @@
-import {ControllerProvider} from './controller';
+import { ControllerProvider } from './controller';
 
 const ctrl = new ControllerProvider('hot-reload-demo');
 
-export {ctrl};
+export { ctrl };
