@@ -1,8 +1,9 @@
+import 'angular/angular.js';
+import './app.module.js';
 
+console.log('index loaded');
 
-ngHotReload.ctrl.register('TestCtrl', class Test {
-  constructor() {
-    console.log('Init');
-    this.value = 'Hello';
-  }
-});
+angular.module('hot-reload-demo')
+  .controller('TestCtrl', function() {
+    this.value = 'Hello World!';
+  });

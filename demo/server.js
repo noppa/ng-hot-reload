@@ -1,23 +1,17 @@
 var express = require('express'),
+	webpack = require('webpack'),
+	WebpackDevServer = require('webpack-dev-server'),
+	config = require('./webpack.config.js'),
 	path = require('path');
 
+new WebpackDevServer(webpack(config), {
+	publicPath: '/',
+	hot: true,
+	historyApiFallback: true,
+}).listen(8080, 'localhost', function(err, result) {
+	if (err) {
+		return console.log(err);
+	}
 
-var app = express();
-
-
-app
-	.get('/angular.js', (req, res) => {
-		res.sendFile(path.resolve(__dirname, '../node_modules/angular/angular.js'));
-	})
-  .get('/ng-hot-reload.js', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../dist/ng-hot-reload.js'));
-  })
-  .use('/demo/src', express.static(path.resolve(__dirname, './src')))
-	.get('/', (req, res) => {
-		res.sendFile(path.resolve(__dirname, './index.html'));
-	});
-
-
-app.listen(3000, () => {
- console.log('Listening localhost:3000');
+	console.log('Listening localhost:8080');
 });
