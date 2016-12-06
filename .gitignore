@@ -39,7 +39,6 @@ jspm_packages
 
 # Build
 dist/
-demo/bundle.js
 
 # The generated docs are not included at this time
 docs/
