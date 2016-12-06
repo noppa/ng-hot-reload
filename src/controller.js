@@ -1,4 +1,4 @@
-/* @module controller */
+/** @module controller */
 import angularProvider from './ng/angular';
 import { errors } from './error-handler';
 
@@ -7,14 +7,12 @@ import 'rxjs/add/operator/filter';
 
 /**
 * Creates and updates controllers of a given module.
+*
+* @param {string} moduleName Name of the module to witch
+*                 the created controllers will be added.
 */
 class ControllerProvider {
 
-  /**
-  *
-  * @param {string} moduleName Name of the module to witch
-  *                 the created controllers will be added.
-  */
   constructor(moduleName) {
     this.moduleName = moduleName;
     this.subject = new Subject();
@@ -27,8 +25,9 @@ class ControllerProvider {
   * We can't currently handle additions of completely
   * new recipes (controllers included), so if a controller
   * with the given name alredy exists, new
-  * {@link module:error-handler.UnableToUpdateError} is sent through
-  * the "errors Subject", effectively causing a hard refresh of the page.
+  * {@link module:error-handlerUnableToUpdateError|UnableToUpdateError}
+  * is sent through the "errors Subject", effectively causing a hard
+  * refresh of the page.
   *
   * @param {string} name The controller name
   * @param {Function|Array<string|Function>} controller The controller

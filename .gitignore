@@ -39,3 +39,7 @@ jspm_packages
 
 # Build
 dist/
+
+
+# The generated docs are not included at this time
+docs/

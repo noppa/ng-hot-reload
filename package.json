@@ -8,7 +8,9 @@
     "test": "karma start & exit 0",
     "test:dev": "karma start --watch",
     "lint": "eslint src/ & exit 0",
-    "lint:fix": "eslint src/ --fix"
+    "lint:fix": "eslint src/ --fix",
+    "docs": "jsdoc src/ -d docs/",
+    "docs:serve": "npm run docs & http-server docs/"
   },
   "author": "Oskari Noppa",
   "license": "ISC",
