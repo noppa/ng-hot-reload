@@ -1,13 +1,31 @@
+import config from './config';
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/partition';
 
+const errors = new Subject();
 
-const log = (msg) => {
-  console.error(msg);
-};
+class UnableToUpdateError extends Error {
+  constructor(msg) {
+    super(msg);
+  }
+}
 
-const controllerUpdateError = (moduleName, controllerName, err) => {
-  log(`Full page refresh required.
-Could not initialize ${moduleName}.${controllerName}: ${err}`);
-};
+const [forceRefresh, exceptions] = errors
+  .partition(e => UnableToUpdateError.prototype.isPrototypeOf(e));
 
+forceRefresh
+  .subscribe(() => {
+    console.warn('Full page refresh required');
+    if (config.forceRefresh) {
+      location.reload();
+    }
+  });
 
-export {log, controllerUpdateError};
+exceptions
+  .subscribe(({ recipeType, recipeName, action, err }) => {
+    var msg = `Failed to ${action} ${recipeType} "${recipeName}"`;
+    console.error(msg);
+    console.error(err);
+  });
+
+export { errors, UnableToUpdateError };

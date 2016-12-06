@@ -9,11 +9,13 @@ module.exports = function(config) {
     files: [
       'node_modules/angular/angular.js',
       'node_modules/angular-mocks/angular-mocks.js',
+      'demo/src/app.module.js',
       'specs.webpack.js',
     ],
 
     exclude: [
     ],
+
     preprocessors: {
       'specs.webpack.js': ['webpack'],
     },
@@ -35,5 +37,9 @@ module.exports = function(config) {
     singleRun: !args.watch,
 
     concurrency: Infinity,
+
+    client: {
+      captureConsole: true,
+    },
   });
 };

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack",
-    "test": "karma start",
+    "test": "karma start & exit 0",
     "test:dev": "karma start --watch",
     "lint": "eslint src/ & exit 0",
     "lint:fix": "eslint src/ --fix"

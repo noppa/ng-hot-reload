@@ -1,7 +1,7 @@
 import angularProvider from './ng/angular';
-import {controllerUpdateError} from './error-handler';
+import { errors } from './error-handler';
 
-import {Subject} from 'rxjs/Subject';
+import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/filter';
 
 class ControllerProvider {
@@ -12,7 +12,7 @@ class ControllerProvider {
   }
 
   register(name, controller) {
-    let {subject, moduleName} = this;
+    let { subject, moduleName } = this;
 
     Ctrl.$inject = [
       '$injector',
@@ -24,10 +24,13 @@ class ControllerProvider {
         try {
           $injector.invoke(controller, this);
         } catch(err) {
-          controllerUpdateError(moduleName, name, err);
+          errors.next({
+            moduleName, err,
+            recipeType: 'controller', recipeName: name, action: 'create',
+          });
         }
       };
-      console.log(subject);
+
       const disp = subject
         .filter((c) => c.name === name)
         .subscribe((update) => {
@@ -47,4 +50,4 @@ class ControllerProvider {
 }
 
 
-export {ControllerProvider};
+export { ControllerProvider };
