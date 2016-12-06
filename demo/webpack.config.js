@@ -1,4 +1,5 @@
-var webpack = require('webpack');
+var webpack = require('webpack'),
+  path = require('path');
 
 module.exports = {
   entry: [
@@ -15,13 +16,18 @@ module.exports = {
     loaders: [
       {
         test: /(\.jsx|\.js)$/,
-        loader: 'babel',
+        loader: 'ng-hot-loader!babel',
         exclude: /node_modules/,
       },
     ],
   },
   resolve: {
     extensions: ['', '.js', '.jsx'],
+  },
+  resolveLoader: {
+    alias: {
+      'ng-hot-loader': path.resolve(__dirname, '../dist/webpack-loader.js'),
+    },
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),

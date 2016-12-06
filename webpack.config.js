@@ -1,35 +1,36 @@
-var webpack = require('webpack');
 var path = require('path');
-var outputFile = 'ng-hot-reload.js';
 
 var config = {
-  entry: path.join(__dirname, 'src', 'index.js'),
+  entry: {
+    'ng-hot-reload': path.join(__dirname, 'src', 'index.js'),
+    'webpack-loader': path.join(__dirname, 'src', 'webpack-loader', 'index.js'),
+  },
   devtool: 'source-map',
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: outputFile,
+    filename: '[name].js',
     library: 'ngHotReload',
     libraryTarget: 'umd',
-    umdNamedDefine: true
+    umdNamedDefine: true,
   },
   module: {
     loaders: [
       {
         test: /(\.jsx|\.js)$/,
         loader: 'babel',
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
       {
         test: /(\.jsx|\.js)$/,
-        loader: "eslint-loader",
-        exclude: /node_modules/
-      }
-    ]
+        loader: 'eslint-loader',
+        exclude: /node_modules/,
+      },
+    ],
   },
   resolve: {
     root: path.resolve('./src'),
-    extensions: ['', '.js']
-  }
+    extensions: ['', '.js'],
+  },
 };
 
 module.exports = config;
