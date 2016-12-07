@@ -2,16 +2,12 @@ var path = require('path');
 
 var config = {
   entry: {
-    'ng-hot-reload': path.join(__dirname, 'src', 'index.js'),
-    'webpack-loader': path.join(__dirname, 'src', 'webpack-loader', 'index.js'),
+    'ng-hot-reload-api': path.join(__dirname, 'src', 'index.js')
   },
   devtool: 'source-map',
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: '[name].js',
-    library: 'ngHotReload',
-    libraryTarget: 'umd',
-    umdNamedDefine: true,
+    filename: '[name].js'
   },
   module: {
     loaders: [

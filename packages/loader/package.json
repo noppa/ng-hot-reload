@@ -1,0 +1,16 @@
+{
+  "main": "index.js",
+  "name": "ng-hot-reload-loader",
+  "version": "1.0.0",
+  "description": "Webpack hot loader for angular1",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config webpack.config.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ng-hot-reload-api": "^1.0.0"
+  },
+  "devDependencies": {}
+}

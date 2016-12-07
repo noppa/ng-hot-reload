@@ -1,0 +1,17 @@
+{
+  "name": "ng-hot-reload-demo",
+  "version": "1.0.0",
+  "description": "Demo for the ng-hot-reload package",
+  "main": "bundle.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "private": true,
+  "dependencies": {
+    "angular": "^1.5.9",
+    "ng-hot-reload-loader": "^1.0.0"
+  }
+}

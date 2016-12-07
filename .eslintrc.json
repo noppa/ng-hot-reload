@@ -17,6 +17,7 @@
       "no-var": 0,
       "arrow-parens": 0,
       "object-curly-spacing": [1, "always"],
-      "no-invalid-this": 0
+      "no-invalid-this": 0,
+      "no-unused-vars": 1
   }
 }

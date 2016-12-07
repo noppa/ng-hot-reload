@@ -1,0 +1,21 @@
+{
+  "name": "ng-hot-reload-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/ng-hot-reload-api.js",
+  "scripts": {
+    "build": "webpack",
+    "test": "karma start & exit 0",
+    "test:dev": "karma start --watch",
+    "lint": "eslint src/ & exit 0",
+    "lint:fix": "eslint src/ --fix",
+    "docs": "jsdoc src/ -d docs/",
+    "docs:serve": "npm run docs & http-server docs/",
+    "prepublish": "npm run build"
+  },
+  "author": "Oskari Noppa",
+  "license": "ISC",
+  "dependencies": {
+    "rxjs": "^5.0.0-rc.4"
+  }
+}
