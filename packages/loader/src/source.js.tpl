@@ -1,15 +1,20 @@
 /* ng-hot-reload-loader */
 if (module.hot) {
-  console.log('woop module.hot');
   (function() {
-    var loader = require(<%= apiPath %>);
+    var loader = require(<%= apiPath %>).default;
 
-    console.log('loader loaded', loader);
+    module.makeHot = module.hot.data ? module.hot.data.makeHot : loader();
   })();
 }
 
-try {
+try { /*ng-hot-reload-loader end */
+
   <%= source %>
+
+/* ng-hot-reload-loader */
 } finally {
-  console.log('finallyy');
-}
+  if (module.hot) {
+    console.log('woop', module.hot);
+
+  }
+} /* ng-hot-reload-loader end */
