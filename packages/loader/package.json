@@ -12,5 +12,7 @@
   "dependencies": {
     "ng-hot-reload-api": "^1.0.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "lodash.template": "^4.4.0"
+  }
 }

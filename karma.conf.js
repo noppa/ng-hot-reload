@@ -9,18 +9,18 @@ module.exports = function(config) {
     files: [
       'node_modules/angular/angular.js',
       'node_modules/angular-mocks/angular-mocks.js',
-      'demo/src/app.module.js',
-      'specs.webpack.js',
+      'packages/demo/src/app.module.js',
+      'packages/api/specs.webpack.js',
     ],
 
     exclude: [
     ],
 
     preprocessors: {
-      'specs.webpack.js': ['webpack'],
+      'packages/api/specs.webpack.js': ['webpack'],
     },
 
-    webpack: require('./webpack.config.js'),
+    webpack: require('./packages/api/webpack.config.js'),
 
     reporters: ['progress'],
 
