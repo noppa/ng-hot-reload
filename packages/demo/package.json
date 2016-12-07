@@ -1,6 +1,6 @@
 {
   "name": "ng-hot-reload-demo",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Demo for the ng-hot-reload package",
   "main": "bundle.js",
   "scripts": {
@@ -11,14 +11,7 @@
   "license": "ISC",
   "private": true,
   "dependencies": {
-    "angular": "^1.5.9"
-  },
-  "devDependencies": {
-    "angular-mocks": "^1.5.9",
-    "babel-core": "^6.18.2",
-    "babel-loader": "^6.2.8",
-    "babel-preset-es2015": "^6.18.0",
-    "webpack-dev-server": "^1.16.2",
-    "ng-hot-reload-loader"
+    "angular": "^1.5.9",
+    "ng-hot-reload-loader": "^1.0.0"
   }
 }

@@ -1,11 +1,10 @@
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	var parentHotUpdateCallback = this["webpackHotUpdate"];
-/******/ 	this["webpackHotUpdate"] = 
-/******/ 	function webpackHotUpdateCallback(chunkId, moreModules) { // eslint-disable-line no-unused-vars
+/******/ 	this["webpackHotUpdate"] = function webpackHotUpdateCallback(chunkId, moreModules) { // eslint-disable-line no-unused-vars
 /******/ 		hotAddUpdateChunk(chunkId, moreModules);
 /******/ 		if(parentHotUpdateCallback) parentHotUpdateCallback(chunkId, moreModules);
 /******/ 	}
-/******/ 	
+
 /******/ 	function hotDownloadUpdateChunk(chunkId) { // eslint-disable-line no-unused-vars
 /******/ 		var head = document.getElementsByTagName("head")[0];
 /******/ 		var script = document.createElement("script");
@@ -14,7 +13,7 @@
 /******/ 		script.src = __webpack_require__.p + "" + chunkId + "." + hotCurrentHash + ".hot-update.js";
 /******/ 		head.appendChild(script);
 /******/ 	}
-/******/ 	
+
 /******/ 	function hotDownloadManifest(callback) { // eslint-disable-line no-unused-vars
 /******/ 		if(typeof XMLHttpRequest === "undefined")
 /******/ 			return callback(new Error("No browser support"));
@@ -64,7 +63,7 @@
 /******/ 	}
 
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "bd79029b930e6fd614c0"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "78c64a2d10260a6d1c84"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 
