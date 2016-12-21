@@ -1,20 +1,37 @@
+require('angular'); // TODO: Make this optional
 /* ng-hot-reload-loader */
-if (module.hot) {
-  (function() {
-    var loader = require(<%= apiPath %>).default;
+(function(__ngHotReloadLoaderAngularGlobal) {
+  var angular = module.hot ? (function() {
+    var loader = require(<%= apiPath %>);
+    var data = module.hot.data;
 
-    module.makeHot = module.hot.data ? module.hot.data.makeHot : loader();
-  })();
-}
+    if (data && data.firstPassed) {
+      return loader.angularUpdate();
+    } else {
+      return loader.angularInit(__ngHotReloadLoaderAngularGlobal || window.angular);
+    }
+  })() : __ngHotReloadLoaderAngularGlobal;
 
-try { /*ng-hot-reload-loader end */
+  try {
+    (function() {/* ng-hot-reload-loader end*/
 
-  <%= source %>
+      <%= source %>
 
-/* ng-hot-reload-loader */
-} finally {
-  if (module.hot) {
-    console.log('woop', module.hot);
+    })();/* ng-hot-reload-loader */
+  } finally {
+    (function() {
+      module.hot.accept(function(err) {
+        console.log('accept');
+        if (err) {
+          console.error(err);
+        }
+      });
 
+      module.hot.dispose(function(data) {
+        console.log('dispose');
+        data.firstPassed = true;
+      });
+    })();
   }
-} /* ng-hot-reload-loader end */
+})(typeof angular !== 'undefined' && angular);
+/* ng-hot-reload-loader end */

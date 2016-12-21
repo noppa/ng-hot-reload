@@ -5,5 +5,5 @@ console.log('index loaded');
 
 angular.module('hot-reload-demo')
   .controller('TestCtrl', function() {
-    this.value = 'Hello World! :)';
+    this.value = 'Hello World! :))';
   });

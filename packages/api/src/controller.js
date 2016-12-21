@@ -54,6 +54,7 @@ class ControllerProvider {
          locals[inject[i]] = value;
         });
         try {
+          console.log('woop create');
           // Create the controller object, but thell $controller
           // to wait for later before initializing it, so that
           // we can first move component bindings and possibly

@@ -8,14 +8,14 @@ var template = require('lodash.template'),
 
 // Tests that we don't modify our own library files, i.e. files that are in
 // ng-hot-reload/packages or one of the suffixed ng-hot-reload-* directories.
-var shouldTransform = /ng-hot-reload([\\/]packages[\\/]|-)(api|loader)/;
+var noTransform = /ng-hot-reload([\\/]packages[\\/]|-)(api|loader)/;
 
 function transform(source, map) {
   if(this.cacheable) {
     this.cacheable();
   }
 
-  if(shouldTransform.test(this.resourcePath)) {
+  if(noTransform.test(this.resourcePath)) {
     return this.callback(null, source, map);
   }
 
