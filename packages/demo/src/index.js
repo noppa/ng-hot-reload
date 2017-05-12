@@ -1,9 +1,15 @@
 import 'angular/angular.js';
 import './app.module.js';
 
-console.log('index loaded');
-
 angular.module('hot-reload-demo')
-  .controller('TestCtrl', function() {
-    this.value = 'Hello World! :))';
+  .controller('TestCtrl', function($interval, $scope) {
+    this.value = 'Counter: 0';
+    let counter = 0;
+    console.log('scope', $scope);
+    $interval(() => {
+      counter++;
+      this.value = 'Counter: ' + counter;
+    }, 2000);
   });
+console.log(angular.module('hot-reload-demo'));
+//

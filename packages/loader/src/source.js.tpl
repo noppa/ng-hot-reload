@@ -3,8 +3,8 @@
   var angular = module.hot ? (function() {
     var loader = require(<%= corePath %>);
     var data = module.hot.data;
-    console.log('mock', loader);
     if (data && data.firstPassed) {
+      console.log('update init');
       return loader.update();
     } else {
       return loader.init(__ngHotReloadLoaderAngularGlobal);
@@ -17,6 +17,8 @@
       <%= source %>
 
     })();/* ng-hot-reload-loader */
+  } catch(err) {
+    console.error(err);
   } finally {
     (function() {
       module.hot.accept(function(err) {

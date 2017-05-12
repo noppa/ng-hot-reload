@@ -3,26 +3,43 @@ import angularProvider from './ng/angular';
 
 /* globals console */
 
-const modules = [];
+const modules = new Map();
 
 const init = angular => {
   angularProvider.setAngular(angular);
 
   return Object.assign({}, angular, {
-    module: function(name, deps) {
-      const controller = controllerProvider(name);
-      modules.push({ name, deps, controller });
+    module: function(name) {
+      if (!modules.has(name)) {
+        const controller = controllerProvider(name);
+        modules.set(name, { controller });
+      }
+
+      const module = modules.get(name);
 
       return Object.assign({}, angular.module.apply(angular, arguments), {
-        controller: controller.register,
+        controller: module.controller.register,
       });
     },
   });
 };
 
 const update = () => {
-  console.log('update');
-  return angularProvider();
+  const angular = angularProvider();
+
+  return Object.assign({}, angular, {
+    module: function(name) {
+      const module = modules.get(name);
+      if (!module) {
+        console.warn('Refresh required!'); // TODO: Autorefresh?
+        return;
+      }
+
+      return Object.assign(angular.module(name), {
+        controller: module.controller.update,
+      });
+    },
+  });
 };
 
 export {
