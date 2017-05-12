@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "lint": "eslint packages/api/src packages/demo/src packages/loader/src & exit 0"
+    "lint": "eslint packages/core/src packages/demo/src packages/loader/src & exit 0"
   },
   "devDependencies": {
     "angular": "^1.5.9",

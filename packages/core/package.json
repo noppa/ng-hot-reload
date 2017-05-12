@@ -2,7 +2,7 @@
   "name": "ng-hot-reload-core",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/ng-hot-reload-api.js",
+  "main": "dist/ng-hot-reload-core.js",
   "scripts": {
     "build": "webpack",
     "test": "karma start & exit 0",

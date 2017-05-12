@@ -1,29 +1,31 @@
-import { ControllerProvider } from './controller';
+import controllerProvider from './controller';
 import angularProvider from './ng/angular';
 
 /* globals console */
 
 const modules = [];
 
-const angularInit = angular => {
+const init = angular => {
   angularProvider.setAngular(angular);
 
   return Object.assign({}, angular, {
     module: function(name, deps) {
-      const controllerProvider = new ControllerProvider(name);
-      modules.push({ name, deps, controllerProvider });
+      const controller = controllerProvider(name);
+      modules.push({ name, deps, controller });
+
       return Object.assign({}, angular.module.apply(angular, arguments), {
-        controller: controllerProvider.register.bind(controllerProvider),
+        controller: controller.register,
       });
     },
   });
 };
 
-const angularUpdate = () => {
-  console.log('update init');
+const update = () => {
+  console.log('update');
+  return angularProvider();
 };
 
 export {
-  angularInit,
-  angularUpdate,
+  init,
+  update,
 };

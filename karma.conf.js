@@ -10,17 +10,17 @@ module.exports = function(config) {
       'node_modules/angular/angular.js',
       'node_modules/angular-mocks/angular-mocks.js',
       'packages/demo/src/app.module.js',
-      'packages/api/specs.webpack.js',
+      'packages/core/specs.webpack.js',
     ],
 
     exclude: [
     ],
 
     preprocessors: {
-      'packages/api/specs.webpack.js': ['webpack'],
+      'packages/core/specs.webpack.js': ['webpack'],
     },
 
-    webpack: require('./packages/api/webpack.config.js'),
+    webpack: require('./packages/core/webpack.config.js'),
 
     reporters: ['progress'],
 

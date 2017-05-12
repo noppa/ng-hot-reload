@@ -3,7 +3,7 @@ var template = require('lodash.template'),
   path = require('path'),
   templatePath = path.join(__dirname, 'src', 'source.js.tpl'),
   compiled = template(fs.readFileSync(templatePath, 'utf8')),
-  apiPath = require.resolve('ng-hot-reload-core');
+  corePath = require.resolve('ng-hot-reload-core');
 
 
 // Tests that we don't modify our own library files, i.e. files that are in
@@ -20,8 +20,9 @@ function transform(source, map) {
   }
 
   var result = compiled({
-    apiPath: JSON.stringify(apiPath),
+    corePath: JSON.stringify(corePath),
     source: source,
+    requireAngular: '(require("angular"), angular)',
   });
 
   return result;

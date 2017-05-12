@@ -1,4 +1,3 @@
-/** @module controller */
 import angularProvider from './ng/angular';
 import safeApply from './ng/safe-apply';
 import { errors } from './error-handler';
@@ -7,23 +6,13 @@ import { annotate } from './annotate';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/filter';
 
-/**
-* Creates and updates controllers of a given module.
-*
-* @param {string} moduleName Name of the module to witch
-*                 the created controllers will be added.
-*/
-class ControllerProvider {
+const controller = moduleName => {
+  const subject = new Subject();
 
-  constructor(moduleName) {
-    this.moduleName = moduleName;
-    this.subject = new Subject();
-  }
-
-  update(name, controller) {
-    this.subject.next({
+  function update(moduleName, controller) {
+    subject.next({
       action: 'update',
-      name,
+      moduleName,
       controller,
     });
   }
@@ -35,8 +24,7 @@ class ControllerProvider {
   * @param {Function|Array<string|Function>} controller The controller
   * definiton.
   */
-  register(name, controller) {
-    let { subject, moduleName } = this;
+  function register(name, controller) {
     const angular = angularProvider();
 
     const { inject } = annotate(controller);
@@ -49,13 +37,16 @@ class ControllerProvider {
     function Ctrl($controller, $scope, ...deps) {
       // Creates the controller instance
       const create = () => {
-        var locals = {};
+        // Build object where values are services that we get from
+        // angular to `deps` and keys are from the
+        // `annotate(controller).inject` list
+        const locals = {};
         deps.forEach((value, i) => {
          locals[inject[i]] = value;
         });
+
         try {
-          console.log('woop create');
-          // Create the controller object, but thell $controller
+          // Create the controller object, but tell $controller
           // to wait for later before initializing it, so that
           // we can first move component bindings and possibly
           // existing state of the controller to the new instance.
@@ -63,7 +54,7 @@ class ControllerProvider {
           // NOTE that this lazy initializing, enabled by passing
           // `true` as the third argument, relies on undocumented,
           // private feature of angular. See:
-          // https://github.com/angular/angular.js/blob/05a9d3a73cbae70eabce3473084d71aaa2ed348a/src/ng/controller.js#L104
+          // https://github.com/angular/angular.js/blob/cd5efa095e448dfe179f8cd3ed34988ee34fa271/src/ng/controller.js#L86
           var init = $controller(controller, locals, true);
           var { instance } = init;
           // Copy local bindings and current state from
@@ -98,11 +89,14 @@ class ControllerProvider {
     }
 
     angular
-      .module(this.moduleName)
+      .module(moduleName)
       .controller(name, Ctrl);
   }
 
-}
+  return {
+    update,
+    register,
+  };
+};
 
-
-export { ControllerProvider };
+export default controller;

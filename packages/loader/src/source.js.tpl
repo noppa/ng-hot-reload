@@ -1,14 +1,13 @@
-require('angular'); // TODO: Make this optional
 /* ng-hot-reload-loader */
 (function(__ngHotReloadLoaderAngularGlobal) {
   var angular = module.hot ? (function() {
-    var loader = require(<%= apiPath %>);
+    var loader = require(<%= corePath %>);
     var data = module.hot.data;
-
+    console.log('mock', loader);
     if (data && data.firstPassed) {
-      return loader.angularUpdate();
+      return loader.update();
     } else {
-      return loader.angularInit(__ngHotReloadLoaderAngularGlobal || window.angular);
+      return loader.init(__ngHotReloadLoaderAngularGlobal);
     }
   })() : __ngHotReloadLoaderAngularGlobal;
 
@@ -33,5 +32,5 @@ require('angular'); // TODO: Make this optional
       });
     })();
   }
-})(typeof angular !== 'undefined' && angular);
+})(<%= requireAngular %>);
 /* ng-hot-reload-loader end */
