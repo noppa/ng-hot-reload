@@ -1,8 +1,8 @@
-import { ControllerProvider } from './controller';
+import controllerProvider from './controller';
 
 const testModuleName = 'hot-reload-demo';
 
-describe('ControllerProvider', () => {
+describe('controllerProvider', () => {
   describe('creating a controller through the provider', () => {
     const testCtrlName = 'UnitTestController',
       someValue = {}; // Some value to provide for the controller
@@ -11,7 +11,7 @@ describe('ControllerProvider', () => {
 
     beforeEach(function() {
       // Register a simple controller to test
-      new ControllerProvider(testModuleName)
+      controllerProvider(testModuleName)
         .register(testCtrlName, class TestCtrl {
           constructor() {
             this.testCtrlName = testCtrlName;
@@ -19,7 +19,7 @@ describe('ControllerProvider', () => {
         });
 
       // Register a controller with local bindings
-      new ControllerProvider(testModuleName)
+      controllerProvider(testModuleName)
         .register(testCtrlName + 'WithLocalValue', class TestCtrl {
           constructor(someValue) {
             this.someValue = someValue;

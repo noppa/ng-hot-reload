@@ -1,16 +1,16 @@
-import { ControllerProvider } from './controller';
+import controllerProvider from './controller';
 
 const testModuleName = 'hot-reload-demo',
   testCtrlName = 'UnitTestController';
 
 describe('ControllerProvider', () => {
   describe('updating a controller through the provider', () => {
-    var $controller, $rootScope, $scope, vm, controllerProvider;
+    var $controller, $rootScope, $scope, vm, controller;
 
     beforeEach(function() {
-      controllerProvider = new ControllerProvider(testModuleName);
+      controller = controllerProvider(testModuleName);
       // Register a simple controller to test
-      controllerProvider
+      controller
         .register(testCtrlName, class TestCtrl {
           constructor() {
             this.hello = 'Hello';
@@ -31,7 +31,7 @@ describe('ControllerProvider', () => {
 
     it('should update the controller correctly', function() {
       expect(vm.hello).toBe('Hello');
-      controllerProvider.update(testCtrlName, class {
+      controller.update(testCtrlName, class {
         constructor() {
           this.hello = 'Hello World';
         }
@@ -41,7 +41,7 @@ describe('ControllerProvider', () => {
 
     it('should have existing state in place when updating', function() {
       expect(vm.hello).toBe('Hello');
-      controllerProvider.update(testCtrlName, class {
+      controller.update(testCtrlName, class {
         constructor() {
           this.hello = this.hello + ' World';
         }
@@ -51,7 +51,7 @@ describe('ControllerProvider', () => {
 
     it('should call $scope.$apply', function() {
       const currentCount = $scope.$apply.calls.count();
-      controllerProvider.update(testCtrlName, class {
+      controller.update(testCtrlName, class {
         constructor() {}
       });
       expect($scope.$apply.calls.count()).toBe(currentCount + 1);
