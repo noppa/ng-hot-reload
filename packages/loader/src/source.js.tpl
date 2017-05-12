@@ -17,8 +17,6 @@
       <%= source %>
 
     })();/* ng-hot-reload-loader */
-  } catch(err) {
-    console.error(err);
   } finally {
     (function() {
       module.hot.accept(function(err) {

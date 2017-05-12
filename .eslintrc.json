@@ -20,6 +20,11 @@
       "no-invalid-this": 0,
       "no-unused-vars": 1,
       "prefer-rest-params": 0,
-      "prefer-spread": 0
+      "prefer-spread": 0,
+      "no-undef": 2
+  },
+  "globals": {
+    "Map": false,
+    "angular": false
   }
 }

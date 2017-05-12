@@ -41,6 +41,7 @@ const update = () => {
 
       return Object.assign(angular.module(name), {
         controller: module.controller.update,
+        directive: module.directive.update,
       });
     },
   });

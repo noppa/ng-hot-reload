@@ -2,11 +2,15 @@ import 'angular/angular.js';
 import './app.module.js';
 
 angular.module('hot-reload-demo')
-  .directive('testDirective', function() {
+  .directive('test', function() {
     return {
-      template: '<div>Woop</div>',
-      controller: function() {
-        console.log('Haa controller');
+      template:
+        '<div>jesh {{counter}}</div> <button ng-click="click()">Add</button>',
+      controller: function($scope, $log) {
+        $scope.counter = 0;
+        $scope.click = function() {
+          $scope.counter += 2;
+        };
       },
     };
   });
