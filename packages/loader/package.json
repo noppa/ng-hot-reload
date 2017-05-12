@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ng-hot-reload-api": "^1.0.0"
+    "ng-hot-reload-core": "^1.0.0"
   },
   "devDependencies": {
     "lodash.template": "^4.4.0"
