@@ -1,4 +1,5 @@
 import controllerProvider from './controller';
+import directiveProvider from './directive';
 import angularProvider from './ng/angular';
 
 /* globals console */
@@ -11,14 +12,17 @@ const init = angular => {
   return Object.assign({}, angular, {
     module: function(name) {
       if (!modules.has(name)) {
-        const controller = controllerProvider(name);
-        modules.set(name, { controller });
+        modules.set(name, {
+          controller: controllerProvider(name),
+          directive: directiveProvider(name),
+        });
       }
 
       const module = modules.get(name);
 
       return Object.assign({}, angular.module.apply(angular, arguments), {
         controller: module.controller.register,
+        directive: module.directive.create,
       });
     },
   });
