@@ -12,6 +12,8 @@
   "private": true,
   "dependencies": {
     "angular": "^1.5.9",
-    "ng-hot-reload-loader": "^1.0.0"
+    "express": "^4.15.3",
+    "ng-hot-reload-loader": "^1.0.0",
+    "webpack-dev-server": "^2.4.5"
   }
 }
