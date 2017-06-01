@@ -15,7 +15,7 @@ var config = {
     loaders: [
       {
         test: /(\.jsx|\.js)$/,
-        loader: 'babel',
+        loader: 'babel-loader',
         exclude: /node_modules/,
       },
       {
@@ -26,8 +26,11 @@ var config = {
     ],
   },
   resolve: {
-    root: path.resolve('./src'),
-    extensions: ['', '.js'],
+    modules: [
+      path.join(__dirname, 'src'),
+      'node_modules'
+    ],
+    extensions: ['.js'],
   },
 };
 

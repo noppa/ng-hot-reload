@@ -1,4 +1,6 @@
 {
+  "name": "ng-hot-reload",
+  "version": "0.0.1",
   "scripts": {
     "lint": "eslint packages/core/src packages/demo/src packages/loader/src & exit 0"
   },
@@ -17,7 +19,7 @@
     "karma-jasmine": "^1.0.2",
     "karma-webpack": "^1.8.0",
     "lerna": "2.0.0-rc.4",
-    "webpack": "^1.13.3",
+    "webpack": "~2.6.0",
     "yargs": "^6.5.0"
   }
 }

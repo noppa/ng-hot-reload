@@ -16,13 +16,13 @@ module.exports = {
     loaders: [
       {
         test: /(\.jsx|\.js)$/,
-        loader: 'ng-hot-reload-loader!babel',
+        loader: 'ng-hot-reload-loader!babel-loader',
         exclude: /node_modules/,
       },
     ],
   },
   resolve: {
-    extensions: ['', '.js', '.jsx'],
+    extensions: ['.js'],
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
