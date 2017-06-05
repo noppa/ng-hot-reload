@@ -25,6 +25,8 @@
   },
   "globals": {
     "Map": false,
-    "angular": false
+    "angular": false,
+    "location": false,
+    "console": false
   }
 }

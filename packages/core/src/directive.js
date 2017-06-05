@@ -1,8 +1,8 @@
 import * as store from './store';
 import angularProvider from './ng/angular';
-import safeApply from './ng/safe-apply';
 import proxy from './util/proxy-injectable';
 import { annotate } from './annotate';
+import { getTemplate } from './template';
 
 const canReRender = def => {
   return typeof def.template === 'string' && !def.compile;
@@ -23,8 +23,8 @@ const directiveProvider = moduleName => {
     directives.set(name, fn);
 
     return angular.module(moduleName).directive(name, [
-      '$injector', '$templateCache', '$compile', '$animate',
-      function($injector, $templateCache, $compile, $animate) {
+      '$injector', '$templateCache', '$compile', '$animate', '$timeout',
+      function($injector, $templateCache, $compile, $animate, $timeout) {
         // Initializes the directive using an implementation that
         // can either be the one we set when `create(name, fn)` was
         // first called, or some implementation that has been
@@ -62,19 +62,19 @@ const directiveProvider = moduleName => {
                 // or any of its dependencies
                 const dispose = store
                   .observable(moduleName, 'DIRECTIVE', name, deps)
+                  .first()
                   .subscribe(function() {
-                    /* globals console */
                     // This directive or some of its dependencies has changed.
                     // If this directive itself has changed, it has gone
                     // through `update(name, newDirectiveDefinition)`, so we
                     // can just crab the current implementation from
                     // `directives` cache and re-compile the element.
                     definition = init();
+                    console.log($element, $compile);
                     $compile($element)($scope);
                   });
 
                 $scope.$on('$destroy', () => {
-                  console.log('destroy');
                   dispose();
                 });
 
