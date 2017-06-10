@@ -5,11 +5,11 @@ angular.module('hot-reload-demo')
   .directive('test', function() {
     return {
       template:
-        '<div>jesh {{counter}}</div> <button ng-click="click()">Add</button>',
+        '<div>jes {{counter}}</div> <button ng-click="click()">Add</button>',
       controller: function($scope, $log) {
         $scope.counter = 0;
         $scope.click = function() {
-          $scope.counter += 3;
+          $scope.counter += 1;
         };
       },
     };

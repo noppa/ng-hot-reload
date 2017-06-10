@@ -4,7 +4,6 @@
     var loader = require(<%= corePath %>);
     var data = module.hot.data;
     if (data && data.firstPassed) {
-      console.log('update init');
       return loader.update();
     } else {
       return loader.init(__ngHotReloadLoaderAngularGlobal);

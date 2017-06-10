@@ -2,7 +2,7 @@ import * as store from './store';
 import angularProvider from './ng/angular';
 import proxy from './util/proxy-injectable';
 import { annotate } from './annotate';
-import { getTemplate } from './template';
+// import { getTemplate } from './template';
 
 const canReRender = def => {
   return typeof def.template === 'string' && !def.compile;
@@ -44,13 +44,17 @@ const directiveProvider = moduleName => {
         if (!canReRender(definition)) {
           return definition;
         }
-
+        let c = 0;
         const result = Object.assign({}, definition, {
+            template() {
+              console.log('get template');
+              return `<div> test ${(c++)} </div>`;
+            },
             // This is where the magic happens.
             // Create a compile method that will hook to events from "store"
             // and re-compile itself if needed.
-            compile($element) {
-              return function($scope) {
+            compile(element) {
+              return function($scope, $element) {
                 const deps = inject
                   .concat(controllerDeps(definition))
                   .map(name => ({ name }))
@@ -60,9 +64,8 @@ const directiveProvider = moduleName => {
 
                 // Get observable that listens to changes to this directive
                 // or any of its dependencies
-                const dispose = store
+                const subscription = store
                   .observable(moduleName, 'DIRECTIVE', name, deps)
-                  .first()
                   .subscribe(function() {
                     // This directive or some of its dependencies has changed.
                     // If this directive itself has changed, it has gone
@@ -70,12 +73,21 @@ const directiveProvider = moduleName => {
                     // can just crab the current implementation from
                     // `directives` cache and re-compile the element.
                     definition = init();
-                    console.log($element, $compile);
-                    $compile($element)($scope);
+                    //const newEl = $compile(element)($scope.$new());
+                    // console.log(element, $element);
+                    // const
+                    //   newScope = $scope.$new(),
+                    //   newEl = $compile(definition.template)(newScope);
+
+                    element.replaceWith(angular.element('<div>foobar</div>'));
+                    console.log(element);
+
+                    // // Safe $apply
+                    $timeout(angular.noop, 0);
                   });
 
                 $scope.$on('$destroy', () => {
-                  dispose();
+                  subscription.unsubscribe();
                 });
 
                 if (typeof definition.link === 'function') {
@@ -99,7 +111,6 @@ const directiveProvider = moduleName => {
     // ask store to update. We'll let store to decide
     // if it should be this directive that updates or
     // perhaps some of its parents.
-    console.log('update');
     directives.set(name, fn);
     store.requestUpdate(moduleName, 'DIRECTIVE', name);
   }
