@@ -26,7 +26,6 @@
       });
 
       module.hot.dispose(function(data) {
-        console.log('dispose');
         data.firstPassed = true;
       });
     })();

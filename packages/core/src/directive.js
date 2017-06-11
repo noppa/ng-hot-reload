@@ -1,36 +1,17 @@
 import * as store from './store';
 import angularProvider from './ng/angular';
-import proxy from './util/proxy-injectable';
-import { annotate } from './annotate';
-// import { getTemplate } from './template';
-
-const canReRender = def => {
-  return typeof def.template === 'string' && !def.compile;
-};
-
-// TODO: Implementation
-const
-  controllerDeps = () => [],
-  templateName = () => '';
 
 const directiveProvider = moduleName => {
   const angular = angularProvider();
-  const directives = new Map();
 
-  function create(name, fn) {
-    const { inject } = annotate(fn);
+  let $injector; // Lazy init
 
-    directives.set(name, fn);
-
+  function create(name, factoryFn) {
     return angular.module(moduleName).directive(name, [
       '$injector', '$templateCache', '$compile', '$animate', '$timeout',
-      function($injector, $templateCache, $compile, $animate, $timeout) {
-        // Initializes the directive using an implementation that
-        // can either be the one we set when `create(name, fn)` was
-        // first called, or some implementation that has been
-        // created later with `update(name, fn)`
+      function(_$injector, $templateCache, $compile, $animate, $timeout) {
+        $injector = _$injector;
         //
-        const init = () => $injector.invoke(directives.get(name), this);
         // Initialized directive definition.
         // This is the object that gets returned from
         // ```
@@ -39,79 +20,43 @@ const directiveProvider = moduleName => {
         // ```
         // and contains configuration fields like "controller", "template" etc.
         //
-        let definition = init();
+        const originalDefinition = $injector.invoke(factoryFn, this);
 
-        if (!canReRender(definition)) {
-          return definition;
-        }
-        let c = 0;
-        const result = Object.assign({}, definition, {
-            template() {
-              console.log('get template');
-              return `<div> test ${(c++)} </div>`;
-            },
-            // This is where the magic happens.
-            // Create a compile method that will hook to events from "store"
-            // and re-compile itself if needed.
-            compile(element) {
-              return function($scope, $element) {
-                const deps = inject
-                  .concat(controllerDeps(definition))
-                  .map(name => ({ name }))
-                  .concat([
-                    { type: 'TEMPLATE', name: templateName(definition) },
-                  ]);
-
-                // Get observable that listens to changes to this directive
-                // or any of its dependencies
-                const subscription = store
-                  .observable(moduleName, 'DIRECTIVE', name, deps)
-                  .subscribe(function() {
-                    // This directive or some of its dependencies has changed.
-                    // If this directive itself has changed, it has gone
-                    // through `update(name, newDirectiveDefinition)`, so we
-                    // can just crab the current implementation from
-                    // `directives` cache and re-compile the element.
-                    definition = init();
-                    //const newEl = $compile(element)($scope.$new());
-                    // console.log(element, $element);
-                    // const
-                    //   newScope = $scope.$new(),
-                    //   newEl = $compile(definition.template)(newScope);
-
-                    element.replaceWith(angular.element('<div>foobar</div>'));
-                    console.log(element);
-
-                    // // Safe $apply
-                    $timeout(angular.noop, 0);
-                  });
-
-                $scope.$on('$destroy', () => {
-                  subscription.unsubscribe();
+        return Object.assign({}, originalDefinition, {
+          compile(element) {
+            return function link($scope, $element) {
+              const subscription = store
+                .observable(moduleName, 'DIRECTIVE', name, [])
+                .first()
+                .subscribe(() => {
+                  $compile($element)($scope);
+                  $timeout(0);
                 });
-
-                if (typeof definition.link === 'function') {
-                  return definition.link.apply(this, arguments);
-                }
-              };
-            },
-          });
-
-        if (typeof definition.controller === 'function') {
-          const lazy = () => definition.controller;
-          result.controller = proxy($injector, lazy(), lazy);
-        }
-
-        return result;
+              $scope.$on('$destroy', () => {
+                subscription.unsubscribe();
+              });
+            };
+          },
+        });
       }]);
   }
 
-  function update(name, fn) {
+  function update(name, factoryFn) {
     // Store the new initializer for directive and
     // ask store to update. We'll let store to decide
     // if it should be this directive that updates or
     // perhaps some of its parents.
-    directives.set(name, fn);
+    if ($injector) {
+      const oldDefinition = $injector.get(name + 'Directive');
+      const newDefinition = $injector.invoke(factoryFn, this);
+
+      if (oldDefinition && oldDefinition[0] && newDefinition) {
+        angular.forEach(oldDefinition, def => {
+          angular.extend(def, newDefinition);
+        });
+      }
+    }
+
     store.requestUpdate(moduleName, 'DIRECTIVE', name);
   }
 
