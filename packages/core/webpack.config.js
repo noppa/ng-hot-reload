@@ -1,6 +1,7 @@
-var path = require('path');
+/* eslint-env node */
+const path = require('path');
 
-var config = {
+const config = {
   entry: {
     'ng-hot-reload-core': path.join(__dirname, 'src', 'index.js'),
   },
@@ -14,12 +15,12 @@ var config = {
   module: {
     loaders: [
       {
-        test: /(\.jsx|\.js)$/,
+        test: /\.js$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
       },
       {
-        test: /(\.jsx|\.js)$/,
+        test: /\.js$/,
         loader: 'eslint-loader',
         exclude: /node_modules/,
       },
@@ -28,7 +29,7 @@ var config = {
   resolve: {
     modules: [
       path.join(__dirname, 'src'),
-      'node_modules'
+      'node_modules',
     ],
     extensions: ['.js'],
   },
