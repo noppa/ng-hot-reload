@@ -82,7 +82,17 @@ const directiveProvider = moduleName => {
                 .observable(moduleName, updatesKey, name, [])
                 .first()
                 .subscribe(() => {
-                  $compile($element)($scope);
+                  let scope = $scope.$parent && $scope.$parent.$new();
+
+                  if (scope) {
+                    // Destroy the old scope to let controllers etc.
+                    // do their cleanup work
+                    $scope.$destroy();
+                  } else {
+                    scope = $scope;
+                  }
+
+                  $compile($element)(scope);
                   $timeout(0);
                 });
               $scope.$on('$destroy', () => {
@@ -99,10 +109,6 @@ const directiveProvider = moduleName => {
   }
 
   function update(name, factoryFn) {
-    // Store the new initializer for directive and
-    // ask store to update. We'll let store to decide
-    // if it should be this directive that updates or
-    // perhaps some of its parents.
     if ($injector) {
       let
         oldDirective = $injector.get(name + 'Directive'),
@@ -124,14 +130,17 @@ const directiveProvider = moduleName => {
         angular.forEach(oldDirective, def => {
           angular.extend(def, newDirective);
 
-          // Important! angular.extend might not extend def with
-          // privateCompileKey because it could be a Symbol object
+          // Important! angular.extend won't (or rather; might not) extend
+          // def with privateCompileKey because it could be a Symbol object
           def[privateCompileKey] = newDirective[privateCompileKey];
         });
       }
 
       store.requestUpdate(moduleName, updatesKey, name);
     } else if (updateQueue) {
+      // The directive has not been initialized yet,
+      // store it in a queue to be picked up by the
+      // create-function's directive factory
       updateQueue.set(name, factoryFn);
     }
   }
