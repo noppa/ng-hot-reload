@@ -25,6 +25,7 @@
   },
   "globals": {
     "Map": false,
+    "Symbol": false,
     "angular": false,
     "location": false,
     "console": false

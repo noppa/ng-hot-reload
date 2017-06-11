@@ -1,10 +1,19 @@
 import * as store from './store';
 import angularProvider from './ng/angular';
+import clone from 'lodash/clone';
+import has from 'lodash/has';
 
-const updatesKey = 'directive';
+const
+  updatesKey = 'directive',
+  makePrivateKey = typeof Symbol === 'function' ?
+      key => Symbol(key)
+    : key => key,
+  privateCompileKey = makePrivateKey('ng-hot-reload/privateCompileKey');
 
 const directiveProvider = moduleName => {
-  const angular = angularProvider();
+  const
+    angular = angularProvider(),
+    { isFunction } = angular;
 
   let $injector;
   const getDirective = name => $injector && $injector.get(name + 'Directive');
@@ -45,20 +54,25 @@ const directiveProvider = moduleName => {
         //
         let originalDirective = $injector.invoke(directiveFactory, this);
 
-        if (angular.isFunction(originalDirective)) {
+        if (isFunction(originalDirective)) {
           originalDirective = { compile: originalDirective };
         }
 
-        return Object.assign({}, originalDirective, {
+        const result = {
+          [privateCompileKey]: originalDirective.compile,
+        };
+
+        return Object.assign(result, originalDirective, {
           compile(element) {
             const
-              directive = getDirective(name),
+              directive = getDirective(name)[0],
               originalCompile =
-                angular.isFunction(directive.compile) ?
-                    directive.compile
-                  : angular.isFunction(directive.link) ?
-                      () => directive.link
-                      : undefined;
+                isFunction(directive[privateCompileKey]) ?
+                  // We have received an updated compile-function
+                  directive[privateCompileKey]
+                : isFunction(directive.link) ?
+                    () => directive.link
+                    : undefined;
 
             const originalLink =
               originalCompile && originalCompile.apply(this, arguments);
@@ -90,12 +104,29 @@ const directiveProvider = moduleName => {
     // if it should be this directive that updates or
     // perhaps some of its parents.
     if ($injector) {
-      const oldDirective = $injector.get(name + 'Directive');
-      const newDirective = $injector.invoke(factoryFn, this);
+      let
+        oldDirective = $injector.get(name + 'Directive'),
+        newDirective = clone($injector.invoke(factoryFn, this));
+
+      if (isFunction(newDirective)) {
+        newDirective = { [privateCompileKey]: newDirective };
+      }
+
+      // We need to keep our own compile-implementation,
+      // so let's store newDirectove.compile using a safe
+      // property key.
+      if (has(newDirective, 'compile')) {
+        newDirective[privateCompileKey] = newDirective.compile;
+        delete newDirective.compile;
+      }
 
       if (oldDirective && newDirective) {
         angular.forEach(oldDirective, def => {
           angular.extend(def, newDirective);
+
+          // Important! angular.extend might not extend def with
+          // privateCompileKey because it could be a Symbol object
+          def[privateCompileKey] = newDirective[privateCompileKey];
         });
       }
 
