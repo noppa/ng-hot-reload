@@ -2,6 +2,8 @@ import * as store from './store';
 import angularProvider from './ng/angular';
 import clone from 'lodash/clone';
 import has from 'lodash/has';
+import get from 'lodash/get';
+import * as preserveState from './preserve-state';
 
 const
   updatesKey = 'directive',
@@ -64,6 +66,7 @@ const directiveProvider = moduleName => {
 
         return Object.assign(result, originalDirective, {
           compile(element) {
+            console.log('compile', element[0]);
             const
               directive = getDirective(name)[0],
               originalCompile =
@@ -78,23 +81,49 @@ const directiveProvider = moduleName => {
               originalCompile && originalCompile.apply(this, arguments);
 
             return function link($scope, $element) {
+              const initialController = getController(directive.controller);
+              // Save the initial scope to be used later
+              // when the hotswap happens
+              const initialState =
+                preserveState.snapshot($scope, initialController);
               const subscription = store
                 .observable(moduleName, updatesKey, name, [])
                 .first()
-                .subscribe(() => {
-                  let scope = $scope.$parent && $scope.$parent.$new();
+                .subscribe(recompile);
 
-                  if (scope) {
-                    // Destroy the old scope to let controllers etc.
-                    // do their cleanup work
-                    $scope.$destroy();
-                  } else {
-                    scope = $scope;
-                  }
+              function recompile() {
+                //
+                // Showtime!
+                // update-function should've updated angular's registry
+                // of directive definitions by now, so now we just need to
+                // force re-compilation of the directive and move some
+                // of the old state to the new scope.
+                //
+                const currentState =
+                  preserveState.snapshot($scope, initialController);
+                let scope = $scope.$parent && $scope.$parent.$new();
 
-                  $compile($element)(scope);
-                  $timeout(0);
+                if (scope) {
+                  // Destroy the old scope to let controllers etc.
+                  // do their cleanup work
+                  $scope.$destroy();
+                } else {
+                  scope = $scope;
+                }
+
+                $compile($element)(scope);
+                $timeout(function() {
+                  const
+                    newController =
+                      get(getDirective(name), ['0', 'controller']),
+                    newState = preserveState.snapshot(scope, newController),
+                    unchanged = preserveState.unchangedProperties(
+                      initialState, newState);
+
+                    preserveState.rollback(
+                      unchanged, currentState, scope, newController);
                 });
+              }
               $scope.$on('$destroy', () => {
                 subscription.unsubscribe();
               });
@@ -111,7 +140,7 @@ const directiveProvider = moduleName => {
   function update(name, factoryFn) {
     if ($injector) {
       let
-        oldDirective = $injector.get(name + 'Directive'),
+        oldDirective = getDirective(name),
         newDirective = clone($injector.invoke(factoryFn, this));
 
       if (isFunction(newDirective)) {
@@ -119,7 +148,7 @@ const directiveProvider = moduleName => {
       }
 
       // We need to keep our own compile-implementation,
-      // so let's store newDirectove.compile using a safe
+      // so let's store newDirective.compile using a safe
       // property key.
       if (has(newDirective, 'compile')) {
         newDirective[privateCompileKey] = newDirective.compile;
@@ -142,6 +171,17 @@ const directiveProvider = moduleName => {
       // store it in a queue to be picked up by the
       // create-function's directive factory
       updateQueue.set(name, factoryFn);
+    }
+  }
+
+  function getController(ctrl) {
+    switch (typeof ctrl) {
+      case 'string': {
+        const [ctrlName] = ctrl.split(' as');
+        return $injector.get(ctrlName + 'Controller');
+      }
+      case 'object': return ctrl[ctrl.length];
+      default: return ctrl;
     }
   }
 
