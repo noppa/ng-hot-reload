@@ -10,6 +10,14 @@
   <body ng-app="hot-reload-demo">
 
     <div>
+      
+    </div>
+
+    <button style="margin-top: 30px;" type="button" ng-click="isOpen = !isOpen">
+      Open
+    </button>
+
+    <div ng-if="isOpen">
       <test></test>
     </div>
 

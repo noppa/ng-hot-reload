@@ -9,7 +9,7 @@ angular.module('hot-reload-demo')
       controller: function($scope, $log) {
         $scope.counter = 0;
         $scope.click = function() {
-          $scope.counter += 1;
+          $scope.counter += 5;
         };
       },
     };
