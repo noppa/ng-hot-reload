@@ -10,7 +10,8 @@ const
   makePrivateKey = typeof Symbol === 'function' ?
       key => Symbol(key)
     : key => key,
-  privateCompileKey = makePrivateKey('ng-hot-reload/privateCompileKey');
+  $originalCompile = makePrivateKey('ng-hot-reload/directive/compile'),
+  $version = makePrivateKey('ng-hot-reload/directive/version');
 
 const directiveProvider = moduleName => {
   const
@@ -21,6 +22,7 @@ const directiveProvider = moduleName => {
   const getDirective = name => $injector && $injector.get(name + 'Directive');
 
   let updateQueue = new Map();
+  const directiveVersions = new Map();
 
   /**
    * NOTE: This function should behave the same as the `directive` function in
@@ -31,6 +33,8 @@ const directiveProvider = moduleName => {
    * @return {this} Self for chaining.
    */
   function create(name, directiveFactory) {
+    directiveVersions.set(name, 0);
+
     return angular.module(moduleName).directive(name, [
       '$injector', '$templateCache', '$compile', '$animate', '$timeout',
       function(_$injector, $templateCache, $compile, $animate, $timeout) {
@@ -61,18 +65,17 @@ const directiveProvider = moduleName => {
         }
 
         const result = {
-          [privateCompileKey]: originalDirective.compile,
+          [$originalCompile]: originalDirective.compile,
         };
 
         return Object.assign(result, originalDirective, {
           compile(element) {
-            console.log('compile', element[0]);
             const
               directive = getDirective(name)[0],
               originalCompile =
-                isFunction(directive[privateCompileKey]) ?
+                isFunction(directive[$originalCompile]) ?
                   // We have received an updated compile-function
-                  directive[privateCompileKey]
+                  directive[$originalCompile]
                 : isFunction(directive.link) ?
                     () => directive.link
                     : undefined;
@@ -80,18 +83,38 @@ const directiveProvider = moduleName => {
             const originalLink =
               originalCompile && originalCompile.apply(this, arguments);
 
-            return function link($scope, $element) {
+            // Store the directive version to link so that we know
+            // if some other directive has cached it and we need to
+            // force recompilation.
+            link[$version] = directiveVersions.get(name);
+
+            return link;
+
+            function link($scope, $element) {
               const initialController = getController(directive.controller);
               // Save the initial scope to be used later
               // when the hotswap happens
               const initialState =
                 preserveState.snapshot($scope, initialController);
-              const subscription = store
-                .observable(moduleName, updatesKey, name, [])
-                .first()
-                .subscribe(recompile);
 
-              function recompile() {
+              let subscription;
+
+              if (link[$version] < directiveVersions.get(name)) {
+                // This happens when something, like ngIf-directive,
+                // has cached the compiled directive and its link-function,
+                // so that it doesn't need to recompile the directive
+                // after, say, ngIf directive's condition changes.
+                // If the directive has been updated, we *need* that
+                // recompilation step to get a fresh new template.
+                recompile(false);
+              } else {
+                subscription = store
+                  .observable(moduleName, updatesKey, name, [])
+                  .first()
+                  .subscribe(() => recompile(true));
+              }
+
+              function recompile(rollbackState) {
                 //
                 // Showtime!
                 // update-function should've updated angular's registry
@@ -99,8 +122,9 @@ const directiveProvider = moduleName => {
                 // force re-compilation of the directive and move some
                 // of the old state to the new scope.
                 //
-                const currentState =
+                const currentState = rollbackState &&
                   preserveState.snapshot($scope, initialController);
+
                 let scope = $scope.$parent && $scope.$parent.$new();
 
                 if (scope) {
@@ -112,7 +136,7 @@ const directiveProvider = moduleName => {
                 }
 
                 $compile($element)(scope);
-                $timeout(function() {
+                $timeout(rollbackState ? function() {
                   const
                     newController =
                       get(getDirective(name), ['0', 'controller']),
@@ -122,13 +146,15 @@ const directiveProvider = moduleName => {
 
                     preserveState.rollback(
                       unchanged, currentState, scope, newController);
-                });
+                } : angular.noop);
               }
+
               $scope.$on('$destroy', () => {
-                subscription.unsubscribe();
+                subscription && subscription.unsubscribe();
               });
 
               if (angular.isFunction(originalLink)) {
+                // Call the user-defined link-function
                 return originalLink.apply(this, arguments);
               }
             };
@@ -138,20 +164,23 @@ const directiveProvider = moduleName => {
   }
 
   function update(name, factoryFn) {
+    const prevVersion = directiveVersions.get(name) || 0;
+    directiveVersions.set(name, prevVersion + 1);
+
     if ($injector) {
       let
         oldDirective = getDirective(name),
         newDirective = clone($injector.invoke(factoryFn, this));
 
       if (isFunction(newDirective)) {
-        newDirective = { [privateCompileKey]: newDirective };
+        newDirective = { [$originalCompile]: newDirective };
       }
 
       // We need to keep our own compile-implementation,
       // so let's store newDirective.compile using a safe
       // property key.
       if (has(newDirective, 'compile')) {
-        newDirective[privateCompileKey] = newDirective.compile;
+        newDirective[$originalCompile] = newDirective.compile;
         delete newDirective.compile;
       }
 
@@ -161,7 +190,7 @@ const directiveProvider = moduleName => {
 
           // Important! angular.extend won't (or rather; might not) extend
           // def with privateCompileKey because it could be a Symbol object
-          def[privateCompileKey] = newDirective[privateCompileKey];
+          def[$originalCompile] = newDirective[$originalCompile];
         });
       }
 
