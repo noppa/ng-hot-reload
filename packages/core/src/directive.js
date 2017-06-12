@@ -1,8 +1,6 @@
 import * as store from './store';
 import angularProvider from './ng/angular';
-import clone from 'lodash/clone';
-import has from 'lodash/has';
-import get from 'lodash/get';
+import { clone, has, get, last } from 'lodash';
 import * as preserveState from './preserve-state';
 
 const
@@ -10,8 +8,7 @@ const
   makePrivateKey = typeof Symbol === 'function' ?
       key => Symbol(key)
     : key => key,
-  $originalCompile = makePrivateKey('ng-hot-reload/directive/compile'),
-  $version = makePrivateKey('ng-hot-reload/directive/version');
+  $originalCompile = makePrivateKey('ng-hot-reload/directive/compile');
 
 const directiveProvider = moduleName => {
   const
@@ -83,10 +80,10 @@ const directiveProvider = moduleName => {
             const originalLink =
               originalCompile && originalCompile.apply(this, arguments);
 
-            // Store the directive version to link so that we know
+            // Store the current directive version to so that we know
             // if some other directive has cached it and we need to
             // force recompilation.
-            link[$version] = directiveVersions.get(name);
+            const directiveVersion = directiveVersions.get(name);
 
             return link;
 
@@ -99,13 +96,12 @@ const directiveProvider = moduleName => {
 
               let subscription;
 
-              if (link[$version] < directiveVersions.get(name)) {
+              if (directiveVersion < directiveVersions.get(name)) {
                 // This happens when something, like ngIf-directive,
-                // has cached the compiled directive and its link-function,
-                // so that it doesn't need to recompile the directive
-                // after, say, ngIf directive's condition changes.
-                // If the directive has been updated, we *need* that
-                // recompilation step to get a fresh new template.
+                // has cached the compiled directive and its link-function
+                // to be used after, say, ngIf directive's condition changes.
+                // If the directive source has been updated, we *need* that
+                // recompilation step to get a fresh new templates etc.
                 recompile(false);
               } else {
                 subscription = store
@@ -209,7 +205,7 @@ const directiveProvider = moduleName => {
         const [ctrlName] = ctrl.split(' as');
         return $injector.get(ctrlName + 'Controller');
       }
-      case 'object': return ctrl[ctrl.length];
+      case 'object': return last(ctrl);
       default: return ctrl;
     }
   }

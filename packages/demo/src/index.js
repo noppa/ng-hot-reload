@@ -12,7 +12,7 @@ angular.module('hot-reload-demo')
       controllerAs: 'vm',
       controller: function($scope, $log, $interval) {
         $scope.name = '';
-        $scope.message = 'Hello ';
+        $scope.message = 'Hello!!! ';
       },
     };
   });
