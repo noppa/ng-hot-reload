@@ -1,8 +1,5 @@
-import controllerProvider from './controller';
 import directiveProvider from './directive';
 import angularProvider from './ng/angular';
-
-/* globals console */
 
 const modules = new Map();
 
@@ -13,7 +10,6 @@ const init = angular => {
     module: function(name) {
       if (!modules.has(name)) {
         modules.set(name, {
-          controller: controllerProvider(name),
           directive: directiveProvider(name),
         });
       }
@@ -21,7 +17,6 @@ const init = angular => {
       const module = modules.get(name);
 
       return Object.assign({}, angular.module.apply(angular, arguments), {
-        controller: module.controller.register,
         directive: module.directive.create,
       });
     },
@@ -35,12 +30,11 @@ const update = () => {
     module: function(name) {
       const module = modules.get(name);
       if (!module) {
-        console.warn('Refresh required!'); // TODO: Autorefresh?
+        console.warn('Refresh required!');
         return;
       }
 
       return Object.assign(angular.module(name), {
-        controller: module.controller.update,
         directive: module.directive.update,
       });
     },
