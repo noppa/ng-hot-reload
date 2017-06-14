@@ -3,6 +3,11 @@ import angularProvider from './ng/angular';
 
 const modules = new Map();
 
+const decorator = module_ => newProvider => (name, factory) => {
+  newProvider(name, factory);
+  return module_;
+};
+
 const init = angular => {
   angularProvider.setAngular(angular);
 
@@ -14,10 +19,13 @@ const init = angular => {
         });
       }
 
-      const module = modules.get(name);
+      const
+        module = modules.get(name),
+        result = {},
+        decorate = decorator(result);
 
-      return Object.assign({}, angular.module.apply(angular, arguments), {
-        directive: module.directive.create,
+      return Object.assign(result, angular.module.apply(angular, arguments), {
+        directive: decorate(module.directive.create),
       });
     },
   });
@@ -33,9 +41,11 @@ const update = () => {
         console.warn('Refresh required!');
         return;
       }
+      const result = {};
+      const decorate = decorator(result);
 
-      return Object.assign(angular.module(name), {
-        directive: module.directive.update,
+      return Object.assign(result, angular.module(name), {
+        directive: decorate(module.directive.update),
       });
     },
   });
