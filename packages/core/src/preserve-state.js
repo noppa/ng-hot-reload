@@ -1,5 +1,6 @@
 import angularProvider from './ng/angular';
 import isPrivateKey from './ng/private-key';
+import { isEmpty } from 'lodash';
 
 export { snapshot, unchangedProperties, rollback };
 
@@ -91,13 +92,15 @@ function _unchangedPropertiesCb(equals, resultList, otherState) {
 function rollback(unchangedProperties, oldState, scope, controller) {
     const
         { isFunction, equals } = angularProvider();
+
     rollbackRec(unchangedProperties.$scope, oldState.$scope, scope, controller);
 
     function rollbackRec(keys, oldValues, scope, controller) {
-        if (!keys || !keys.length) return;
+        if (isEmpty(keys) && !controller) return;
         const controllerIsClass =
             isFunction(controller)
             && !!controller.prototype;
+
         Object.keys(scope)
             .forEach(key => {
                 const value = scope[key];

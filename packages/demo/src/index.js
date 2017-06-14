@@ -6,12 +6,13 @@ angular.module('hot-reload-demo')
     return {
       template:
         `
-          <h3 ng-bind="message + name | uppercase"></h3>
-          <label>Name: <input ng-model="name"></label>
+          <h3 ng-bind="vm.message + vm.name"></h3>
+          <label>Name: <input ng-model="vm.name"></label>
         `,
+      controllerAs: 'vm',
       controller: function($scope, $log, $interval) {
-        $scope.name = '';
-        $scope.message = 'Hello :)';
+        this.name = '';
+        this.message = 'Hello! ';
       },
     };
   });
