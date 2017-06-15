@@ -94,7 +94,7 @@ const directiveProvider = moduleName => {
             return link;
 
             function link($scope, $element) {
-              console.log('link', name);
+              console.log('link', $scope);
               const initialController = getController(directive.controller);
               // Save the initial scope to be used later
               // when the hotswap happens
@@ -127,26 +127,32 @@ const directiveProvider = moduleName => {
                 const currentState = rollbackState &&
                   preserveState.snapshot($scope, initialController);
 
-                const
-                  parentScope = $scope.$parent || $scope.$root,
-                  // Create a new scope as a "sibling" to the current one
-                  scope = parentScope.$new();
+                let scope, canDestroy;
+                if (scope.$parent) {
+                  scope = scope.$parent;
+                  canDestroy = true;
+                } else {
+                  scope = $scope;
+                  canDestroy = false;
+                }
 
                 $compile($element)(scope);
                 $timeout(rollbackState ? function() {
-                  const
-                    newController =
-                      get(getDirective(name), ['0', 'controller']),
-                    newState = preserveState.snapshot(scope, newController),
-                    unchanged = preserveState.unchangedProperties(
-                      initialState, newState);
+                  // const
+                  //   newController =
+                  //     get(getDirective(name), ['0', 'controller']),
+                  //   newState = preserveState.snapshot(scope, newController),
+                  //   unchanged = preserveState.unchangedProperties(
+                  //     initialState, newState);
 
-                    preserveState.rollback(
-                      unchanged, currentState, scope, newController);
+                  //   preserveState.rollback(
+                  //     unchanged, currentState, scope, newController);
 
                     // Destroy the old scope to let controllers etc.
                     // do their cleanup work
-                    $scope.$destroy();
+                    if (canDestroy) {
+                      $scope.$destroy();
+                    }
                 } : angular.noop);
               }
 
