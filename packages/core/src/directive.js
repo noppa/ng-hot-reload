@@ -1,10 +1,9 @@
-import * as store from './store';
 import angularProvider from './ng/angular';
+import updatesProvider from './updates';
 import { clone, has, get, last } from 'lodash';
 import * as preserveState from './preserve-state';
 
 const
-  updatesKey = 'directive',
   makePrivateKey = typeof Symbol === 'function' ?
       key => Symbol(key)
     : key => key,
@@ -15,7 +14,9 @@ const directiveProvider = moduleName => {
     angular = angularProvider(),
     { isFunction } = angular;
 
-  let $injector;
+  // Initialized later
+  let $injector, updates;
+
   const getDirective = name => $injector && $injector.get(name + 'Directive');
 
   let updateQueue = new Map();
@@ -33,9 +34,14 @@ const directiveProvider = moduleName => {
     directiveVersions.set(name, 0);
 
     return angular.module(moduleName).directive(name, [
-      '$injector', '$templateCache', '$compile', '$animate', '$timeout',
-      function(_$injector, $templateCache, $compile, $animate, $timeout) {
+      '$injector', '$templateCache', '$compile',
+      '$animate', '$timeout', '$rootScope',
+      function(_$injector, $templateCache, $compile,
+      $animate, $timeout, $rootScope) {
         $injector = _$injector;
+        if (!updates) {
+          updates = updatesProvider($rootScope, moduleName, 'directive');
+        }
         // The directive might've changed before it was initialized
         // the first time. If that's the case, there should be
         // new updated directiveFactory in updateQueue.
@@ -88,6 +94,7 @@ const directiveProvider = moduleName => {
             return link;
 
             function link($scope, $element) {
+              console.log('link', name);
               const initialController = getController(directive.controller);
               // Save the initial scope to be used later
               // when the hotswap happens
@@ -104,10 +111,9 @@ const directiveProvider = moduleName => {
                 // recompilation step to get a fresh new templates etc.
                 recompile(false);
               } else {
-                subscription = store
-                  .observable(moduleName, updatesKey, name, [])
-                  .first()
-                  .subscribe(() => recompile(true));
+                updates.onUpdate($scope, (evt, info) => {
+                  recompile(true);
+                });
               }
 
               function recompile(rollbackState) {
@@ -121,15 +127,10 @@ const directiveProvider = moduleName => {
                 const currentState = rollbackState &&
                   preserveState.snapshot($scope, initialController);
 
-                let scope = $scope.$parent && $scope.$parent.$new();
-
-                if (scope) {
-                  // Destroy the old scope to let controllers etc.
-                  // do their cleanup work
-                  $scope.$destroy();
-                } else {
-                  scope = $scope;
-                }
+                const
+                  parentScope = $scope.$parent || $scope.$root,
+                  // Create a new scope as a "sibling" to the current one
+                  scope = parentScope.$new();
 
                 $compile($element)(scope);
                 $timeout(rollbackState ? function() {
@@ -142,10 +143,15 @@ const directiveProvider = moduleName => {
 
                     preserveState.rollback(
                       unchanged, currentState, scope, newController);
+
+                    // Destroy the old scope to let controllers etc.
+                    // do their cleanup work
+                    $scope.$destroy();
                 } : angular.noop);
               }
 
               $scope.$on('$destroy', () => {
+                console.log('$destroy ' + name);
                 subscription && subscription.unsubscribe();
               });
 
@@ -190,7 +196,7 @@ const directiveProvider = moduleName => {
         });
       }
 
-      store.requestUpdate(moduleName, updatesKey, name);
+      updates.update(name);
     } else if (updateQueue) {
       // The directive has not been initialized yet,
       // store it in a queue to be picked up by the
