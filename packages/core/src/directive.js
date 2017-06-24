@@ -1,13 +1,18 @@
 import angularProvider from './ng/angular';
 import updatesProvider from './updates';
-import { clone, has, get, last } from 'lodash';
+import { clone, has, get, last, isObject } from 'lodash';
 import * as preserveState from './preserve-state';
 
 const
   makePrivateKey = typeof Symbol === 'function' ?
       key => Symbol(key)
     : key => key,
-  $originalCompile = makePrivateKey('ng-hot-reload/directive/compile');
+  $originalCompile = makePrivateKey('ng-hot-reload/directive/compile'),
+  eligibleForReload = hasIsolateScope;
+
+function hasIsolateScope({ scope }) {
+    return scope === true || isObject(scope);
+}
 
 const directiveProvider = moduleName => {
   const
@@ -53,6 +58,8 @@ const directiveProvider = moduleName => {
           }
         }
 
+        const stateDataKey = `ng-hot-reload/directive/state/${name}`;
+
         // Initialized directive definition.
         // This is the object that gets returned from
         // ```
@@ -63,6 +70,10 @@ const directiveProvider = moduleName => {
         //
         let originalDirective = $injector.invoke(directiveFactory, this);
 
+        if (!eligibleForReload(originalDirective)) {
+          return originalDirective;
+        }
+
         if (isFunction(originalDirective)) {
           originalDirective = { compile: originalDirective };
         }
@@ -72,7 +83,7 @@ const directiveProvider = moduleName => {
         };
 
         return Object.assign(result, originalDirective, {
-          compile(element) {
+          compile() {
             const
               directive = getDirective(name)[0],
               originalCompile =
@@ -94,14 +105,11 @@ const directiveProvider = moduleName => {
             return link;
 
             function link($scope, $element) {
-              console.log('link', $scope);
               const initialController = getController(directive.controller);
               // Save the initial scope to be used later
               // when the hotswap happens
               const initialState =
                 preserveState.snapshot($scope, initialController);
-
-              let subscription;
 
               if (directiveVersion < directiveVersions.get(name)) {
                 // This happens when something, like ngIf-directive,
@@ -114,6 +122,20 @@ const directiveProvider = moduleName => {
                 updates.onUpdate($scope, (evt, info) => {
                   recompile(true);
                 });
+
+                const prevStateData = $element.data(stateDataKey);
+                if (prevStateData) {
+                  $element.removeData(stateDataKey);
+
+                  const
+                    newController =
+                      get(getDirective(name), ['0', 'controller']),
+                    newState = preserveState.snapshot($scope, newController),
+                    unchanged = preserveState.unchangedProperties(
+                      prevStateData.initialState, newState);
+                    preserveState.rollback(unchanged,
+                      prevStateData.currentState, $scope, newController);
+                }
               }
 
               function recompile(rollbackState) {
@@ -124,41 +146,24 @@ const directiveProvider = moduleName => {
                 // force re-compilation of the directive and move some
                 // of the old state to the new scope.
                 //
-                const currentState = rollbackState &&
-                  preserveState.snapshot($scope, initialController);
+                const
+                  currentState = rollbackState &&
+                  preserveState.snapshot($scope, initialController),
+                  scope = $scope.$parent;
 
-                let scope, canDestroy;
-                if (scope.$parent) {
-                  scope = scope.$parent;
-                  canDestroy = true;
-                } else {
-                  scope = $scope;
-                  canDestroy = false;
+                if (rollbackState) {
+                  $element.data(stateDataKey,
+                    { currentState, initialState });
                 }
+                // Destroy the old scope to let controllers etc.
+                // do their cleanup work
+                $timeout(() => $scope.$destroy());
 
                 $compile($element)(scope);
-                $timeout(rollbackState ? function() {
-                  // const
-                  //   newController =
-                  //     get(getDirective(name), ['0', 'controller']),
-                  //   newState = preserveState.snapshot(scope, newController),
-                  //   unchanged = preserveState.unchangedProperties(
-                  //     initialState, newState);
-
-                  //   preserveState.rollback(
-                  //     unchanged, currentState, scope, newController);
-
-                    // Destroy the old scope to let controllers etc.
-                    // do their cleanup work
-                    if (canDestroy) {
-                      $scope.$destroy();
-                    }
-                } : angular.noop);
               }
 
               $scope.$on('$destroy', () => {
                 console.log('$destroy ' + name);
-                subscription && subscription.unsubscribe();
               });
 
               if (angular.isFunction(originalLink)) {
