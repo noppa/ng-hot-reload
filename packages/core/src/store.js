@@ -1,4 +1,5 @@
 import * as Rx from 'rxjs';
+import { uniqueId } from 'lodash';
 
 /* globals console */
 
@@ -25,6 +26,7 @@ const requestUpdate = (moduleName, type, name) => {
     moduleName,
     type,
     name,
+    id: uniqueId(),
   });
 };
 
