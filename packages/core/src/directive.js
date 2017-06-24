@@ -14,6 +14,13 @@ function hasIsolateScope({ scope }) {
     return scope === true || isObject(scope);
 }
 
+/**
+ * Factory for the functions that handle calls to angular.module(..).directive.
+ *
+ * @param {string} moduleName Name of the module
+ * @return {Object<{ create: Function, update: Function }>} Api for creating
+ *        and updating directives.
+ */
 const directiveProvider = moduleName => {
   const
     angular = angularProvider(),
@@ -122,7 +129,9 @@ const directiveProvider = moduleName => {
                 updates.onUpdate($scope, (evt, info) => {
                   recompile(true);
                 });
-
+                // If we have saved the state of the directive before updating,
+                // we can "roll back" the previous state so that the testing
+                // can continue from its previous state.
                 const prevStateData = $element.data(stateDataKey);
                 if (prevStateData) {
                   $element.removeData(stateDataKey);
@@ -147,16 +156,16 @@ const directiveProvider = moduleName => {
                 // of the old state to the new scope.
                 //
                 const
+                  scope = $scope.$parent,
                   currentState = rollbackState &&
-                  preserveState.snapshot($scope, initialController),
-                  scope = $scope.$parent;
+                    preserveState.snapshot($scope, initialController);
 
                 if (rollbackState) {
                   $element.data(stateDataKey,
                     { currentState, initialState });
                 }
                 // Destroy the old scope to let controllers etc.
-                // do their cleanup work
+                // do their cleanup work.
                 $timeout(() => $scope.$destroy());
 
                 $compile($element)(scope);

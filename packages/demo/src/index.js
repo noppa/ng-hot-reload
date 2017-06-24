@@ -12,11 +12,10 @@ angular.module('hot-reload-demo')
           <inner></inner>
         `,
       controllerAs: 'vm',
-      scope: {},
+      scope: true,
       controller: function($scope, $log, $interval) {
-        console.log('init ctrl test', Object.keys($scope));
         this.name = '';
-        this.message = 'Hello ';
+        this.message = 'Helloo ';
       },
     };
   })
@@ -26,7 +25,7 @@ angular.module('hot-reload-demo')
         <div>inner counter: {{counter}}</div>
         <button ng-click="addOne()">Add</button>
       `,
-      scope: {},
+      scope: true,
       controllerAs: 'vm',
       controller($scope) {
         $scope.counter = 0;
