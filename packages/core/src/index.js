@@ -1,10 +1,11 @@
 import directiveProvider from './directive';
+import componentProvider from './component';
 import angularProvider from './ng/angular';
 
 const modules = new Map();
 
 const decorator = module_ => newProvider => (name, factory) => {
-  newProvider(name, factory);
+  newProvider.call(module_, name, factory);
   return module_;
 };
 
@@ -16,6 +17,7 @@ const init = angular => {
       if (!modules.has(name)) {
         modules.set(name, {
           directive: directiveProvider(name),
+          component: componentProvider(name),
         });
       }
 
@@ -26,6 +28,7 @@ const init = angular => {
 
       return Object.assign(result, angular.module.apply(angular, arguments), {
         directive: decorate(module.directive.create),
+        component: decorate(module.component.create),
       });
     },
   });
@@ -46,6 +49,7 @@ const update = () => {
 
       return Object.assign(result, angular.module(name), {
         directive: decorate(module.directive.update),
+        component: decorate(module.component.update),
       });
     },
   });

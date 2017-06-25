@@ -1,6 +1,6 @@
 import angularProvider from './ng/angular';
 import isPrivateKey from './ng/private-key';
-import { isEmpty } from 'lodash';
+import { isEmpty, clone } from 'lodash';
 
 export { snapshot, unchangedProperties, rollback };
 
@@ -35,7 +35,7 @@ function snapshot(scope, controller) {
                         $ctrlState = new Map();
                         snapshotRec($ctrlState, value);
                     } else {
-                        map.set(key, angular.copy(value));
+                        map.set(key, clone(value));
                     }
                     break;
                 }

@@ -127,6 +127,7 @@ const directiveProvider = moduleName => {
                 recompile(false);
               } else {
                 updates.onUpdate($scope, (evt, info) => {
+                  console.log('on update', name);
                   recompile(true);
                 });
                 // If we have saved the state of the directive before updating,
@@ -170,10 +171,6 @@ const directiveProvider = moduleName => {
 
                 $compile($element)(scope);
               }
-
-              $scope.$on('$destroy', () => {
-                console.log('$destroy ' + name);
-              });
 
               if (angular.isFunction(originalLink)) {
                 // Call the user-defined link-function
