@@ -11,7 +11,7 @@ angular.module('hot-reload-demo').component('counter', {
         }
 
         addOne() {
-            this.counter += 2;
+            this.counter += 1;
         }
     },
 });

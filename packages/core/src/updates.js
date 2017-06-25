@@ -23,23 +23,28 @@ export default function($rootScope, moduleName, type) {
         }
     };
 
-    function tap($scope, cb) {
+    function tap(name, $scope, cb) {
         $scope.$on(RECOMPILE, (evt, info) => {
-            if (evt.targetScope !== $scope) {
+            const canReceive =
+                info.moduleName === moduleName
+                && info.name === name
+                && evt.targetScope !== $scope;
+
+            if (canReceive) {
                 cb(evt, info);
             }
         });
-    };
+    }
 
-    function onUpdate($scope, cb) {
-        return tap($scope, (evt, info) => {
+    function onUpdate(name, $scope, cb) {
+        return tap(name, $scope, (evt, info) => {
             if (!evt.defaultPrevented) {
                 evt.preventDefault();
                 cb(evt, info);
                 inProg = false;
             }
         });
-    };
+    }
 
     return {
         update,

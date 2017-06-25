@@ -126,8 +126,7 @@ const directiveProvider = moduleName => {
                 // recompilation step to get a fresh new templates etc.
                 recompile(false);
               } else {
-                updates.onUpdate($scope, (evt, info) => {
-                  console.log('on update', name);
+                updates.onUpdate(name, $scope, (evt, info) => {
                   recompile(true);
                 });
                 // If we have saved the state of the directive before updating,

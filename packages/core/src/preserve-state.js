@@ -1,6 +1,6 @@
 import angularProvider from './ng/angular';
 import isPrivateKey from './ng/private-key';
-import { isEmpty, clone } from 'lodash';
+import { isEmpty } from 'lodash';
 
 export { snapshot, unchangedProperties, rollback };
 
@@ -20,7 +20,7 @@ function snapshot(scope, controller) {
             && !!controller.prototype;
         Object.keys(scope).forEach(key => {
             // Don't save keys like "$id", "$$childScope", etc.
-            if (isPrivateKey(key)) return;
+            if (isPrivateKey(key) && key !== '$ctrl') return;
             const value = scope[key];
             switch (typeof value) {
                 case 'object': {
@@ -35,7 +35,7 @@ function snapshot(scope, controller) {
                         $ctrlState = new Map();
                         snapshotRec($ctrlState, value);
                     } else {
-                        map.set(key, clone(value));
+                        map.set(key, angular.copy(value));
                     }
                     break;
                 }
