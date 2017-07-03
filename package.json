@@ -19,7 +19,7 @@
     "karma-jasmine": "^1.0.2",
     "karma-webpack": "^1.8.0",
     "lerna": "2.0.0-beta.30",
-    "webpack": "~2.6.0",
+    "webpack": "^3.0.0",
     "yargs": "^6.5.0"
   }
 }

@@ -23,6 +23,6 @@
     "gulp-iife": "^0.3.0",
     "gulp-ng-hot-reload": "1.0.0",
     "ng-hot-reload-loader": "^1.0.0",
-    "webpack-dev-server": "^2.4.5"
+    "webpack-dev-server": "^2.5.0"
   }
 }
