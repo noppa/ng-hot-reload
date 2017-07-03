@@ -1,5 +1,5 @@
 {
-  "name": "gulp-ng-hot-reload",
+  "name": "ng-hot-reload-standalone",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
