@@ -10,15 +10,9 @@ gulp.task('serve', ['build'], function() {
     var bs = browserSync.create();
 
     bs.use(browserSyncSpa({}));
-    bs.use({
-        'plugin:name': 'reload-test',
-        'hooks': {
-            'client:js': (...args) =>
-                console.log('HOOK', args),
-        },
-    });
     bs.init({
         open: false,
+        port: 8080,
         startPath: '/',
         server: {
             baseDir: __dirname,
