@@ -23,12 +23,12 @@ gulp.task('serve', ['build'], function() {
         },
     });
 
-    gulp.watch([
-        './gulp-example/**/*.js',
-    ], function(event) {
-        console.log('update', Object.keys(event));
-        bs.reload(event.path);
-    });
+    // gulp.watch([
+    //     './gulp-example/**/*.js',
+    // ], function(event) {
+    //     console.log('update', Object.keys(event));
+    //     bs.reload(event.path);
+    // });
 });
 
 gulp.task('build', ['clean'], function() {
