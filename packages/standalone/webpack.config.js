@@ -10,6 +10,7 @@ const config = {
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js',
+    libraryTarget: 'commonjs2',
   },
   module: {
     loaders: [
