@@ -36,6 +36,7 @@ gulp.task('serve', ['clean'], function() {
 
     gulp.src(files)
         .pipe(iife())
+        .pipe(injectString.)
         .pipe(injectString.append(ngHotReload.client))
         .pipe(gulp.dest('./dist'));
 

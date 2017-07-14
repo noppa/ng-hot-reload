@@ -17,12 +17,12 @@ const config = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        exclude: /node_modules|\.tpl\.js$/,
+        exclude: /node_modules|ng-hot-reload-core|\.tpl\.js$/,
       },
       {
         test: /\.js$/,
         loader: 'eslint-loader',
-        exclude: /node_modules/,
+        exclude: /node_modules|ng-hot-reload-core/,
       },
     ],
   },

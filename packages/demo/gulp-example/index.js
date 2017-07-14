@@ -11,7 +11,9 @@ angular.module('hot-reload-demo')
       scope: true,
       controller: function($scope, $log, $interval) {
         this.name = '';
-        this.message = 'Hello ';
+        this.message = 'Helloo ';
       },
     };
 });
+
+console.log('ayymd');
