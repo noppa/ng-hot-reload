@@ -10,3 +10,7 @@ socket.addEventListener('open', function(event) {
 socket.addEventListener('message', function(event) {
     console.log('message', event.data);
 });
+
+socket.addEventListener('close', function(event) {
+    console.log('close');
+});

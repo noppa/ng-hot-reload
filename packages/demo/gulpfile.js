@@ -5,7 +5,6 @@ var del = require('del');
 var iife = require('gulp-iife');
 var path = require('path');
 var inject = require('gulp-inject');
-var watch = require('gulp-watch');
 var injectString = require('gulp-inject-string');
 var ngHotReload = require('ng-hot-reload-standalone')({ start: false });
 var fs = require('fs');
@@ -47,7 +46,6 @@ gulp.task('serve', ['clean'], function() {
         .pipe(gulp.dest('./dist'));
 
     return gulp.watch(files, function({ path }) {
-        console.log('update', path);
         fs.readFile(path, 'utf8', function(err, file) {
             if (!err) {
                 ngHotReload.reload({
