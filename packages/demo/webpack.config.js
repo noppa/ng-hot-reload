@@ -1,14 +1,15 @@
 var webpack = require('webpack'),
+  HtmlWebpackPlugin = require('html-webpack-plugin'),
   path = require('path');
 
 module.exports = {
   entry: [
     'webpack-dev-server/client?http://localhost:8080',
     'webpack/hot/only-dev-server',
-    './src/index.js',
+    './webpack-example/index.js',
   ],
   output: {
-    path: __dirname,
+    path: path.join(__dirname, 'dist'),
     filename: 'bundle.js',
     publicPath: '/',
   },
@@ -25,6 +26,9 @@ module.exports = {
     extensions: ['.js'],
   },
   plugins: [
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, 'index.html'),
+    }),
     new webpack.HotModuleReplacementPlugin(),
   ],
   devServer: {

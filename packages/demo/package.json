@@ -5,7 +5,8 @@
   "main": "bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "webpack-example": "node server.js",
+    "gulp-example": "gulp serve"
   },
   "author": "",
   "license": "ISC",
@@ -22,8 +23,8 @@
     "gulp-concat": "^2.6.1",
     "gulp-iife": "^0.3.0",
     "gulp-inject": "^4.2.0",
-    "gulp-inject-string": "^1.1.0",
     "gulp-watch": "^4.3.11",
+    "html-webpack-plugin": "~2.29.0",
     "ng-hot-reload-loader": "^1.0.0",
     "ng-hot-reload-standalone": "1.0.0",
     "webpack-dev-server": "^2.5.1"

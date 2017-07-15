@@ -1,8 +1,6 @@
-var express = require('express'),
-	webpack = require('webpack'),
+var webpack = require('webpack'),
 	WebpackDevServer = require('webpack-dev-server'),
-	config = require('./webpack.config.js'),
-	path = require('path');
+	config = require('./webpack.config.js');
 
 new WebpackDevServer(webpack(config), {
 	publicPath: '/',
