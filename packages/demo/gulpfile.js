@@ -1,12 +1,12 @@
 var gulp = require('gulp');
+var iife = require('gulp-iife');
+var inject = require('gulp-inject');
+var watch = require('gulp-watch');
 var browserSync = require('browser-sync');
 var browserSyncSpa = require('browser-sync-spa');
 var del = require('del');
-var iife = require('gulp-iife');
 var path = require('path');
-var inject = require('gulp-inject');
 var ngHotReload = require('ng-hot-reload-standalone')({ start: false });
-var fs = require('fs');
 
 gulp.task('serve', ['clean'], function() {
     var bs = browserSync.create();
@@ -36,9 +36,7 @@ gulp.task('serve', ['clean'], function() {
     gulp.src(files)
         .pipe(iife())
         .pipe(ngHotReload.stream({
-            initial: true,
             reload: false,
-            includeClient: true,
         }))
         .pipe(gulp.dest('./dist'));
 
@@ -48,13 +46,8 @@ gulp.task('serve', ['clean'], function() {
         .pipe(inject(gulp.src(files, { read: false })))
         .pipe(gulp.dest('./dist'));
 
-    return gulp.watch(files, function({ path }) {
-        fs.readFile(path, 'utf8', function(err, file) {
-            if (!err) {
-                ngHotReload.reload(path, file);
-            }
-        });
-    });
+    return watch(files)
+        .pipe(ngHotReload.stream({ initial: false }));
 });
 
 gulp.task('clean', function() {

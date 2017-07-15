@@ -76,27 +76,35 @@ function ngHotReloadStandalone({
      *      are in node_modules or bower_components.
      * @return {*} Handler for gulp streams.
      */
-    function stream(options) {
-        let initial, reload, includeClient,
-            clientIncluded = false, firstPassCache;
+    function stream({
+        initial: handleInitial = true,
+        reload: handleReload = true,
+        includeClient = true,
+        ignoreModules = true,
+    } = {}) {
+        let
+            clientIncluded = false,
+            firstPassCache;
 
-        if (!options) {
-            initial = reload = includeClient = true;
-        } else {
-            initial = Boolean(options.initial);
-            reload = Boolean(options.reload);
-            includeClient = Boolean(options.includeClient);
-
-            // Sanity check
-            if (!initial && !reload) {
-                const msg =
-                    `Invalid options in ${JSON.stringify(options)}. At least` +
-                    `one of "initial" or "reload" must be set to true!`;
-                throw new Error(msg);
-            }
+        // Sanity check
+        if (!handleInitial && !handleReload) {
+            const msg =
+                'Invalid options passed to function ' +
+                '"ngHotReloadStandalone.stream". At least one of ' +
+                '"initial" or "reload" must be set to true!';
+            throw new Error(msg);
         }
 
-        if (initial && reload) {
+        if (handleInitial && handleReload) {
+            // HACK: If this is a stream that watches file changes,
+            // it's a bit tricky to tell if this is a file change
+            // or initial file load. Most reliable way to do this
+            // would be in the gulpfile-level, where you'd call
+            // stram({ initial: false }) and stream({ reload: false })
+            // and use thos for separate streams.
+            // However, as an opt-in convenience over reliability method,
+            // this library can track the files that pass through
+            // and separate initial and reload pass throughs based on that.
             firstPassCache = new FirstPassCache();
         }
 
@@ -107,8 +115,13 @@ function ngHotReloadStandalone({
             }
 
             let contents = String(file.contents);
+            // This is considered to be a first run if
+            // we are only supposed to handle first runs (handleReload = false)
+            // or firstPassCache tells us that this file has not already
+            // passed through.
             const firstRun =
-                initial && (!reload || firstPassCache.pass(file.path));
+                handleInitial &&
+                (!handleReload || firstPassCache.pass(file.path));
             const shouldAddClient = includeClient && !clientIncluded;
 
             if (firstRun) {
@@ -119,7 +132,9 @@ function ngHotReloadStandalone({
                     contents = client + contents;
                     clientIncluded = true;
                 }
-                file.contents = Buffer.from(contents);
+                file.contents = file.isBuffer() ?
+                    Buffer.from(contents, enc)
+                    : contents;
             } else {
                 // If we are not supposed to handle first runs or the
                 // first run has already ended, pass to reload instead.
