@@ -26,9 +26,16 @@ const config = {
       },
     ],
   },
+  // Don't include these npm modules in the bundle
   externals: {
     ws: {
       commonjs2: 'ws',
+    },
+    express: {
+      commonjs2: 'express',
+    },
+    through2: {
+      commonjs2: 'through2',
     },
   },
   resolve: {

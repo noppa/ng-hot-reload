@@ -5,7 +5,6 @@ var del = require('del');
 var iife = require('gulp-iife');
 var path = require('path');
 var inject = require('gulp-inject');
-var injectString = require('gulp-inject-string');
 var ngHotReload = require('ng-hot-reload-standalone')({ start: false });
 var fs = require('fs');
 
@@ -36,8 +35,11 @@ gulp.task('serve', ['clean'], function() {
 
     gulp.src(files)
         .pipe(iife())
-        .pipe(injectString.)
-        .pipe(injectString.append(ngHotReload.client))
+        .pipe(ngHotReload.stream({
+            initial: true,
+            reload: false,
+            includeClient: true,
+        }))
         .pipe(gulp.dest('./dist'));
 
     ngHotReload.start();
@@ -49,10 +51,7 @@ gulp.task('serve', ['clean'], function() {
     return gulp.watch(files, function({ path }) {
         fs.readFile(path, 'utf8', function(err, file) {
             if (!err) {
-                ngHotReload.reload({
-                    path,
-                    file,
-                });
+                ngHotReload.reload(path, file);
             }
         });
     });
