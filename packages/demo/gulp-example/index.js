@@ -6,6 +6,7 @@ angular.module('hot-reload-demo')
           <h3 ng-bind="vm.message + vm.name"></h3>
           <label>Name: <input ng-model="vm.name"></label>
           <hr/>
+          <counter></counter>
         `,
       controllerAs: 'vm',
       scope: true,

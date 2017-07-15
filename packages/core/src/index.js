@@ -26,10 +26,21 @@ const init = angular => {
         result = {},
         decorate = decorator(result);
 
-      return Object.assign(result, angular.module.apply(angular, arguments), {
+      const patchedModule = Object.assign(result, angular.module.apply(angular, arguments), {
         directive: decorate(module.directive.create),
         component: decorate(module.component.create),
       });
+
+      patchedModule.config(['$provide', function($provide) {
+        $provide.decorator('$templateCache', function($delegate) {
+          const fileMappings = new Map();
+
+
+
+        });
+      }]);
+
+      return patchedModule;
     },
   });
 };
