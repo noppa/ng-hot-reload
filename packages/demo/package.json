@@ -11,9 +11,21 @@
   "license": "ISC",
   "private": true,
   "dependencies": {
-    "angular": "^1.5.9",
-    "express": "^4.15.3",
+    "angular": "^1.6.5",
+    "express": "^4.15.3"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.18.12",
+    "browser-sync-spa": "^1.0.3",
+    "del": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-iife": "^0.3.0",
+    "gulp-inject": "^4.2.0",
+    "gulp-inject-string": "^1.1.0",
+    "gulp-watch": "^4.3.11",
     "ng-hot-reload-loader": "^1.0.0",
-    "webpack-dev-server": "^2.5.0"
+    "ng-hot-reload-standalone": "1.0.0",
+    "webpack-dev-server": "^2.5.1"
   }
 }

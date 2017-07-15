@@ -17,6 +17,9 @@
   "license": "ISC",
   "dependencies": {
     "lodash": "^4.17.4",
-    "rxjs": "~5.4.0"
+    "rxjs": "^5.4.2"
+  },
+  "devDependencies": {
+    "webpack": "^3.1.0"
   }
 }
