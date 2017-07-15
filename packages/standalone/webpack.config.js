@@ -1,5 +1,6 @@
 /* eslint-env node */
 const path = require('path');
+const webpack = require('webpack');
 
 const config = {
   target: 'node',
@@ -47,4 +48,26 @@ const config = {
   },
 };
 
-module.exports = config;
+const clientConfig = {
+  target: 'web',
+  entry: {
+    client: path.join(__dirname, 'src', 'client-prebuilt.js'),
+  },
+  devtool: 'source-map',
+  output: {
+    path: path.join(__dirname, 'dist'),
+    filename: '[name].js',
+    libraryTarget: 'umd',
+    library: 'ng-hot-reload-standalone',
+  },
+  plugins: [
+    new webpack.DefinePlugin({
+      options: JSON.stringify({
+        port: 3100,
+        ns: 'ng-hot-reload-standalone',
+      }),
+    }),
+  ],
+};
+
+module.exports = [config, clientConfig];

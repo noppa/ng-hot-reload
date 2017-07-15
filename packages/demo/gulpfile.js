@@ -27,26 +27,34 @@ gulp.task('serve', ['clean'], function() {
         },
     });
 
-    var files = [
-        './node_modules/angular/angular.js',
+    var sourceFiles = [
         './gulp-example/app.module.js',
         './gulp-example/**/*.js',
     ];
 
-    gulp.src(files)
+    var allFiles = [
+        './node_modules/angular/angular.js',
+        './node_modules/ng-hot-reload-standalone/dist/client.js',
+    ].concat(sourceFiles);
+
+    // Move js files to dist folder
+    gulp.src(allFiles)
         .pipe(iife())
+        // Wrap js files with ng-hot-reload's initial wrapper
         .pipe(ngHotReload.stream({
             reload: false,
+            includeClient: false,
         }))
+        .pipe(gulp.dest('./dist'));
+
+    // Inject to index.html
+    gulp.src('./index.html')
+        .pipe(inject(gulp.src(allFiles, { read: false })))
         .pipe(gulp.dest('./dist'));
 
     ngHotReload.start();
 
-    gulp.src('./index.html')
-        .pipe(inject(gulp.src(files, { read: false })))
-        .pipe(gulp.dest('./dist'));
-
-    return watch(files)
+    return watch(sourceFiles)
         .pipe(ngHotReload.stream({ initial: false }));
 });
 

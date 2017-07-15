@@ -163,7 +163,7 @@ function ngHotReloadStandalone({
             var module;
             var exports = options.root[options.ns];
             // Webpack's generated output for ng-hot-reload-core will load
-            // the exports to options.root[options.ns]['ng-hot-reload-core']
+            // the exports to options.root[options.ns].ngHotReloadCore
             ${coreLib}
 
         })(${ JSON.stringify(clientOptions) });
@@ -181,4 +181,3 @@ function ngHotReloadStandalone({
         stream,
     };
 };
-

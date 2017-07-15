@@ -3,7 +3,14 @@
 var angular = (function() { // eslint-disable-line no-unused-vars
     var options = __ngHotReloadOptions;
     var root = typeof window !== 'undefined' ? window : this;
-    var loader = root[options.ns]['ng-hot-reload-core'];
+    if (!root[options.ns]) {
+      throw new Error(
+        'window["' + options.ns + '"] is undefined! ' +
+        'You need to load the standalone ng-hot-reload client ' +
+        'before files can be reloaded.'
+      );
+    }
+    var loader = root[options.ns].ngHotReloadCore;
     return options.firstPassed ?
           loader.update()
         : loader.init(options.angular);
