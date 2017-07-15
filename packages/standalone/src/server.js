@@ -1,9 +1,12 @@
 import WebSocket from 'ws';
 import express from 'express';
 import http from 'http';
+import path from 'path';
 
 const
     app = express(),
+    server = http.createServer(app),
+    root = process.cwd(),
     files = new Map();
 
 app.get('*.js', (req, res) => {
@@ -15,27 +18,21 @@ app.get('*.js', (req, res) => {
     }
 });
 
-const server = http.createServer(app);
-
 function start(port) {
     server.listen(port, () => {});
 
     const wss = new WebSocket.Server({ server });
 
     return {
-        /**
-         * Asks clients to reload a file.
-         * @param {string} path Path to the file.
-         * @param {string} file Contents of the file.
-         */
-        reload(path, file) {
-            const src = encodeURIComponent(path);
+        reload(filePath, file) {
+            const src =
+                encodeURIComponent(path.relative(root, filePath));
             files.set(src, file);
             wss.clients.forEach(client => {
                 if (client.readyState = WebSocket.OPEN) {
                     client.send(JSON.stringify({
                         src,
-                        filePath: path,
+                        filePath,
                         message: 'reload',
                     }));
                 }
