@@ -9,6 +9,8 @@ import coreLib from 'raw-loader!ng-hot-reload-core';
 module.exports = ngHotReloadStandalone;
 module.exports.default = ngHotReloadStandalone;
 
+const moduleRegex = /(\/|\\)(node_modules|bower_components)(\/|\\)/;
+
 function ngHotReloadStandalone({
     start = true,
     port = 3100,
@@ -47,6 +49,33 @@ function ngHotReloadStandalone({
         fileServer.reload(path, file);
     }
 
+    /**
+     * Creates a consumer for gulp file streams.
+     *
+     * The source files need to be wrapped using the `wrap` function
+     * on the first load and then passed to `reload` function
+     * when there's a change.
+     *
+     * This function can be used in place or with the normal `reload`
+     * and `wrap` functions, for the initial load of the
+     * files or for the subsequent reloads of those files,
+     * or both.
+     *
+     * @param {object=} options Options for the consumer.
+     *      If omitted, defaults to all options being true.
+     * @param {boolean=} [options.initial=true] Use this stream to
+     *      wrap the files during the initial load.
+     * @param {boolean=} [options.reload=true] Use this stream to
+     *      handle the reloads.
+     * @param {boolean=} [options.includeClient=true] Use this stream to
+     *      include the runtime client. The client is prepended to the
+     *      first "valid" file that passes through. Note that if you
+     *      set this option to `false`, you need to manually include the file
+     *      so that it gets executed before other hot-loaded files.
+     * @param {boolean=} [options.ignoreModules] Ignore files that
+     *      are in node_modules or bower_components.
+     * @return {*} Handler for gulp streams.
+     */
     function stream(options) {
         let initial, reload, includeClient,
             clientIncluded = false, firstPassCache;
@@ -58,7 +87,7 @@ function ngHotReloadStandalone({
             reload = Boolean(options.reload);
             includeClient = Boolean(options.includeClient);
 
-            // Sanity checks
+            // Sanity check
             if (!initial && !reload) {
                 const msg =
                     `Invalid options in ${JSON.stringify(options)}. At least` +
@@ -72,7 +101,7 @@ function ngHotReloadStandalone({
         }
 
         return through.obj(function(file, enc, cb) {
-            if (/node_modules/.test(file.path)) {
+            if (moduleRegex.test(file.path)) {
                 cb(null, file);
                 return;
             }
