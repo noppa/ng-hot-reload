@@ -48,11 +48,10 @@ function start(port) {
       wss.clients.forEach(client => {
         if (client.readyState = WebSocket.OPEN) {
           client.send(JSON.stringify({
-            file: fileType === 'script' ? undefined : file,
             message: 'reload',
-            src,
             fileType,
             filePath,
+            src,
           }));
         }
       });

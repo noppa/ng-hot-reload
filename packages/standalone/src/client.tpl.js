@@ -6,16 +6,20 @@ socket.addEventListener('message', function(event) {
   if (data.message !== 'reload') {
     return;
   }
+  var ngHotReload = (options.root || window)[options.ns].ngHotReloadCore;
 
   if (data.fileType === 'script') {
+    // If this is a js file, update by creating a script tag
+    // and loading the updated file from the ng-hot-reload server.
     var script = document.createElement('script');
+    // Disable any caching the browser might want to do
     var query = '?t=' + Date.now();
     script.src = 'http://localhost:' + options.port + '/' + data.src + query;
     document.body.appendChild(script);
   } else if (data.fileType === 'template') {
-    var ngHotReload = (options.root || window)[options.ns].ngHotReloadCore;
     ngHotReload.templates.update(data.filePath, data.file);
   } else {
-    console.log('Unknown file type, manual refresh required.');
+    var errorMsg = 'Unknown file type ' + data.filePath;
+    ngHotReload.manualReload(errorMsg);
   }
 });

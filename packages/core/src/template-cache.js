@@ -32,51 +32,19 @@ function decorateTemplateCache(moduleName = 'ng') {
   let templateUpdates, $templateCache;
   const angular = angularProvider();
 
-  // // Override the $templateCache service so we can react to template changes
+  // Override the $templateCache service so we can react to template changes
   angular.module(moduleName).config(['$provide', function($provide) {
-    $provide.decorator('$templateCache', ['$delegate', '$q',
-    function($delegate, $q) {
-      const originalPut = $delegate.put;
-      function ngHotReloadPutTemplate(key, value) {
-        let template;
-        if (typeof value === 'object' && value !== null) {
-          template = Array.isArray(value) ? value[1] : value.data;
-        } else {
-          template = value;
-        }
-        try {
-          if (typeof template === 'string' && !savedFilePaths.has(key)) {
-            setFilePath(key, template);
-          }
-          if (typeof template !== 'string') {
-            console.warn('Don\'t know how to handle this value', value);
-          }
-        } catch (err) {
-          // Woops, there's probably a developer error somewhere,
-          // log here because otherwise angular will report this error
-          // *very* vaguely and does not point to the library code at all.
-          console.error(err);
-        }
-        return originalPut.call($delegate, key, value);
+    $provide.decorator('$templateRequest', ['$delegate', '$templateCache', '$q',
+    function($delegate, _$templateCache_, $q) {
+      $templateCache = _$templateCache_;
+
+      return function ngHotReloadRequestTemplate(tpl, ...rest) {
+        const result = $delegate.call(this, tpl, ...rest);
+        result.then(template => {
+          setFilePath(tpl, template);
+        });
+        return result;
       };
-
-      $delegate.put = (key, value) => {
-        console.log('delegatePut', key, value);
-        const type = typeof value;
-        if (type === 'string') {
-          return ngHotReloadPutTemplate(key, value);
-        } else if (type === 'object' && typeof value.then === 'function') {
-          return $q.when(value).then(value =>
-            ngHotReloadPutTemplate(key, value));
-        } else {
-          console.warn('Don\'t know how to handle this value', value);
-          return originalPut.call($delegate, key, value);
-        }
-      };
-
-      $templateCache = $delegate;
-
-      return $delegate;
     }]);
   }]);
 
@@ -85,18 +53,15 @@ function decorateTemplateCache(moduleName = 'ng') {
   }]);
 
   return {
-    update(filePath, template) {
-      if (template && $templateCache) {
-        $templateCache.put(filePath, template);
-        console.log('setting file to cache', template,
-        templateUpdates, savedFilePaths.has(filePath), filePath,
-        savedFilePaths);
-      }
+    update(filePath) {
       if (templateUpdates && savedFilePaths.has(filePath)) {
         const key = savedFilePaths.get(filePath);
         templateUpdates.update(key);
       } else {
-        manualReload('App was not initialized yet.');
+        const msg = templateUpdates ?
+          'App was not initialized yet.'
+          : `Template ${filePath} hasn't been used yet.`;
+        manualReload(msg);
       }
     },
     getTemplateCache: () => $templateCache,

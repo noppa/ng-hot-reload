@@ -87,5 +87,6 @@ const templatesPublicApi = {
 export {
   init,
   update,
+  manualReload,
   templatesPublicApi as templates,
 };
