@@ -40,11 +40,16 @@ function decorateTemplateCache(moduleName = 'ng') {
       function ngHotReloadPutTemplate(key, value) {
         let template;
         if (typeof value === 'object' && value !== null) {
-          template = value.data;
+          template = Array.isArray(value) ? value[1] : value.data;
+        } else {
+          template = value;
         }
         try {
           if (typeof template === 'string' && !savedFilePaths.has(key)) {
             setFilePath(key, template);
+          }
+          if (typeof template !== 'string') {
+            console.warn('Don\'t know how to handle this value', value);
           }
         } catch (err) {
           // Woops, there's probably a developer error somewhere,
@@ -56,6 +61,7 @@ function decorateTemplateCache(moduleName = 'ng') {
       };
 
       $delegate.put = (key, value) => {
+        console.log('delegatePut', key, value);
         const type = typeof value;
         if (type === 'string') {
           return ngHotReloadPutTemplate(key, value);
@@ -63,6 +69,7 @@ function decorateTemplateCache(moduleName = 'ng') {
           return $q.when(value).then(value =>
             ngHotReloadPutTemplate(key, value));
         } else {
+          console.warn('Don\'t know how to handle this value', value);
           return originalPut.call($delegate, key, value);
         }
       };
