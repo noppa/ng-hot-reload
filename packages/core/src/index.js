@@ -2,10 +2,12 @@ import directiveProvider from './directive';
 import componentProvider from './component';
 import angularProvider from './ng/angular';
 import {
-  filePathCommentPrefix,
-  filePathCommentSuffix,
-  decorateTemplateCache,
-} from './template-cache';
+  getTemplatePathPrefix,
+  setTemplatePathPrefix,
+  getTemplatePathSuffix,
+  setTemplatePathSuffix,
+  decorateTemplateRequest,
+} from './template';
 import manualReload from './manual-reload';
 
 const modules = new Map();
@@ -21,7 +23,7 @@ function init(angular) {
   angularProvider.setAngular(angular);
 
   if (!templateCache) {
-    templateCache = decorateTemplateCache();
+    templateCache = decorateTemplateRequest();
   }
 
   return Object.assign({}, angular, {
@@ -80,13 +82,15 @@ function updateTemplate(filePath, file) {
 
 const templatesPublicApi = {
   update: updateTemplate,
-  filePathCommentPrefix,
-  filePathCommentSuffix,
+  getTemplatePathPrefix,
+  setTemplatePathPrefix,
+  getTemplatePathSuffix,
+  setTemplatePathSuffix,
 };
 
 export {
   init,
   update,
   manualReload,
-  templatesPublicApi as templates,
+  templatesPublicApi as template,
 };

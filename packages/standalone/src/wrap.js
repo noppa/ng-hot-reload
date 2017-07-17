@@ -1,5 +1,5 @@
 import wrapTemplate from 'raw-loader!./wrap.tpl.js';
-import { templates } from 'ng-hot-reload-core';
+import { template } from 'ng-hot-reload-core';
 
 const
   scriptFileReg = /\.(js|jsx|ts|tsx)$/,
@@ -29,9 +29,10 @@ export default ({
       }(${angular}));
       `;
   } else if (htmlFileReg.test(path)) {
-    return file + '\n' +
-      templates.filePathCommentPrefix +
-      path + templates.filePathCommentSuffix;
+    return file +
+      template.getTemplatePathPrefix() +
+      path +
+      template.getTemplatePathSuffix();
   } else {
     return file;
   }

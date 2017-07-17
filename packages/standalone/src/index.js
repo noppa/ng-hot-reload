@@ -1,6 +1,7 @@
 import * as server from './server.js';
 import wrap, { scriptFileReg } from './wrap.js';
 import FirstPassCache from './first-pass-cache.js';
+import { template } from 'ng-hot-reload-core';
 import through from 'through2';
 
 import clientTemplate from 'raw-loader!./client.tpl.js';
@@ -181,5 +182,8 @@ function ngHotReloadStandalone({
     reload(path, file, includeClient = false) {
       return reload(path, wrapReload(path, file), includeClient);
     },
+    // Not really a public api, but could be used to change the
+    // comment syntax that is injected to templates, if really needed.
+    _template: template,
   };
 };
