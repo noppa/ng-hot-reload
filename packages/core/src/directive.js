@@ -124,10 +124,6 @@ const directiveProvider = moduleName => {
               const initialState =
                 preserveState.snapshot($scope, initialController);
 
-              if (initialController) {
-
-              }
-
               if (directiveVersion < directiveVersions.get(name)) {
                 // This happens when something, like ngIf-directive,
                 // has cached the compiled directive and its link-function
@@ -142,6 +138,7 @@ const directiveProvider = moduleName => {
                 const deps = [name].concat(
                   getDependencies(directiveFactory, directive, $injector));
                 updates.onUpdate(deps, $scope, (evt, info) => {
+                  console.log('On update directive', name);
                   recompile(true);
                 });
 

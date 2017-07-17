@@ -42,7 +42,6 @@ function ngHotReloadStandalone({
    *      is appended to the output.
    */
   function reload(path, file, includeClient = false) {
-    file = wrapReload(path, file);
     if (includeClient) {
       file = client + file;
     }
@@ -132,15 +131,16 @@ function ngHotReloadStandalone({
           contents = client + contents;
           clientIncluded = true;
         }
-        file.contents = file.isBuffer() ?
-          Buffer.from(contents, enc) :
-          contents;
       } else {
+        contents = wrapReload(file.path, contents);
         // If we are not supposed to handle first runs or the
         // first run has already ended, pass to reload instead.
         reload(file.path, contents, shouldAddClient);
       }
 
+      file.contents = file.isBuffer() ?
+        Buffer.from(contents, enc) :
+        contents;
       cb(null, file);
     });
   }
@@ -177,7 +177,9 @@ function ngHotReloadStandalone({
     start: startServer,
     wrap: wrapInitial,
     client,
-    reload,
     stream,
+    reload(path, file, includeClient = false) {
+      return reload(path, wrapReload(path, file), includeClient);
+    },
   };
 };

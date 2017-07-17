@@ -5,7 +5,6 @@ const config = {
   entry: {
     'ng-hot-reload-core': path.join(__dirname, 'src', 'index.js'),
   },
-  devtool: 'inline-source-map',
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js',

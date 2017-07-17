@@ -7,7 +7,6 @@ const config = {
   entry: {
     'ng-hot-reload-standalone': path.join(__dirname, 'src', 'index.js'),
   },
-  devtool: 'inline-source-map',
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js',
@@ -53,7 +52,6 @@ const clientConfig = {
   entry: {
     client: path.join(__dirname, 'src', 'client-prebuilt.js'),
   },
-  devtool: 'source-map',
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js',
