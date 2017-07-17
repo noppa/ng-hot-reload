@@ -27,7 +27,8 @@
       "no-unused-vars": 1,
       "prefer-rest-params": 0,
       "prefer-spread": 0,
-      "no-undef": 2
+      "no-undef": 2,
+      "no-multi-spaces": 0
   },
   "globals": {
     "Map": false,

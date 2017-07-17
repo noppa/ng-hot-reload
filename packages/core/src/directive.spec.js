@@ -1,5 +1,5 @@
 import directiveProvider from './directive';
-import { map } from 'lodash';
+import map from 'lodash/map';
 
 const
     testModule = 'hot-reload-demo',

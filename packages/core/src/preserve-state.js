@@ -1,6 +1,6 @@
 import angularProvider from './ng/angular';
 import isPrivateKey from './ng/private-key';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 
 export { snapshot, unchangedProperties, rollback };
 

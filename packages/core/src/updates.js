@@ -1,4 +1,4 @@
-import { uniqueId } from 'lodash';
+import uniqueId from 'lodash/uniqueId';
 
 export const RECOMPILE = 'ng-hot-reload/recompile';
 

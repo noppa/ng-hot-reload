@@ -1,5 +1,5 @@
 import * as Rx from 'rxjs';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash/uniqueId';
 
 /* globals console */
 

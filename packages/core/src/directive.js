@@ -1,6 +1,11 @@
+import clone    from 'lodash/clone';
+import has      from 'lodash/has';
+import get      from 'lodash/get';
+import last     from 'lodash/last';
+import isObject from 'lodash/isObject';
+
 import angularProvider from './ng/angular';
 import updatesProvider from './updates';
-import { clone, has, get, last, isObject } from 'lodash';
 import * as preserveState from './preserve-state';
 
 const
