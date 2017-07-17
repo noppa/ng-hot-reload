@@ -6,6 +6,7 @@ import isObject from 'lodash/isObject';
 
 import angularProvider from './ng/angular';
 import updatesProvider from './updates';
+import getDependencies from './directive-dependencies';
 import * as preserveState from './preserve-state';
 
 const
@@ -53,9 +54,9 @@ const directiveProvider = moduleName => {
     return angular.module(moduleName).directive(name, [
       '$injector', '$templateCache', '$compile',
       '$animate', '$timeout', '$rootScope',
-      function(_$injector, $templateCache, $compile,
+      function(_$injector_, $templateCache, $compile,
       $animate, $timeout, $rootScope) {
-        $injector = _$injector;
+        $injector = _$injector_;
         if (!updates) {
           updates = updatesProvider($rootScope, moduleName, 'directive');
         }
@@ -123,6 +124,10 @@ const directiveProvider = moduleName => {
               const initialState =
                 preserveState.snapshot($scope, initialController);
 
+              if (initialController) {
+
+              }
+
               if (directiveVersion < directiveVersions.get(name)) {
                 // This happens when something, like ngIf-directive,
                 // has cached the compiled directive and its link-function
@@ -131,12 +136,18 @@ const directiveProvider = moduleName => {
                 // recompilation step to get a fresh new templates etc.
                 recompile(false);
               } else {
-                updates.onUpdate(name, $scope, (evt, info) => {
+                // Register onUpdate callback that watches changes to
+                // any of the directive's dependencies and to the
+                // directive itself.
+                const deps = [name].concat(
+                  getDependencies(directiveFactory, directive, $injector));
+                updates.onUpdate(deps, $scope, (evt, info) => {
                   recompile(true);
                 });
+
                 // If we have saved the state of the directive before updating,
-                // we can "roll back" the previous state so that the testing
-                // can continue from its previous state.
+                // we can "roll back" the previous state so that development
+                // can continue from the directive's previous state.
                 const prevStateData = $element.data(stateDataKey);
                 if (prevStateData) {
                   $element.removeData(stateDataKey);
