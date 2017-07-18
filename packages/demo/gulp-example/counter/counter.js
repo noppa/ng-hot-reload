@@ -1,8 +1,8 @@
 
 class CounterController {
 
-    constructor($log) {
-        console.log('foobarr');
+    constructor() {
+      this.counter = 1;
     }
 
 }

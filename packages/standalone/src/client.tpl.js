@@ -17,7 +17,7 @@ socket.addEventListener('message', function(event) {
     script.src = 'http://localhost:' + options.port + '/' + data.src + query;
     document.body.appendChild(script);
   } else if (data.fileType === 'template') {
-    ngHotReload.templates.update(data.filePath, data.file);
+    ngHotReload.template.update(data.filePath, data.file);
   } else {
     var errorMsg = 'Unknown file type ' + data.filePath;
     ngHotReload.manualReload(errorMsg);

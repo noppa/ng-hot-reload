@@ -67,6 +67,7 @@ gulp.task('serve', ['clean'], function() {
   return watch(sourceFiles)
     .pipe(ngHotReload.stream({
       initial: false,
+      includeClient: false,
     }))
     .pipe(gulp.dest('./dist'));
 });

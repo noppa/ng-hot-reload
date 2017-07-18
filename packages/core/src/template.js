@@ -39,10 +39,8 @@ function decorateTemplateRequest(moduleName = 'ng') {
       $templateCache = _$templateCache_;
 
       return function ngHotReloadRequestTemplate(tpl, ...rest) {
-        debugger;
         const result = $delegate.call(this, tpl, ...rest);
         result.then(template => {
-          debugger;
           setFilePath(tpl, template);
         });
         return result;
@@ -58,9 +56,9 @@ function decorateTemplateRequest(moduleName = 'ng') {
     update(filePath) {
       if (templateUpdates && savedFilePaths.has(filePath)) {
         const key = savedFilePaths.get(filePath);
+        $templateCache.remove(key);
         templateUpdates.update(key);
       } else {
-        console.log(savedFilePaths);
         const msg = templateUpdates ?
           `Template ${filePath} hasn't been used yet.`
           : 'App was not initialized yet.';

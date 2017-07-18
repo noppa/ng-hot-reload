@@ -138,7 +138,6 @@ const directiveProvider = moduleName => {
                 const deps = [name].concat(
                   getDependencies(directiveFactory, directive, $injector));
                 updates.onUpdate(deps, $scope, (evt, info) => {
-                  console.log('On update directive', name);
                   recompile(true);
                 });
 
