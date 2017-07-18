@@ -20,6 +20,9 @@ function componentProvider(moduleName) {
     return this.directive(name, [
       '$injector',
       function($injector) {
+        const n = name;
+        console.log('name:', n);
+        debugger;
         const def = {
           controller: options.controller || function() {},
           controllerAs:
