@@ -28,7 +28,8 @@
       "prefer-rest-params": 0,
       "prefer-spread": 0,
       "no-undef": 2,
-      "no-multi-spaces": 0
+      "no-multi-spaces": 0,
+      "max-len": [1, 80]
   },
   "globals": {
     "Map": false,
