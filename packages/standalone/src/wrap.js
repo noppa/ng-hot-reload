@@ -6,13 +6,11 @@ const
   htmlFileReg = /\.(html)$/;
 
 export default ({
-  firstPassed,
   port,
   angular,
 }) => (path, file) => {
   const options = JSON.stringify({
     ns: 'ng-hot-reload-standalone',
-    firstPassed,
     port,
   });
 

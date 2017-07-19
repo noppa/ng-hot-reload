@@ -1,7 +1,9 @@
+import once from 'lodash/once';
 import directiveProvider from './directive';
 import componentProvider from './component';
 import angularProvider from './ng/angular';
 import manualReload from './manual-reload';
+import { setOptions } from './options';
 import {
   getTemplatePathPrefix,
   setTemplatePathPrefix,
@@ -11,21 +13,29 @@ import {
 } from './template';
 
 const modules = new Map();
-
 const decorator = module_ => newProvider => (name, factory) => {
   newProvider.call(module_, name, factory);
   return module_;
 };
-
 let templateCache;
 
-function init(angular) {
-  console.log('initt');
-  angularProvider.setAngular(angular);
+let initialized;
 
-  if (!templateCache) {
-    templateCache = decorateTemplateRequest();
+function decorateAngular(options) {
+  if (options) {
+    setOptions(options);
   }
+
+  return initialized ? update() : init(options.angular);
+}
+
+const init = once(angular => {
+  angularProvider.setAngular(angular);
+  templateCache = decorateTemplateRequest();
+
+  angular.module('ng').run(function() {
+    initialized = true;
+  });
 
   return Object.assign({}, angular, {
     module: function(name) {
@@ -52,7 +62,7 @@ function init(angular) {
       return patchedModule;
     },
   });
-}
+});
 
 function update() {
   console.log('updateee');
@@ -92,4 +102,8 @@ const templatesPublicApi = {
   setTemplatePathSuffix,
 };
 
-export { init, update, manualReload, templatesPublicApi as template };
+export {
+  decorateAngular,
+  manualReload,
+  templatesPublicApi as template,
+};

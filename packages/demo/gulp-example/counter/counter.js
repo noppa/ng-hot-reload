@@ -6,7 +6,11 @@ class CounterController {
     }
 
     add() {
-      this.counter+=2;
+      this.counter++;
+    }
+
+    sub() {
+      this.counter--;
     }
 
 }

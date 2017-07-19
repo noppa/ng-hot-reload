@@ -11,7 +11,5 @@ var angular = (function() { // eslint-disable-line no-unused-vars
       );
     }
     var loader = root[options.ns].ngHotReloadCore;
-    return options.firstPassed ?
-          loader.update()
-        : loader.init(options.angular);
+    return loader.decorateAngular(options);
 })();
