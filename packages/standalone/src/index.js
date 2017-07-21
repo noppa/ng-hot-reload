@@ -1,11 +1,10 @@
-import * as server from './server.js';
-import wrap, { scriptFileReg } from './wrap.js';
-import FirstPassCache from './first-pass-cache.js';
+import wrapFile, { scriptFileReg } from './wrap';
+import * as server  from './server';
 import { template } from 'ng-hot-reload-core';
-import through from 'through2';
+import through      from 'through2';
 
 import clientTemplate from 'raw-loader!./client.tpl.js';
-import coreLib from 'raw-loader!ng-hot-reload-core';
+import coreLib        from 'raw-loader!ng-hot-reload-core';
 
 module.exports = ngHotReloadStandalone;
 module.exports.default = ngHotReloadStandalone;
@@ -18,22 +17,11 @@ function ngHotReloadStandalone({
   angular = 'angular',
 } = {}) {
   let fileServer;
+  const wrap = (path, file) => wrapFile(path, file, port, angular);
 
   function startServer() {
     fileServer = server.start(port);
   }
-
-  const
-    wrapInitial = wrap({
-      firstPassed: false,
-      port,
-      angular,
-    }),
-    wrapReload = wrap({
-      firstPassed: true,
-      port,
-      angular,
-    });
 
   /**
    * Reload changed file.
@@ -42,10 +30,7 @@ function ngHotReloadStandalone({
    * @param {boolean=} [includeClient=false] If true, the standalone client
    *      is appended to the output.
    */
-  function reload(path, file, includeClient = false) {
-    if (includeClient) {
-      file = client + file;
-    }
+  function reload(path, file) {
     fileServer.reload(path, file);
   }
 
@@ -77,66 +62,26 @@ function ngHotReloadStandalone({
    * @return {*} Handler for gulp streams.
    */
   function stream({
-    initial: handleInitial = true,
-    reload: handleReload = true,
     includeClient = true,
     ignoreModules = true,
   } = {}) {
-    let
-      clientIncluded = false,
-      firstPassCache;
-
-    // Sanity check
-    if (!handleInitial && !handleReload) {
-      const msg =
-        'Invalid options passed to function ' +
-        '"ngHotReloadStandalone.stream". At least one of ' +
-        '"initial" or "reload" must be set to true!';
-      throw new Error(msg);
-    }
-
-    if (handleInitial && handleReload) {
-      // HACK: If this is a stream that watches file changes,
-      // it's a bit tricky to tell if this is a file change
-      // or initial file load. Most reliable way to do this
-      // would be in the gulpfile-level, where you'd call
-      // stram({ initial: false }) and stream({ reload: false })
-      // and use thos for separate streams.
-      // However, as an opt-in convenience over reliability method,
-      // this library can track the files that pass through
-      // and separate initial and reload pass throughs based on that.
-      firstPassCache = new FirstPassCache();
-    }
+    let clientIncluded = false;
 
     return through.obj(function(file, enc, cb) {
-      if (moduleRegex.test(file.path)) {
+      if (ignoreModules && moduleRegex.test(file.path)) {
+        // Ignore node_modules etc
         cb(null, file);
         return;
       }
 
-      let contents = String(file.contents);
-      // This is considered to be a first run if
-      // we are only supposed to handle first runs (handleReload = false)
-      // or firstPassCache tells us that this file has not already
-      // passed through.
-      const firstRun = handleInitial &&
-        (!handleReload || firstPassCache.pass(file.path));
-      const shouldAddClient =
-        scriptFileReg.test(file.path) && includeClient && !clientIncluded;
+      let contents = wrap(file.path, String(file.contents));
+      if (scriptFileReg.test(file.path) && includeClient && !clientIncluded) {
+        clientIncluded = true;
+        contents = client + contents;
+      }
 
-      if (firstRun) {
-        // If we are supposed to handle first runs and this is
-        // a first run, wrap the contents with wrapInitial.
-        contents = wrapInitial(file.path, contents);
-        if (shouldAddClient) {
-          contents = client + contents;
-          clientIncluded = true;
-        }
-      } else {
-        contents = wrapReload(file.path, contents);
-        // If we are not supposed to handle first runs or the
-        // first run has already ended, pass to reload instead.
-        reload(file.path, contents, shouldAddClient);
+      if (fileServer.isClientReady()) {
+        reload(file.path, contents);
       }
 
       file.contents = file.isBuffer() ?
@@ -176,11 +121,11 @@ function ngHotReloadStandalone({
 
   return {
     start: startServer,
-    wrap: wrapInitial,
+    wrap,
     client,
     stream,
-    reload(path, file, includeClient = false) {
-      return reload(path, wrapReload(path, file), includeClient);
+    reload(path, file) {
+      return reload(path, wrap(path, file));
     },
     // Not really a public api, but could be used to change the
     // comment syntax that is injected to templates, if really needed.

@@ -5,10 +5,7 @@ const
   scriptFileReg = /\.(js|jsx|ts|tsx)$/,
   htmlFileReg = /\.(html)$/;
 
-export default ({
-  port,
-  angular,
-}) => (path, file) => {
+export default (path, file, port, angular) => {
   const options = JSON.stringify({
     ns: 'ng-hot-reload-standalone',
     port,
