@@ -80,7 +80,7 @@ function ngHotReloadStandalone({
         contents = client + contents;
       }
 
-      if (fileServer.isClientReady()) {
+      if (fileServer) {
         reload(file.path, contents);
       }
 

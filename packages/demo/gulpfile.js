@@ -37,6 +37,8 @@ gulp.task('serve', ['clean'], function() {
   var sourceFiles = [
     './gulp-example/app.module.js',
     './gulp-example/**/*.js',
+    '!./gulp-example/protractor.config.js',
+    '!**/*.spec.js',
     './gulp-example/**/*.html',
   ];
 
@@ -50,7 +52,6 @@ gulp.task('serve', ['clean'], function() {
     .pipe(gulpIf(isJsSourceFile, iife()))
     // Wrap js files with ng-hot-reload's initial wrapper
     .pipe(ngHotReload.stream({
-      reload: false,
       includeClient: false,
     }))
     .pipe(gulp.dest('./dist'));
@@ -66,7 +67,6 @@ gulp.task('serve', ['clean'], function() {
 
   return watch(sourceFiles)
     .pipe(ngHotReload.stream({
-      initial: false,
       includeClient: false,
     }))
     .pipe(gulp.dest('./dist'));

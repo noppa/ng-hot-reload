@@ -36,6 +36,10 @@
     "Symbol": false,
     "angular": false,
     "location": false,
-    "console": false
+    "console": false,
+    "describe": false,
+    "browser": false,
+    "element": false,
+    "by": false
   }
 }

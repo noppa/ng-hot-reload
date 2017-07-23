@@ -4,7 +4,7 @@
   "description": "Demo for the ng-hot-reload package",
   "main": "bundle.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "protractor gulp-example/protractor.config.js",
     "webpack-example": "node server.js",
     "gulp-example": "gulp serve"
   },
