@@ -1,6 +1,6 @@
 import 'angular/angular.js';
 import './app.module.js';
-import './counter.component.js';
+import './counter/counter.js';
 
 angular.module('hot-reload-demo')
   .directive('test', function() {

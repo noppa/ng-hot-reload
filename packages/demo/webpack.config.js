@@ -20,6 +20,10 @@ module.exports = {
         loader: 'ng-hot-reload-loader!babel-loader',
         exclude: /node_modules/,
       },
+      {
+        test: /\.html$/,
+        loader: 'html-loader',
+      },
     ],
   },
   resolve: {

@@ -2,12 +2,9 @@
 (function(__ngHotReloadLoaderAngularGlobal) {
   var angular = module.hot ? (function() {
     var loader = require(<%= corePath %>);
-    var data = module.hot.data;
-    if (data && data.firstPassed) {
-      return loader.update();
-    } else {
-      return loader.init(__ngHotReloadLoaderAngularGlobal);
-    }
+    return loader.decorateAngular({
+      angular: __ngHotReloadLoaderAngularGlobal
+    });
   })() : __ngHotReloadLoaderAngularGlobal;
 
   try {
@@ -23,10 +20,6 @@
         if (err) {
           console.error(err);
         }
-      });
-
-      module.hot.dispose(function(data) {
-        data.firstPassed = true;
       });
     })();
   }
