@@ -38,7 +38,7 @@ gulp.task('serve', ['clean'], function() {
     './gulp-example/app.module.js',
     './gulp-example/**/*.js',
     '!./gulp-example/protractor.config.js',
-    '!**/*.spec.js',
+    '!./gulp-example/e2e/**/*',
     './gulp-example/**/*.html',
   ];
 
