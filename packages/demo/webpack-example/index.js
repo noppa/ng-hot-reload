@@ -3,7 +3,7 @@ import './app.module.js';
 import './counter/counter.js';
 
 angular.module('hot-reload-demo')
-  .directive('test', function() {
+  .directive('hello', function() {
     return {
       template:
         `

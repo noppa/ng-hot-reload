@@ -35,7 +35,7 @@ const directiveProvider = moduleName => {
   // Initialized later
   let $injector, updates;
 
-  const getDirective = name => $injector && $injector.get(name + 'Directive');
+  const getDirective = name => $injector.get(name + 'Directive');
 
   let updateQueue = new Map();
   const directiveVersions = new Map();

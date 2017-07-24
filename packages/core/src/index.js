@@ -1,12 +1,17 @@
 import once   from 'lodash/once';
 import assign from 'lodash/assign';
 
+import angularProvider, { setAngular } from './ng/angular';
 import directiveProvider  from './directive';
 import componentProvider  from './component';
-import angularProvider    from './ng/angular';
+import controllerProvider from './controller';
 import manualReload       from './util/manual-reload';
 import { setOptions }     from './options';
-import { decorateTemplateRequest } from './template';
+import {
+  decorateTemplateRequest,
+  getTemplatePathPrefix,
+  getTemplatePathSuffix,
+} from './template';
 
 const modules = new Map();
 let
@@ -52,7 +57,7 @@ function decorateAngular(options) {
  *      some methods changed.
  */
 const initializer = once(angular => {
-  angularProvider.setAngular(angular);
+  setAngular(angular);
   templateCache = decorateTemplateRequest();
 
   angular.module('ng').run(function() {
@@ -65,6 +70,7 @@ const initializer = once(angular => {
         modules.set(name, {
           directive: directiveProvider(name),
           component: componentProvider(name),
+          controller: controllerProvider(name),
         });
       }
 
@@ -78,6 +84,7 @@ const initializer = once(angular => {
         {
           directive: decorate(module.directive.create),
           component: decorate(module.component.create),
+          controller: decorate(module.controller.create),
         }
       );
 
@@ -112,6 +119,7 @@ function updater() {
       return assign(result, angular.module(name), {
         directive: decorate(module.directive.update),
         component: decorate(module.component.update),
+        controller: decorate(module.controller.update),
       });
     },
   });
@@ -127,6 +135,8 @@ function updateTemplate(filePath, file) {
 
 const templatesPublicApi = {
   update: updateTemplate,
+  getTemplatePathPrefix,
+  getTemplatePathSuffix,
 };
 
 

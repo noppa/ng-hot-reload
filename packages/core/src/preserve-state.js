@@ -5,49 +5,49 @@ import isEmpty from 'lodash/isEmpty';
 export { snapshot, unchangedProperties, rollback };
 
 function snapshot(scope, controller) {
-    const
-        angular = angularProvider(),
-        scopeState = new Map;
+  const
+    angular = angularProvider(),
+    scopeState = new Map;
 
-    let $ctrlState;
+  let $ctrlState;
 
-    snapshotRec(scopeState, scope, controller);
-    return { $scope: scopeState, $ctrl: $ctrlState };
+  snapshotRec(scopeState, scope, controller);
+  return { $scope: scopeState, $ctrl: $ctrlState };
 
-    function snapshotRec(map, scope, controller) {
-        const controllerIsClass =
-            angular.isFunction(controller)
-            && !!controller.prototype;
-        Object.keys(scope).forEach(key => {
-            // Don't save keys like "$id", "$$childScope", etc.
-            if (isPrivateKey(key) && key !== '$ctrl') return;
-            const value = scope[key];
-            switch (typeof value) {
-                case 'object': {
-                    const isControllerInstance =
-                        value !== null
-                        && controllerIsClass
-                        && controller.prototype.isPrototypeOf(value);
-                    if (isControllerInstance) {
-                        if ($ctrlState) break;
-                        // Recursively call this function to save the
-                        // values that are saved in the view-model
-                        $ctrlState = new Map();
-                        snapshotRec($ctrlState, value);
-                    } else {
-                        map.set(key, angular.copy(value));
-                    }
-                    break;
-                }
-                // It doesn't make much sense to save functions
-                case 'function': break;
-                default: {
-                    map.set(key, value);
-                    break;
-                }
-            }
-        });
-    }
+  function snapshotRec(map, scope, controller) {
+    const controllerIsClass =
+      angular.isFunction(controller)
+      && !!controller.prototype;
+    Object.keys(scope).forEach(key => {
+      // Don't save keys like "$id", "$$childScope", etc.
+      if (isPrivateKey(key) && key !== '$ctrl') return;
+      const value = scope[key];
+      switch (typeof value) {
+        case 'object': {
+          const isControllerInstance =
+            value !== null
+            && controllerIsClass
+            && controller.prototype.isPrototypeOf(value);
+          if (isControllerInstance) {
+            if ($ctrlState) break;
+            // Recursively call this function to save the
+            // values that are saved in the view-model
+            $ctrlState = new Map();
+            snapshotRec($ctrlState, value);
+          } else {
+            map.set(key, angular.copy(value));
+          }
+          break;
+        }
+        // It doesn't make much sense to save functions
+        case 'function': break;
+        default: {
+          map.set(key, value);
+          break;
+        }
+      }
+    });
+  }
 }
 
 /**
@@ -57,29 +57,29 @@ function snapshot(scope, controller) {
  * @return {string[]} List of property names.
  */
 function unchangedProperties(oldState, newState) {
-    const { equals } = angularProvider();
-    let $scope = [], $ctrl;
+  const { equals } = angularProvider();
+  let $scope = [], $ctrl;
 
-    oldState.$scope.forEach(
-        _unchangedPropertiesCb(equals, $scope, newState.$scope));
-    if (oldState.$ctrl && newState.$ctrl) {
-        $ctrl = [];
-        oldState.$ctrl.forEach(
-            _unchangedPropertiesCb(equals, $ctrl, newState.$ctrl));
-    }
-    return {
-        $scope,
-        $ctrl,
-    };
+  oldState.$scope.forEach(
+    _unchangedPropertiesCb(equals, $scope, newState.$scope));
+  if (oldState.$ctrl && newState.$ctrl) {
+    $ctrl = [];
+    oldState.$ctrl.forEach(
+      _unchangedPropertiesCb(equals, $ctrl, newState.$ctrl));
+  }
+  return {
+    $scope,
+    $ctrl,
+  };
 }
 
 /* @private */
 function _unchangedPropertiesCb(equals, resultList, otherState) {
-    return function(val, key) {
-        if (equals(otherState.get(key), val)) {
-            resultList.push(key);
-        }
-    };
+  return function(val, key) {
+    if (equals(otherState.get(key), val)) {
+      resultList.push(key);
+    }
+  };
 }
 
 /**
@@ -90,34 +90,34 @@ function _unchangedPropertiesCb(equals, resultList, otherState) {
  * @param {Function=} controller Controller function/class
  */
 function rollback(unchangedProperties, oldState, scope, controller) {
-    const
-        { isFunction, equals } = angularProvider();
+  const
+    { isFunction, equals } = angularProvider();
 
-    rollbackRec(unchangedProperties.$scope, oldState.$scope, scope, controller);
+  rollbackRec(unchangedProperties.$scope, oldState.$scope, scope, controller);
 
-    function rollbackRec(keys, oldValues, scope, controller) {
-        if (isEmpty(keys) && !controller) return;
-        const controllerIsClass =
-            isFunction(controller)
-            && !!controller.prototype;
+  function rollbackRec(keys, oldValues, scope, controller) {
+    if (isEmpty(keys) && !controller) return;
+    const controllerIsClass =
+      isFunction(controller)
+      && !!controller.prototype;
 
-        Object.keys(scope)
-            .forEach(key => {
-                const value = scope[key];
-                const isControllerInstance =
-                    value !== null
-                    && controllerIsClass
-                    && controller.prototype.isPrototypeOf(value);
-                if (isControllerInstance) {
-                    rollbackRec(
-                        unchangedProperties.$ctrl, oldState.$ctrl,
-                        value, controller);
-                } else if (keys.indexOf(key) !== -1) {
-                    const oldValue = oldValues.get(key);
-                    if (!equals(oldValue, value)) {
-                        scope[key] = oldValues.get(key);
-                    }
-                }
-            });
-    }
+    Object.keys(scope)
+      .forEach(key => {
+        const value = scope[key];
+        const isControllerInstance =
+          value !== null
+          && controllerIsClass
+          && controller.prototype.isPrototypeOf(value);
+        if (isControllerInstance) {
+          rollbackRec(
+            unchangedProperties.$ctrl, oldState.$ctrl,
+            value, controller);
+        } else if (keys.indexOf(key) !== -1) {
+          const oldValue = oldValues.get(key);
+          if (!equals(oldValue, value)) {
+            scope[key] = oldValues.get(key);
+          }
+        }
+      });
+  }
 }
