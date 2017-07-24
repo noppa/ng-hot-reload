@@ -28,23 +28,8 @@ app.get('*.js', (req, res) => {
 function start(port) {
   server.listen(port, () => {});
 
-  let clientReady = false;
-
   const wss = new WebSocket.Server({
     server,
-  });
-
-  wss.on('connection', client => {
-    client.on('message', data => {
-      try {
-        const message = JSON.parse(data).message;
-        if (message === 'initialized') {
-          clientReady = true;
-        }
-      } catch(err) {
-        console.error(err);
-      }
-    });
   });
 
   return {
@@ -71,7 +56,6 @@ function start(port) {
         }
       });
     },
-    isClientReady: () => clientReady,
   };
 }
 

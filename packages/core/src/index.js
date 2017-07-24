@@ -4,27 +4,19 @@ import assign from 'lodash/assign';
 import directiveProvider  from './directive';
 import componentProvider  from './component';
 import angularProvider    from './ng/angular';
-import manualReload       from './manual-reload';
-import * as lifecycle        from './util/lifecycle';
-import getOptons, { setOptions } from './options';
-import {
-  getTemplatePathPrefix,
-  setTemplatePathPrefix,
-  getTemplatePathSuffix,
-  setTemplatePathSuffix,
-  decorateTemplateRequest,
-} from './template';
+import manualReload       from './util/manual-reload';
+import { setOptions }     from './options';
+import { decorateTemplateRequest } from './template';
 
 const modules = new Map();
+let
+  templateCache,
+  initialized = false;
 
 const decorator = module_ => newProvider => (name, factory) => {
   newProvider.call(module_, name, factory);
   return module_;
 };
-
-let templateCache;
-
-let initialized;
 
 /**
  * Creates a decorated version of angular where method "module" is
@@ -65,7 +57,6 @@ const initializer = once(angular => {
 
   angular.module('ng').run(function() {
     initialized = true;
-    lifecycle.broadcast('initialized');
   });
 
   return assign({}, angular, {
@@ -136,10 +127,6 @@ function updateTemplate(filePath, file) {
 
 const templatesPublicApi = {
   update: updateTemplate,
-  getTemplatePathPrefix,
-  setTemplatePathPrefix,
-  getTemplatePathSuffix,
-  setTemplatePathSuffix,
 };
 
 
@@ -147,5 +134,4 @@ export {
   decorateAngular,
   manualReload,
   templatesPublicApi as template,
-  lifecycle,
 };

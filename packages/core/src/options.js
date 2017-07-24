@@ -1,7 +1,7 @@
 import merge from 'lodash/merge';
 
 const defaultOptions = () => ({
-
+  forceRefresh: true,
 });
 
 let options = defaultOptions();

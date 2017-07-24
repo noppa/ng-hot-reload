@@ -6,7 +6,7 @@ import isObject from 'lodash/isObject';
 
 import angularProvider from './ng/angular';
 import updatesProvider from './updates';
-import getDependencies from './directive-dependencies';
+import getDependencies from './util/directive-dependencies';
 import * as preserveState from './preserve-state';
 
 const

@@ -7,6 +7,7 @@ var browserSync = require('browser-sync');
 var browserSyncSpa = require('browser-sync-spa');
 var del = require('del');
 var path = require('path');
+
 var ngHotReload = require('ng-hot-reload-standalone')({
   start: false,
 });
@@ -47,16 +48,16 @@ gulp.task('serve', ['clean'], function() {
     './node_modules/ng-hot-reload-standalone/dist/client.js',
   ].concat(sourceFiles);
 
-  // Move js files to dist folder
+  // Move js files to dist folder.
   gulp.src(allFiles)
     .pipe(gulpIf(isJsSourceFile, iife()))
-    // Wrap js files with ng-hot-reload's initial wrapper
+    // Wrap js files with ng-hot-reload's initial wrapper.
     .pipe(ngHotReload.stream({
       includeClient: false,
     }))
     .pipe(gulp.dest('./dist'));
 
-  // Inject to index.html
+  // Inject source file paths to index.html using gulp-inject plugin.
   gulp.src('./index.html')
     .pipe(inject(gulp.src(allFiles, {
       read: false,
@@ -65,6 +66,8 @@ gulp.task('serve', ['clean'], function() {
 
   ngHotReload.start();
 
+  // Watch changes to the source files, pipe through `ngHotReload.stream`
+  // and then to "dist" folder.
   return watch(sourceFiles)
     .pipe(ngHotReload.stream({
       includeClient: false,

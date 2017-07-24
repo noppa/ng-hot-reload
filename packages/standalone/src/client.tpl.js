@@ -4,19 +4,8 @@
 var opt = options;
 var socket = new WebSocket('ws://localhost:' + opt.port);
 
-function ngHotReloadCore() {
-  return (opt.root || window)[opt.ns].ngHotReloadCore;
-}
-
-socket.addEventListener('open', function(event) {
-  ngHotReloadCore().lifecycle.once('initialized', function() {
-    socket.send(JSON.stringify({
-      message: 'initialized'
-    }));
-  });
-});
-
 socket.addEventListener('message', function(event) {
+  var ngHotReloadCore = (opt.root || window)[opt.ns].ngHotReloadCore;
   var data = event.data ? JSON.parse(event.data) : {};
   if (data.message !== 'reload') {
     return;
@@ -31,9 +20,9 @@ socket.addEventListener('message', function(event) {
     script.src = 'http://localhost:' + opt.port + '/' + data.src + query;
     document.body.appendChild(script);
   } else if (data.fileType === 'template') {
-    ngHotReloadCore().template.update(data.filePath, data.file);
+    ngHotReloadCore.template.update(data.filePath, data.file);
   } else {
     var errorMsg = 'Unknown file type ' + data.filePath;
-    ngHotReloadCore().manualReload(errorMsg);
+    ngHotReloadCore.manualReload(errorMsg);
   }
 });

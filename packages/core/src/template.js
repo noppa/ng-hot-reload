@@ -1,6 +1,6 @@
 import angularProvider from './ng/angular';
 import updates from './updates';
-import manualReload from './manual-reload';
+import manualReload from './util/manual-reload';
 
 let
   templatePathPrefix =

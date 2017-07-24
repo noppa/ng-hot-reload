@@ -1,4 +1,4 @@
-import { error as logError } from './util/log';
+import { error as logError } from './log';
 
 export default getDirectiveDependencies;
 

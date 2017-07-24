@@ -1,11 +1,10 @@
 
-var val;
+let ng;
 
-const provideAngular = () => {
-  return val;
-};
+const
+  setAngular = _ng => ng = _ng,
+  getAngular = ng;
 
-provideAngular.setAngular = _val => val = _val;
+export default getAngular;
+export { setAngular };
 
-
-export default provideAngular;

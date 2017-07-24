@@ -5,5 +5,5 @@
  * @return {boolean} True if the object property is private.
  */
 export default function isPrivateKey(key) {
-    return !!key && key.charAt(0) === '$';
+  return !!key && key.charAt(0) === '$';
 };
