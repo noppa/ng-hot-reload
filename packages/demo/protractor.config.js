@@ -7,4 +7,7 @@ exports.config = {
   onPrepare() {
     browser.get('http://localhost:8080');
   },
+  params: {
+    package: 'standalone',
+  },
 };

@@ -40,6 +40,7 @@
     "describe": false,
     "browser": false,
     "element": false,
-    "by": false
+    "by": false,
+    "Promise": false
   }
 }
