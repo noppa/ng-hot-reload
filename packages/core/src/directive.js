@@ -1,6 +1,5 @@
 import clone    from 'lodash/clone';
 import has      from 'lodash/has';
-import get      from 'lodash/get';
 import isObject from 'lodash/isObject';
 import updatesProvider, { identifierForDependency } from './updates';
 import angularProvider from './ng/angular';
@@ -151,14 +150,12 @@ const directiveProvider = moduleName => {
                   if (prevStateData) {
                     $element.removeData(stateDataKey);
                     const
-                      newController =
-                        get(getDirective(name), ['0', 'controller']),
-                      newState = preserveState.snapshot($scope, newController),
+                      newState = preserveState.snapshot($scope, controllerAs),
                       unchanged = preserveState.unchangedProperties(
                         prevStateData.initialState, newState);
 
                     preserveState.rollback(unchanged,
-                      prevStateData.currentState, $scope, newController);
+                      prevStateData.currentState, $scope, controllerAs);
                   }
                 }
               }

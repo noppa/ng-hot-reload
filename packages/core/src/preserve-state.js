@@ -83,37 +83,27 @@ function _unchangedPropertiesCb(equals, resultList, otherState) {
  * @param {Oject} unchangedProperties Result of calling unchangedProperties()
  * @param {Object} oldState Result of calling snapshot()
  * @param {Object} scope Active scope object
- * @param {Function=} controller Controller function/class
+ * @param {Function=} controllerAs Controller function/class
  */
-function rollback(unchangedProperties, oldState, scope, controller) {
-  const
-    { isFunction, equals } = angularProvider();
+function rollback(unchangedProperties, oldState, scope, controllerAs) {
+  const { equals } = angularProvider();
 
-  rollbackRec(unchangedProperties.$scope, oldState.$scope, scope, controller);
+  rollbackRec(unchangedProperties.$scope, oldState.$scope, scope, controllerAs);
 
-  function rollbackRec(keys, oldValues, scope, controller) {
-    if (isEmpty(keys) && !controller) return;
-    const controllerIsClass =
-      isFunction(controller)
-      && !!controller.prototype;
+  function rollbackRec(keys, oldValues, scope, controllerAs) {
+    if (isEmpty(keys) && !controllerAs) return;
 
-    Object.keys(scope)
-      .forEach(key => {
-        const value = scope[key];
-        const isControllerInstance =
-          value !== null
-          && controllerIsClass
-          && controller.prototype.isPrototypeOf(value);
-        if (isControllerInstance) {
-          rollbackRec(
-            unchangedProperties.$ctrl, oldState.$ctrl,
-            value, controller);
-        } else if (keys.indexOf(key) !== -1) {
-          const oldValue = oldValues.get(key);
-          if (!equals(oldValue, value)) {
-            scope[key] = oldValues.get(key);
-          }
+    Object.keys(scope).forEach(key => {
+      const value = scope[key];
+      const type = typeof value;
+      if (key === controllerAs && type === 'object' && value !== null) {
+        rollbackRec(unchangedProperties.$ctrl, oldState.$ctrl, value);
+      } else if (keys.indexOf(key) !== -1) {
+        const oldValue = oldValues.get(key);
+        if (!equals(oldValue, value)) {
+          scope[key] = oldValues.get(key);
         }
-      });
+      }
+    });
   }
 }
