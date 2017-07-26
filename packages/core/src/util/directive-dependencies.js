@@ -1,6 +1,14 @@
 import controllerDefinition from './controller-definition';
+import { identifierForDependency } from '../updates';
 
 export default getDirectiveDependencies;
+
+const
+  addType = type => name => identifierForDependency({ type, name }),
+  addCtrl = addType('controller'),
+  addTpl = addType('template'),
+  addSvc = addType('service');
+
 
 /**
  * Returns a list of dependencies for a given directive definition.
@@ -18,12 +26,18 @@ function getDirectiveDependencies(directiveFactory, directive, $injector) {
   // Start with the dependencies of the directive itself
   let dependencies = $injector.annotate(directiveFactory);
   // Get the controller factory
-  const { controller } = controllerDefinition(directive);
+  const { controller, name } = controllerDefinition(directive);
   if (controller) {
     dependencies = dependencies.concat($injector.annotate(controller));
   }
+  // Mark directive & controller deps as "services"
+  dependencies = dependencies.map(addSvc);
+  if (name) {
+    dependencies.push(addCtrl(name));
+  }
+
   if (directive.templateUrl) {
-    dependencies.push(directive.templateUrl);
+    dependencies.push(addTpl(directive.templateUrl));
   }
 
   return dependencies;

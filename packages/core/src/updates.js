@@ -1,9 +1,10 @@
 import uniqueId   from 'lodash/uniqueId';
 import castArray  from 'lodash/castArray';
+import includes   from 'lodash/includes';
 
 export const RECOMPILE = 'ng-hot-reload/recompile';
 
-const depsEqual = a => b => a === b;
+const identifierForDependency = ({ name, type }) => type + '/' + name;
 
 export default function($rootScope, moduleName, type) {
   /**
@@ -25,7 +26,8 @@ export default function($rootScope, moduleName, type) {
   function tap(deps, $scope, cb) {
     deps = castArray(deps);
     $scope.$on(RECOMPILE, (evt, info) => {
-      const canReceive = deps.some(depsEqual(info)) &&
+      const identifier = identifierForDependency(info);
+      const canReceive = includes(deps, identifier) &&
         evt.targetScope !== $scope;
 
       if (canReceive) {
@@ -49,3 +51,5 @@ export default function($rootScope, moduleName, type) {
     tap,
   };
 };
+
+export { identifierForDependency };

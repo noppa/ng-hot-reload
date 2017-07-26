@@ -7,7 +7,6 @@ import { getController } from '../controller';
  * Matches the "controllerName as alias" syntax.
  */
 const controllerReg = /^(\S+)(\s+as\s+([\w$]+))?$/;
-
 /**
  * Normalizes a configuration object that defines controller and
  * "controller as" alias for a directive.
@@ -16,6 +15,7 @@ const controllerReg = /^(\S+)(\s+as\s+([\w$]+))?$/;
  *    "controller" and "controllerAs".
  */
 export default function controllerDefinition({ controller, controllerAs }) {
+  let name;
   if (typeof controller === 'string') {
     const match = controller.match(controllerReg);
     if (!match) {
@@ -28,11 +28,13 @@ export default function controllerDefinition({ controller, controllerAs }) {
         'Badly formed controller string \'{0}\'. ' +
         'Must match `__name__ as __id__` or `__name__`.', controller);
     }
-    controller = getController(match[1]);
+    name = match[1];
+    controller = getController(name);
     controllerAs = controllerAs || match[3];
   }
 
   return {
+    name,
     controller,
     controllerAs,
   };

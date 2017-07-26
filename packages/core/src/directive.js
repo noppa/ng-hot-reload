@@ -2,8 +2,8 @@ import clone    from 'lodash/clone';
 import has      from 'lodash/has';
 import get      from 'lodash/get';
 import isObject from 'lodash/isObject';
+import updatesProvider, { identifierForDependency } from './updates';
 import angularProvider from './ng/angular';
-import updatesProvider from './updates';
 import getOptions      from './options';
 import * as preserveState   from './preserve-state';
 import getDependencies      from './util/directive-dependencies';
@@ -52,12 +52,13 @@ const directiveProvider = moduleName => {
     return angular.module(moduleName).directive(name, [
       '$injector', '$templateCache', '$compile',
       '$animate', '$timeout', '$rootScope',
-      function(_$injector_, $templateCache, $compile,
+      function ngHotReload$Directive(_$injector_, $templateCache, $compile,
       $animate, $timeout, $rootScope) {
         $injector = _$injector_;
         if (!updates) {
           updates = updatesProvider($rootScope, moduleName, 'directive');
         }
+        const depId = identifierForDependency({ name, type: 'directive' });
         // The directive might've changed before it was initialized
         // the first time. If that's the case, there should be
         // new updated directiveFactory in updateQueue.
@@ -135,7 +136,7 @@ const directiveProvider = moduleName => {
                 // Register onUpdate callback that watches changes to
                 // any of the directive's dependencies and to the
                 // directive itself.
-                const deps = [name].concat(
+                const deps = [depId].concat(
                   getDependencies(directiveFactory, directive, $injector));
                 updates.onUpdate(deps, $scope, (evt, info) => {
                   recompile(keepState);
