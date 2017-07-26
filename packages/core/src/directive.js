@@ -8,11 +8,9 @@ import getOptions      from './options';
 import * as preserveState   from './preserve-state';
 import getDependencies      from './util/directive-dependencies';
 import controllerDefinition from './util/controller-definition';
+import makePrivateKey       from './util/make-private-key';
 
 const
-  makePrivateKey = typeof Symbol === 'function' ?
-      key => Symbol(key)
-    : key => key,
   $originalCompile = makePrivateKey('ng-hot-reload/directive/compile'),
   eligibleForReload = hasIsolateScope;
 

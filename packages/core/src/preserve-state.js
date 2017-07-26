@@ -28,7 +28,7 @@ function snapshot(scope, controllerAs) {
       // Don't save keys like "$id", "$$childScope", etc.
       if (isPrivateKey(key)) return;
 
-      switch (typeof value) {
+      switch (type) {
         case 'object': {
           map.set(key, angular.copy(value));
           break;

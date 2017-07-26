@@ -1,8 +1,9 @@
 import uniqueId   from 'lodash/uniqueId';
 import castArray  from 'lodash/castArray';
-import includes   from 'lodash/includes';
 
 export const RECOMPILE = 'ng-hot-reload/recompile';
+
+const depsEqual = a => b => a === b;
 
 export default function($rootScope, moduleName, type) {
   /**
@@ -21,11 +22,10 @@ export default function($rootScope, moduleName, type) {
     }, 10);
   };
 
-  function tap(names, $scope, cb) {
-    names = castArray(names);
+  function tap(deps, $scope, cb) {
+    deps = castArray(deps);
     $scope.$on(RECOMPILE, (evt, info) => {
-      const canReceive =
-        includes(names, info.name) &&
+      const canReceive = deps.some(depsEqual(info)) &&
         evt.targetScope !== $scope;
 
       if (canReceive) {
@@ -34,8 +34,8 @@ export default function($rootScope, moduleName, type) {
     });
   }
 
-  function onUpdate(names, $scope, cb) {
-    return tap(names, $scope, (evt, info) => {
+  function onUpdate(deps, $scope, cb) {
+    return tap(deps, $scope, (evt, info) => {
       if (!evt.defaultPrevented) {
         evt.preventDefault();
         cb(evt, info);
