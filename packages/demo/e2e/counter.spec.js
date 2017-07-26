@@ -5,7 +5,7 @@ const
   srcPath = require('./src-path.js');
 
 describe('updating counter component', function() {
-  const counterJsPath = srcPath('counter', 'counter.js');
+  const counterJsPath = srcPath('counter', 'counter.component.js');
   let currentCounterComponent;
 
   function modifyComponent() {
