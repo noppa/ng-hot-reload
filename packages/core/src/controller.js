@@ -4,7 +4,6 @@ const controllers = new Map();
 
 function controllerProvider(moduleName) {
   function create(name, ctor) {
-    console.log('create controller woop', name, ctor);
     const angular = angularProvider();
     controllers.set(name, ctor);
     return angular.module(moduleName).controller(name, ctor);

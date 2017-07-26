@@ -4,43 +4,39 @@ import isEmpty from 'lodash/isEmpty';
 
 export { snapshot, unchangedProperties, rollback };
 
-function snapshot(scope, controller) {
+function snapshot(scope, controllerAs) {
   const
     angular = angularProvider(),
     scopeState = new Map;
 
   let $ctrlState;
 
-  snapshotRec(scopeState, scope, controller);
+  snapshotRec(scopeState, scope, controllerAs);
   return { $scope: scopeState, $ctrl: $ctrlState };
 
-  function snapshotRec(map, scope, controller) {
-    const controllerIsClass =
-      angular.isFunction(controller)
-      && !!controller.prototype;
+  function snapshotRec(map, scope, controllerAs) {
     Object.keys(scope).forEach(key => {
-      // Don't save keys like "$id", "$$childScope", etc.
-      if (isPrivateKey(key) && key !== '$ctrl') return;
       const value = scope[key];
+      const type = typeof value;
+
+      // Recursively collect values for controller instance
+      if (key === controllerAs && type === 'object' && value !== null) {
+        $ctrlState = new Map();
+        snapshotRec($ctrlState, value);
+        return;
+      }
+      // Don't save keys like "$id", "$$childScope", etc.
+      if (isPrivateKey(key)) return;
+
       switch (typeof value) {
         case 'object': {
-          const isControllerInstance =
-            value !== null
-            && controllerIsClass
-            && controller.prototype.isPrototypeOf(value);
-          if (isControllerInstance) {
-            if ($ctrlState) break;
-            // Recursively call this function to save the
-            // values that are saved in the view-model
-            $ctrlState = new Map();
-            snapshotRec($ctrlState, value);
-          } else {
-            map.set(key, angular.copy(value));
-          }
+          map.set(key, angular.copy(value));
           break;
         }
         // It doesn't make much sense to save functions
-        case 'function': break;
+        case 'function':
+        case 'symbol':
+          break;
         default: {
           map.set(key, value);
           break;

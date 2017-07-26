@@ -2,6 +2,7 @@ import merge from 'lodash/merge';
 
 const defaultOptions = () => ({
   forceRefresh: true,
+  preserveState: true,
 });
 
 let options = defaultOptions();

@@ -1,13 +1,13 @@
 import clone    from 'lodash/clone';
 import has      from 'lodash/has';
 import get      from 'lodash/get';
-import last     from 'lodash/last';
 import isObject from 'lodash/isObject';
-
 import angularProvider from './ng/angular';
 import updatesProvider from './updates';
-import getDependencies from './util/directive-dependencies';
-import * as preserveState from './preserve-state';
+import getOptions      from './options';
+import * as preserveState   from './preserve-state';
+import getDependencies      from './util/directive-dependencies';
+import controllerDefinition from './util/controller-definition';
 
 const
   makePrivateKey = typeof Symbol === 'function' ?
@@ -99,8 +99,7 @@ const directiveProvider = moduleName => {
           compile() {
             const
               directive = getDirective(name)[0],
-              originalCompile =
-                isFunction(directive[$originalCompile]) ?
+              originalCompile = isFunction(directive[$originalCompile]) ?
                   // We have received an updated compile-function
                   directive[$originalCompile]
                 : isFunction(directive.link) ?
@@ -118,18 +117,21 @@ const directiveProvider = moduleName => {
             return link;
 
             function link($scope, $element) {
-              const initialController = getController(directive.controller);
-              // Save the initial scope to be used later
-              // when the hotswap happens
-              const initialState =
-                preserveState.snapshot($scope, initialController);
+              let controllerAs, initialState;
+              const keepState = getOptions().preserveState;
+              if (keepState) {
+                controllerAs = controllerDefinition(directive).controllerAs;
+                // Save the initial scope to be used later
+                // when the hotswap happens
+                initialState = preserveState.snapshot($scope, controllerAs);
+              }
 
               if (directiveVersion < directiveVersions.get(name)) {
                 // This happens when something, like ngIf-directive,
-                // has cached the compiled directive and its link-function
-                // to be used after, say, ngIf directive's condition changes.
+                // has cached the compiled directive and its link-function to
+                // be used after, say, when ngIf directive's condition changes.
                 // If the directive source has been updated, we *need* that
-                // recompilation step to get a fresh new templates etc.
+                // recompilation step to get the updates applied.
                 recompile(false);
               } else {
                 // Register onUpdate callback that watches changes to
@@ -138,28 +140,31 @@ const directiveProvider = moduleName => {
                 const deps = [name].concat(
                   getDependencies(directiveFactory, directive, $injector));
                 updates.onUpdate(deps, $scope, (evt, info) => {
-                  recompile(true);
+                  recompile(keepState);
                 });
 
-                // If we have saved the state of the directive before updating,
-                // we can "roll back" the previous state so that development
-                // can continue from the directive's previous state.
-                const prevStateData = $element.data(stateDataKey);
-                if (prevStateData) {
-                  $element.removeData(stateDataKey);
+                if (keepState) {
+                  // If we have saved the state of the directive before
+                  // updating, we can "roll back" the previous state
+                  // so that development can continue from the
+                  // directive's previous state.
+                  const prevStateData = $element.data(stateDataKey);
+                  if (prevStateData) {
+                    $element.removeData(stateDataKey);
+                    const
+                      newController =
+                        get(getDirective(name), ['0', 'controller']),
+                      newState = preserveState.snapshot($scope, newController),
+                      unchanged = preserveState.unchangedProperties(
+                        prevStateData.initialState, newState);
 
-                  const
-                    newController =
-                      get(getDirective(name), ['0', 'controller']),
-                    newState = preserveState.snapshot($scope, newController),
-                    unchanged = preserveState.unchangedProperties(
-                      prevStateData.initialState, newState);
                     preserveState.rollback(unchanged,
                       prevStateData.currentState, $scope, newController);
+                  }
                 }
               }
 
-              function recompile(rollbackState) {
+              function recompile(keepState) {
                 //
                 // Showtime!
                 // update-function should've updated angular's registry
@@ -169,10 +174,10 @@ const directiveProvider = moduleName => {
                 //
                 const
                   scope = $scope.$parent,
-                  currentState = rollbackState &&
-                    preserveState.snapshot($scope, initialController);
+                  currentState = keepState &&
+                    preserveState.snapshot($scope, controllerAs);
 
-                if (rollbackState) {
+                if (keepState) {
                   $element.data(stateDataKey,
                     { currentState, initialState });
                 }
@@ -230,17 +235,6 @@ const directiveProvider = moduleName => {
       // store it in a queue to be picked up by the
       // create-function's directive factory
       updateQueue.set(name, factoryFn);
-    }
-  }
-
-  function getController(ctrl) {
-    switch (typeof ctrl) {
-      case 'string': {
-        const [ctrlName] = ctrl.split(' as');
-        return $injector.get(ctrlName + 'Controller');
-      }
-      case 'object': return last(ctrl);
-      default: return ctrl;
     }
   }
 
