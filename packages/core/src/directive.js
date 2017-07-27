@@ -4,7 +4,7 @@ import isObject from 'lodash/isObject';
 import updatesProvider, { identifierForDependency } from './updates';
 import angularProvider from './ng/angular';
 import getOptions      from './options';
-import * as preserveState   from './preserve-state';
+import * as preserveState   from './util/preserve-state';
 import getDependencies      from './util/directive-dependencies';
 import controllerDefinition from './util/controller-definition';
 import makePrivateKey       from './util/make-private-key';
