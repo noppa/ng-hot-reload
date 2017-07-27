@@ -1,1 +1,1 @@
-angular.module('hot-reload-demo', []);
+angular.module('hot-reload-demo', ['ui.router']);

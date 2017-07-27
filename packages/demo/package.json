@@ -13,7 +13,8 @@
   "private": true,
   "dependencies": {
     "angular": "^1.6.5",
-    "express": "^4.15.3"
+    "express": "^4.15.3",
+    "angular-ui-router": "1.0.3"
   },
   "devDependencies": {
     "browser-sync": "^2.18.12",
