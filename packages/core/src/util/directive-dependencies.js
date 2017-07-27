@@ -17,7 +17,7 @@ const
  * If the directive has property "templateUrl", it's also included
  * in the dependency list.
  *
- * @param {Function} directiveFactory Factory function for the directive
+ * @param {Function|any[]} directiveFactory Factory function for the directive
  * @param {Object} directive Result of invoking the factory function
  * @param {Object} $injector Angular's $injector service
  * @return {string[]} List of depenencies for the directive

@@ -28,7 +28,6 @@ const directiveProvider = moduleName => {
   const
     angular = angularProvider(),
     { isFunction } = angular;
-
   // Initialized later
   let $injector, updates;
 
@@ -43,7 +42,7 @@ const directiveProvider = moduleName => {
    * @param {string} name Name of the directive.
    * @param {Function|Array} directiveFactory An injectable
    *    directive factory function.
-   * @return {this} Self for chaining.
+   * @return {*} Self for chaining.
    */
   function create(name, directiveFactory) {
     directiveVersions.set(name, 0);

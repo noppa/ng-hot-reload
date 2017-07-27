@@ -36,7 +36,7 @@ const decorator = module_ => newProvider => (name, factory) => {
  * @param {Object} options Options for the loader.
  * @param {Angular} options.angular Unmodified version of angular, only
  *      required in the first run.
- * @return {Angular} Modified version of angular.
+ * @return {*} Modified version of angular.
  */
 function decorateAngular(options) {
   if (options) {
@@ -99,8 +99,8 @@ const initializer = once(angular => {
  * called with new directive factories.
  *
  * @private
- * @param {Angular} angular The original, unmodified angular instance.
- * @return {Angular} New object that acts like angular but with
+ * @param {*} angular The original, unmodified angular instance.
+ * @return {*} New object that acts like angular but with
  *      some methods changed.
  */
 function updater() {
