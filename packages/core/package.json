@@ -18,6 +18,7 @@
   "dependencies": {},
   "devDependencies": {
     "lodash": "^4.17.4",
+    "@types/angularjs": "1.5.14-alpha",
     "webpack": "~3.1.0"
   }
 }

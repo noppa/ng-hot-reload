@@ -4,5 +4,4 @@ class HomeController {
   }
 }
 
-
 angular.module('hot-reload-demo').controller('HomeController', HomeController);

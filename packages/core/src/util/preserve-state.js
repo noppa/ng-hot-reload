@@ -50,7 +50,7 @@ function snapshot(scope, controllerAs) {
  * Returns the property names whose values have not been changed.
  * @param {Object} oldState A state snapshot from the snapshot function.
  * @param {Object} newState A state snapshot from the snapshot function.
- * @return {string[]} List of property names.
+ * @return {Object<{$ctrl: string[], $scope: string[]}>} List of property names.
  */
 function unchangedProperties(oldState, newState) {
   const { equals } = angularProvider();
@@ -80,7 +80,7 @@ function _unchangedPropertiesCb(equals, resultList, otherState) {
 
 /**
  * Moves the state from a snapshot to the currently active scope object.
- * @param {Oject} unchangedProperties Result of calling unchangedProperties()
+ * @param {Object} unchangedProperties Result of calling unchangedProperties()
  * @param {Object} oldState Result of calling snapshot()
  * @param {Object} scope Active scope object
  * @param {Function=} controllerAs Controller function/class

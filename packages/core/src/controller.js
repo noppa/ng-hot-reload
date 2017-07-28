@@ -12,6 +12,7 @@ function controllerProvider(moduleName) {
     controllers.set(name, ctor);
 
     const deps = angular.injector().annotate(ctor);
+    // @ts-ignore
     ngHotReload$Controller.$inject = [
       '$controller',
       '$rootScope',

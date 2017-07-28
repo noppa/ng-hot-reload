@@ -12,7 +12,6 @@ export default function($rootScope, moduleName, type) {
    * @param {string} name Name of the directive/controller/service etc.
    */
   function update(name) {
-    // TODO: Better throttle, using $timeout, preferably
     setTimeout(function() {
       $rootScope.$broadcast(RECOMPILE, {
         moduleName,
@@ -20,15 +19,14 @@ export default function($rootScope, moduleName, type) {
         name,
         id: uniqueId(),
       });
-    }, 10);
+    }, 0);
   };
 
   function tap(deps, $scope, cb) {
     deps = castArray(deps);
     $scope.$on(RECOMPILE, (evt, info) => {
       const identifier = identifierForDependency(info);
-      const canReceive = includes(deps, identifier) &&
-        evt.targetScope !== $scope;
+      const canReceive = includes(deps, identifier);
 
       if (canReceive) {
         cb(evt, info);

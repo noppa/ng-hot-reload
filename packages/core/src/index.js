@@ -1,17 +1,17 @@
 import once   from 'lodash/once';
-import assign from 'lodash/assign';
-
+import { debug as logDebug } from './util/log';
 import angularProvider, { setAngular } from './ng/angular';
 import directiveProvider  from './directive';
 import componentProvider  from './component';
 import controllerProvider from './controller';
 import manualReload       from './util/manual-reload';
-import { setOptions }     from './options';
+import getOptions, { setOptions } from './options';
 import {
   decorateTemplateRequest,
   getTemplatePathPrefix,
   getTemplatePathSuffix,
 } from './template';
+import { decorateStateProvider } from './ui-router';
 
 const modules = new Map();
 let
@@ -64,7 +64,7 @@ const initializer = once(angular => {
     initialized = true;
   });
 
-  return assign({}, angular, {
+  return Object.assign({}, angular, {
     module: function(name) {
       if (!modules.has(name)) {
         modules.set(name, {
@@ -75,6 +75,7 @@ const initializer = once(angular => {
       }
 
       const module = modules.get(name),
+        options = getOptions(),
         result = {},
         decorate = decorator(result);
 
@@ -87,6 +88,10 @@ const initializer = once(angular => {
           controller: decorate(module.controller.create),
         }
       );
+
+      if (options.uiRouter) {
+        setupUiRouterUpdates(patchedModule);
+      }
 
       return patchedModule;
     },
@@ -106,7 +111,7 @@ const initializer = once(angular => {
 function updater() {
   const angular = angularProvider();
 
-  return assign({}, angular, {
+  return Object.assign({}, angular, {
     module: function(name) {
       const module = modules.get(name);
       if (!module) {
@@ -116,7 +121,7 @@ function updater() {
       const result = {};
       const decorate = decorator(result);
 
-      return assign(result, angular.module(name), {
+      return Object.assign(result, angular.module(name), {
         directive: decorate(module.directive.update),
         component: decorate(module.component.update),
         controller: decorate(module.controller.update),
@@ -124,6 +129,32 @@ function updater() {
     },
   });
 }
+
+const setupUiRouterUpdates = once(function(_module) {
+  /**
+   * Initialized when we get to run `decorateStateProvider`
+   * @type {Function}
+   */
+  let initStateUpdaters;
+  _module
+    .config(['$injector', function($injector) {
+      let $stateProvider;
+      try {
+        $stateProvider = $injector.get('$stateProvider');
+      } catch(err) {
+        logDebug(err);
+      }
+      if ($stateProvider) {
+        initStateUpdaters =
+          decorateStateProvider(name, $injector, $stateProvider);
+      }
+    }])
+    .run(['$rootScope', '$state', function($rootScope, $state) {
+      if (initStateUpdaters) {
+        initStateUpdaters($rootScope, $state);
+      }
+    }]);
+});
 
 function updateTemplate(filePath, file) {
   if (templateCache) {

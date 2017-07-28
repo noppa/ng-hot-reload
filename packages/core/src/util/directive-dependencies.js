@@ -17,14 +17,15 @@ const
  * If the directive has property "templateUrl", it's also included
  * in the dependency list.
  *
- * @param {Function|any[]} directiveFactory Factory function for the directive
+ * @param {(Function|any[])=} directiveFactory Factory function
  * @param {Object} directive Result of invoking the factory function
  * @param {Object} $injector Angular's $injector service
  * @return {string[]} List of depenencies for the directive
  */
 function getDirectiveDependencies(directiveFactory, directive, $injector) {
   // Start with the dependencies of the directive itself
-  let dependencies = $injector.annotate(directiveFactory);
+  let dependencies = directiveFactory ?
+    $injector.annotate(directiveFactory) : [];
   // Get the controller factory
   const { controller, name } = controllerDefinition(directive);
   if (controller) {
