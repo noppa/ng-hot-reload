@@ -1,13 +1,15 @@
 import angularProvider from '../ng/angular';
 import isPrivateKey from '../ng/private-key';
 import isEmpty from 'lodash/isEmpty';
+import copyData from './copy-data.js';
+import { debug as logDebug } from './log';
 
 export { snapshot, unchangedProperties, rollback };
 
 function snapshot(scope, controllerAs) {
   const
-    angular = angularProvider(),
-    scopeState = new Map;
+    scopeState = new Map,
+    $rootScope = scope.$root;
 
   let $ctrlState;
 
@@ -30,7 +32,12 @@ function snapshot(scope, controllerAs) {
 
       switch (type) {
         case 'object': {
-          map.set(key, angular.copy(value));
+          const copy = copyData($rootScope, value);
+          if (copy.success) {
+            map.set(key, copy.value);
+          } else {
+            logDebug('Failed to copy', key, value);
+          }
           break;
         }
         // It doesn't make much sense to save functions
@@ -83,7 +90,7 @@ function _unchangedPropertiesCb(equals, resultList, otherState) {
  * @param {Object} unchangedProperties Result of calling unchangedProperties()
  * @param {Object} oldState Result of calling snapshot()
  * @param {Object} scope Active scope object
- * @param {Function=} controllerAs Controller function/class
+ * @param {Function=} controllerAs Property to which controller is attached
  */
 function rollback(unchangedProperties, oldState, scope, controllerAs) {
   const { equals } = angularProvider();

@@ -1,5 +1,6 @@
-import angularProvider from './ng/angular';
+import { setAngular } from './ng/angular';
 
 beforeAll(() => {
-  angularProvider.setAngular(angular);
+  // @ts-ignore
+  setAngular(angular);
 });
