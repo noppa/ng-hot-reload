@@ -134,7 +134,9 @@ function ngHotReloadStandalone({
     client,
     stream,
     reload(path, file) {
-      return reload(path, wrap(path, file));
+      const wrapped = wrap(path, String(file));
+      reload(path, wrapped);
+      return wrapped;
     },
   };
 };
