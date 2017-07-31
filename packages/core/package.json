@@ -3,18 +3,16 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/ng-hot-reload-core.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "webpack",
-    "test": "karma start & exit 0",
-    "test:dev": "karma start --watch",
-    "lint": "eslint src/ & exit 0",
-    "lint:fix": "eslint src/ --fix",
-    "docs": "jsdoc src/ -d docs/",
-    "docs:serve": "npm run docs & http-server docs/",
+    "test": "echo Run tests in the root directory of this repo.",
     "prepublish": "npm run build"
   },
-  "author": "Oskari Noppa",
-  "license": "ISC",
+  "author": "noppa",
+  "license": "MIT",
   "dependencies": {},
   "devDependencies": {
     "lodash": "^4.17.4",

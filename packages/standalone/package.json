@@ -1,17 +1,22 @@
 {
   "name": "ng-hot-reload-standalone",
   "version": "1.0.0",
-  "description": "",
+  "description": "Standalone api for ng-hot-reload library",
   "main": "dist/ng-hot-reload-standalone.js",
+  "files": [
+    "dist",
+    "ng-hot-reload-standalone.d.ts"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack"
   },
+  "types": "./ng-hot-reload-standalone.d.ts",
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "noppa",
+  "license": "MIT",
   "dependencies": {
-    "express": "~4.15.3",
+    "express": "^4.15.3",
     "ng-hot-reload-core": "1.0.0",
     "through2": "~2.0.3",
     "ws": "~3.0.0"

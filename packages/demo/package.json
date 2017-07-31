@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "description": "Demo for the ng-hot-reload package",
   "main": "bundle.js",
+  "author": "noppa",
   "scripts": {
     "test": "protractor protractor.config.js",
     "webpack-example": "node server.js",
     "gulp-example": "gulp serve"
   },
-  "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "private": true,
   "dependencies": {
     "angular": "^1.6.5",
