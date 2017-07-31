@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-env node */
 const path = require('path');
 
@@ -8,7 +9,7 @@ const config = {
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js',
-    library: 'ng-hot-reload-core',
+    library: 'ngHotReloadCore',
     libraryTarget: 'umd',
   },
   module: {

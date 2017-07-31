@@ -6,6 +6,7 @@ import componentProvider  from './component';
 import controllerProvider from './controller';
 import manualReload       from './util/manual-reload';
 import getOptions, { setOptions } from './options';
+import { updateId } from './updates';
 import {
   decorateTemplateRequest,
   getTemplatePathPrefix,
@@ -120,6 +121,15 @@ function updater() {
       }
       const result = {};
       const decorate = decorator(result);
+
+      const updateIdOnStart = updateId.current;
+      setTimeout(function() {
+        if (updateId.current === updateIdOnStart) {
+          // No updates were made within timeout. Force reload.
+          manualReload(
+            'None of the handlers was able to hot reload the modified file.');
+        }
+      }, 10);
 
       return Object.assign(result, angular.module(name), {
         directive: decorate(module.directive.update),

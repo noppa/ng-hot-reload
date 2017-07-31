@@ -5,11 +5,11 @@ const
   scriptFileReg = /\.(js|jsx|ts|tsx)$/,
   htmlFileReg = /\.(html)$/;
 
-export default (path, file, port, angular) => {
-  const options = JSON.stringify({
-    ns: 'ng-hot-reload-standalone',
-    port,
-  });
+export default (path, file, options) => {
+  const optionsStr = JSON.stringify(Object.assign({
+    ns: 'ngHotReloadStandalone',
+  }, options));
+  const angular = options.angular || 'angular';
 
   if (scriptFileReg.test(path)) {
     return `(function(__ngHotReloadOptions) {
@@ -18,8 +18,8 @@ export default (path, file, port, angular) => {
       file +
       `
       })(function(angular) {
-          var options = ${options};
-          options.angular = ${angular};
+          var options = ${optionsStr};
+          options.angular = angular;
           return options;
       }(${angular}));
       `;

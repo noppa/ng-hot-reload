@@ -56,13 +56,13 @@ const clientConfig = {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js',
     libraryTarget: 'umd',
-    library: 'ng-hot-reload-standalone',
+    library: 'ngHotReloadStandalone',
   },
   plugins: [
     new webpack.DefinePlugin({
       options: JSON.stringify({
         port: 3100,
-        ns: 'ng-hot-reload-standalone',
+        ns: 'ngHotReloadStandalone',
       }),
     }),
   ],

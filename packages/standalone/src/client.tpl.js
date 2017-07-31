@@ -15,7 +15,7 @@ socket.addEventListener('message', function(event) {
     // If this is a js file, update by creating a script tag
     // and loading the updated file from the ng-hot-reload server.
     var script = document.createElement('script');
-    // Disable any caching the browser might want to do
+    // Prevent browser from using a cached version of the file.
     var query = '?t=' + Date.now();
     script.src = 'http://localhost:' + opt.port + '/' + data.src + query;
     document.body.appendChild(script);

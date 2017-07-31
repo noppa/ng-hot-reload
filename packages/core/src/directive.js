@@ -8,6 +8,7 @@ import * as preserveState   from './util/preserve-state';
 import getDependencies      from './util/directive-dependencies';
 import controllerDefinition from './util/controller-definition';
 import makePrivateKey       from './util/make-private-key';
+import manualReload from './util/manual-reload';
 
 const
   $originalCompile = makePrivateKey('ng-hot-reload/directive/compile'),
@@ -47,10 +48,14 @@ const directiveProvider = moduleName => {
   function create(name, directiveFactory) {
     directiveVersions.set(name, 0);
 
-    return angular.module(moduleName).directive(name, [
+    // @ts-ignore
+    ngHotReload$Directive.$inject = [
       '$injector', '$templateCache', '$compile',
       '$animate', '$timeout', '$rootScope',
-      function ngHotReload$Directive(_$injector_, $templateCache, $compile,
+    ];
+    return angular.module(moduleName).directive(name, ngHotReload$Directive);
+
+    function ngHotReload$Directive(_$injector_, $templateCache, $compile,
       $animate, $timeout, $rootScope) {
         $injector = _$injector_;
         if (!updates) {
@@ -190,7 +195,7 @@ const directiveProvider = moduleName => {
             };
           },
         });
-      }]);
+      }
   }
 
   function update(name, factoryFn) {
@@ -198,33 +203,37 @@ const directiveProvider = moduleName => {
     directiveVersions.set(name, prevVersion + 1);
 
     if ($injector) {
-      let
-        oldDirective = getDirective(name),
-        newDirective = clone($injector.invoke(factoryFn, this));
+      try {
+        let
+          oldDirective = getDirective(name),
+          newDirective = clone($injector.invoke(factoryFn, this));
 
-      if (isFunction(newDirective)) {
-        newDirective = { [$originalCompile]: newDirective };
+        if (isFunction(newDirective)) {
+          newDirective = { [$originalCompile]: newDirective };
+        }
+
+        // We need to keep our own compile-implementation,
+        // so let's store newDirective.compile using a safe
+        // property key.
+        if (has(newDirective, 'compile')) {
+          newDirective[$originalCompile] = newDirective.compile;
+          delete newDirective.compile;
+        }
+
+        if (oldDirective && newDirective) {
+          angular.forEach(oldDirective, def => {
+            angular.extend(def, newDirective);
+
+            // Important! angular.extend won't (or rather; might not) extend
+            // def with privateCompileKey because it could be a Symbol object
+            def[$originalCompile] = newDirective[$originalCompile];
+          });
+        }
+
+        updates.update(name);
+      } catch(err) {
+        manualReload(String(err && err.message || err));
       }
-
-      // We need to keep our own compile-implementation,
-      // so let's store newDirective.compile using a safe
-      // property key.
-      if (has(newDirective, 'compile')) {
-        newDirective[$originalCompile] = newDirective.compile;
-        delete newDirective.compile;
-      }
-
-      if (oldDirective && newDirective) {
-        angular.forEach(oldDirective, def => {
-          angular.extend(def, newDirective);
-
-          // Important! angular.extend won't (or rather; might not) extend
-          // def with privateCompileKey because it could be a Symbol object
-          def[$originalCompile] = newDirective[$originalCompile];
-        });
-      }
-
-      updates.update(name);
     } else if (updateQueue) {
       // The directive has not been initialized yet,
       // store it in a queue to be picked up by the

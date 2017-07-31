@@ -14,10 +14,20 @@ function ngHotReloadStandalone({
   start = true,
   port = 3100,
   angular = 'angular',
+  forceRefresh = true,
+  preserveState = true,
+  uiRouter = true,
 } = {}) {
-  let fileServer;
-  const wrap = (path, file) => wrapFile(path, file, port, angular);
+  const wrapOptions = {
+    angular,
+    forceRefresh,
+    preserveState,
+    uiRouter,
+    port,
+  };
+  const wrap = (path, file) => wrapFile(path, file, wrapOptions);
 
+  let fileServer;
   function startServer() {
     fileServer = server.start(port);
   }
@@ -91,7 +101,7 @@ function ngHotReloadStandalone({
   }
 
   const clientOptions = {
-    ns: 'ng-hot-reload-standalone',
+    ns: 'ngHotReloadStandalone',
     port,
   };
 

@@ -9,8 +9,5 @@ function config($stateProvider) {
       templateUrl: 'home.view.html',
       controller: 'HomeController',
       controllerAs: 'vm',
-    })
-    .state('counter', {
-      url: 
     });
 }

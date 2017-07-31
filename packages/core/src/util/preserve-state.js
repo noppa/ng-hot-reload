@@ -1,6 +1,6 @@
-import angularProvider from '../ng/angular';
 import isPrivateKey from '../ng/private-key';
 import isEmpty from 'lodash/isEmpty';
+import isEqual from 'lodash/isEqual';
 import copyData from './copy-data.js';
 import { debug as logDebug } from './log';
 
@@ -60,15 +60,14 @@ function snapshot(scope, controllerAs) {
  * @return {Object<{$ctrl: string[], $scope: string[]}>} List of property names.
  */
 function unchangedProperties(oldState, newState) {
-  const { equals } = angularProvider();
   let $scope = [], $ctrl;
 
   oldState.$scope.forEach(
-    _unchangedPropertiesCb(equals, $scope, newState.$scope));
+    _unchangedPropertiesCb(isEqual, $scope, newState.$scope));
   if (oldState.$ctrl && newState.$ctrl) {
     $ctrl = [];
     oldState.$ctrl.forEach(
-      _unchangedPropertiesCb(equals, $ctrl, newState.$ctrl));
+      _unchangedPropertiesCb(isEqual, $ctrl, newState.$ctrl));
   }
   return {
     $scope,
@@ -93,8 +92,6 @@ function _unchangedPropertiesCb(equals, resultList, otherState) {
  * @param {Function=} controllerAs Property to which controller is attached
  */
 function rollback(unchangedProperties, oldState, scope, controllerAs) {
-  const { equals } = angularProvider();
-
   rollbackRec(unchangedProperties.$scope, oldState.$scope, scope, controllerAs);
 
   function rollbackRec(keys, oldValues, scope, controllerAs) {
@@ -107,7 +104,7 @@ function rollback(unchangedProperties, oldState, scope, controllerAs) {
         rollbackRec(unchangedProperties.$ctrl, oldState.$ctrl, value);
       } else if (keys.indexOf(key) !== -1) {
         const oldValue = oldValues.get(key);
-        if (!equals(oldValue, value)) {
+        if (!isEqual(oldValue, value)) {
           scope[key] = oldValues.get(key);
         }
       }

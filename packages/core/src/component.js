@@ -1,5 +1,6 @@
 import angularProvider from './ng/angular';
 import privateKey from './ng/private-key';
+import controllerDefinition from './util/controller-definition.js';
 
 function componentProvider(moduleName) {
   const angular = angularProvider(),
@@ -22,13 +23,9 @@ function componentProvider(moduleName) {
       function($injector) {
         const def = {
           controller: options.controller || function() {},
-          controllerAs:
-            identifierForController(options.controller) ||
-            options.controllerAs ||
-            '$ctrl',
+          controllerAs: identifierForController(options) || '$ctrl',
           template: makeInjectable(
-            options.template || options.templateUrl ? options.template : ''
-          ),
+            options.template || options.templateUrl ? options.template : ''),
           templateUrl: makeInjectable(options.templateUrl),
           transclude: options.transclude,
           scope: {},
@@ -43,9 +40,8 @@ function componentProvider(moduleName) {
           }
         });
 
-        function identifierForController(controller) {
-          // TODO: Not implemented
-          return;
+        function identifierForController(config) {
+          return controllerDefinition(config).controllerAs;
         }
 
         function makeInjectable(fn) {

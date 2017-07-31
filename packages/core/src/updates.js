@@ -1,10 +1,24 @@
-import uniqueId   from 'lodash/uniqueId';
 import castArray  from 'lodash/castArray';
 import includes   from 'lodash/includes';
 
 export const RECOMPILE = 'ng-hot-reload/recompile';
-
 const identifierForDependency = ({ name, type }) => type + '/' + name;
+
+const updateId = (function() {
+  let id = 0;
+  const current = () =>  `ng-hot-reload/update/#${id}`;
+  return {
+    get current() {
+      return current();
+    },
+    next() {
+      id++;
+      return current();
+    },
+  };
+})();
+
+export { updateId };
 
 export default function($rootScope, moduleName, type) {
   /**
@@ -12,12 +26,14 @@ export default function($rootScope, moduleName, type) {
    * @param {string} name Name of the directive/controller/service etc.
    */
   function update(name) {
+    const id = updateId.next();
     setTimeout(function() {
+      // Broadcast the update event
       $rootScope.$broadcast(RECOMPILE, {
         moduleName,
         type,
         name,
-        id: uniqueId(),
+        id,
       });
     }, 0);
   };
@@ -25,8 +41,9 @@ export default function($rootScope, moduleName, type) {
   function tap(deps, $scope, cb) {
     deps = castArray(deps);
     $scope.$on(RECOMPILE, (evt, info) => {
-      const identifier = identifierForDependency(info);
-      const canReceive = includes(deps, identifier);
+      const
+        identifier = identifierForDependency(info),
+        canReceive = includes(deps, identifier);
 
       if (canReceive) {
         cb(evt, info);
@@ -39,7 +56,9 @@ export default function($rootScope, moduleName, type) {
       if (!evt.defaultPrevented) {
         evt.preventDefault();
         cb(evt, info);
+        return true;
       }
+      return false;
     });
   }
 

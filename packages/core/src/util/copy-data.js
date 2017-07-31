@@ -5,8 +5,6 @@ import { isInjectedValue } from './mark-injected';
 
 const defaultDepth = 5;
 
-const privateKey = /^\$\$/;
-
 /**
  * Wrapper object that tells if the copy was successful and
  * holds possible return value for it.
@@ -24,9 +22,7 @@ const privateKey = /^\$\$/;
  *    deeper than `depth` param are moved to the new object by reference,
  *    without creatign new objects from them. This is mainly to prevent
  *    circular references from crashing the whole thing.
- *  2. Property keys starting with "$$" are ignored and not included in
- *    the returned object. This is to prevent copying "$$hashKey" and
- *    other properties that are private for angular.
+ *  2. Property "$$hashkey" is ignored.
  *  3. Functions in anywhere in the data except in prototype results in
  *    FAILED copy. Functions just can't be "copied" without running into
  *    problems with possibly bad local references etc. This function is
@@ -87,8 +83,7 @@ function copyData($rootScope, obj, depth) {
       for (let i = 0, n = keys.length; i < n; i++) {
         if (!success) return;
         const key = keys[i];
-        // Remove keys like $$hashKey
-        if (privateKey.test(key)) {
+        if (key === '$$hashKey') {
           delete result[key];
         } else {
           result[key] = copyDataRec(result[key], depth - 1);

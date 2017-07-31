@@ -16,7 +16,6 @@
   } finally {
     (function() {
       module.hot.accept(function(err) {
-        console.log('accept');
         if (err) {
           console.error(err);
         }

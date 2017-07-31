@@ -24,6 +24,7 @@ export default function controllerDefinition({ controller, controllerAs }) {
       // that's what angular's own implementation would do. $$minErr is
       // a private function so this part might cause trouble some day, if we
       // got this far, the app wouldn't have worked anyway so...
+      // @ts-ignore
       throw angular.$$minErr('$controller')('ctrlfmt',
         'Badly formed controller string \'{0}\'. ' +
         'Must match `__name__ as __id__` or `__name__`.', controller);

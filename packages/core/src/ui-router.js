@@ -42,7 +42,9 @@ function decorateStateProvider(moduleName, $injector, $stateProvider) {
       updates.tap(u.dependencies, $rootScope, function(evt, info) {
         if (u.is($state)) {
           $state.reload();
+          return true;
         }
+        return false;
       });
     });
   };

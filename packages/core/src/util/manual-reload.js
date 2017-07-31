@@ -1,7 +1,8 @@
 import getOptions from '../options';
+import { debug as logDebug } from './log';
 
 function manualReloadRequired(why) {
-  console.warn('Manual reload required: ' + why);
+  logDebug('Manual reload required: ' + String(why));
   if (getOptions().forceRefresh) {
     location.reload(true);
   }

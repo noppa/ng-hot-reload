@@ -33,6 +33,7 @@
   },
   "globals": {
     "Map": false,
+    "Set": false,
     "Symbol": false,
     "angular": false,
     "location": false,
