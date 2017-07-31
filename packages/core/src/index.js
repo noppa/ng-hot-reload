@@ -90,7 +90,7 @@ const initializer = once(angular => {
         }
       );
 
-      if (options.uiRouter) {
+      if (options.uiRouter && false) {
         setupUiRouterUpdates(patchedModule);
       }
 
@@ -148,23 +148,29 @@ const setupUiRouterUpdates = once(function(_module) {
   let initStateUpdaters;
   _module
     .config(['$injector', function($injector) {
-      let $stateProvider;
-      try {
-        $stateProvider = $injector.get('$stateProvider');
-      } catch(err) {
-        logDebug(err);
-      }
+      const $stateProvider = attemptGetInjectable($injector, '$stateProvider');
       if ($stateProvider) {
         initStateUpdaters =
           decorateStateProvider(name, $injector, $stateProvider);
       }
     }])
-    .run(['$rootScope', '$state', function($rootScope, $state) {
+    .run(['$injector', '$rootScope', function($injector, $rootScope) {
       if (initStateUpdaters) {
-        initStateUpdaters($rootScope, $state);
+        const $state = attemptGetInjectable($injector, '$state');
+        if ($state) {
+          initStateUpdaters($rootScope, $state);
+        }
       }
     }]);
 });
+
+function attemptGetInjectable($injector, recipeName) {
+  try {
+    return $injector.get(recipeName);
+  } catch (err) {
+    logDebug(err);
+  }
+}
 
 function updateTemplate(filePath, file) {
   if (templateCache) {
