@@ -9,7 +9,8 @@
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack"
+    "build": "webpack",
+    "prepublish": "npm run build"
   },
   "types": "./ng-hot-reload-standalone.d.ts",
   "keywords": [],
