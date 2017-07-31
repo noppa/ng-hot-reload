@@ -28,7 +28,9 @@ describe('updating counter component', function() {
   });
 
   afterEach(function() {
-    fs.writeFileSync(counterJsPath, currentCounterComponent);
+    if (currentCounterComponent) {
+      fs.writeFileSync(counterJsPath, currentCounterComponent);
+    }
     browser.sleep(1000);
   });
 

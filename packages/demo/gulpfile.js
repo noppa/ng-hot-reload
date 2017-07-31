@@ -3,6 +3,7 @@ var iife = require('gulp-iife');
 var inject = require('gulp-inject');
 var watch = require('gulp-watch');
 var gulpIf = require('gulp-if');
+var sourcemaps = require('gulp-sourcemaps');
 var browserSync = require('browser-sync');
 var browserSyncSpa = require('browser-sync-spa');
 var del = require('del');
@@ -51,11 +52,13 @@ gulp.task('serve', ['clean'], function() {
 
   // Move js files to dist folder.
   gulp.src(allFiles)
+    .pipe(sourcemaps.init())
     .pipe(gulpIf(isJsSourceFile, iife()))
     // Wrap js files with ng-hot-reload's initial wrapper.
     .pipe(ngHotReload.stream({
       includeClient: false,
     }))
+    .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('./dist'));
 
   // Inject source file paths to index.html using gulp-inject plugin.

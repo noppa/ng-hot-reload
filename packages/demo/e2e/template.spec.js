@@ -18,7 +18,9 @@ describe('updating counter template', function() {
   });
 
   afterEach(function() {
-    fs.writeFileSync(counterHtmlPath, counterHtml);
+    if (counterHtml) {
+      fs.writeFileSync(counterHtmlPath, counterHtml);
+    }
     browser.sleep(1000);
   });
 
