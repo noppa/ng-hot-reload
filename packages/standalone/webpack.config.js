@@ -37,6 +37,9 @@ const config = {
     through2: {
       commonjs2: 'through2',
     },
+    'ng-hot-reload-core': {
+      commonjs2: 'ng-hot-reload-core',
+    },
   },
   resolve: {
     modules: [

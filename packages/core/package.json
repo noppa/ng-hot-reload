@@ -8,8 +8,9 @@
   ],
   "scripts": {
     "build": "webpack",
+    "build:prod": "webpack --optimize-minimize",
     "test": "echo Run tests in the root directory of this repo.",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build:prod"
   },
   "author": "noppa",
   "license": "MIT",

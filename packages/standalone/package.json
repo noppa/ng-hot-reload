@@ -10,7 +10,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
-    "prepublish": "npm run build"
+    "build:prod": "webpack --optimize-minimize",
+    "prepublish": "npm run build:prod"
   },
   "types": "./ng-hot-reload-standalone.d.ts",
   "keywords": [],
