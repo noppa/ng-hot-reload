@@ -1,0 +1,15 @@
+<div>
+
+  <h3>What are your favourite tools for web development?</h3>
+
+  <ul>
+    <li ng-repeat="framework in $ctrl.frameworks" style="list-style: none">
+      <input type="checkbox" ng-model="framework.selected">
+      <img ng-src="{{framework.logo}}" width="40px" />
+      <span ng-bind="framework.name"></span>
+    </li>
+  </ul>
+  <hr>
+  <div>You have selected: <i ng-bind="$ctrl.getSelected()"></i></div>
+
+</div>

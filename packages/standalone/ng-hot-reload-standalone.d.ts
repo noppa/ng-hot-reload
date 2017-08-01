@@ -40,6 +40,10 @@ type Options = {
    * Default: true
    */
   uiRouter?: boolean;
+  /**
+   * Print console messages from the library.
+   */
+  logLevel?: 'debug'|'warn'|'error'|'none';
 };
 
 type StreamOptions = {

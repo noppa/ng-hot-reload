@@ -4,7 +4,7 @@ const defaultOptions = () => ({
   forceRefresh: true,
   preserveState: true,
   uiRouter: true,
-  logLevel: 'debug',
+  logLevel: 'warn',
 });
 
 let options = defaultOptions();

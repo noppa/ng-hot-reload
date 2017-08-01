@@ -9,5 +9,9 @@ function config($stateProvider) {
       templateUrl: 'home.view.html',
       controller: 'HomeController',
       controllerAs: 'vm',
+    })
+    .state('preview', {
+      url: '/preview',
+      template: '<preview></preview>',
     });
 }
