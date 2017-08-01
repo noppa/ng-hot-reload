@@ -1,6 +1,6 @@
 {
   "name": "ng-hot-reload-core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "dist/ng-hot-reload-core.js",
   "files": [
