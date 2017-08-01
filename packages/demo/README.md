@@ -1,3 +1,5 @@
+# ng-hot-reload-demo
+
 This is a **demo** for [ng-hot-reload](https://github.com/noppa/ng-hot-reload) monorepo.  
 It includes examples on how this package can be used for both Webpack and Gulp build setups.
 
