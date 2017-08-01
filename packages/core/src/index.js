@@ -90,7 +90,7 @@ const initializer = once(angular => {
         }
       );
 
-      if (options.uiRouter && false) {
+      if (options.uiRouter) {
         setupUiRouterUpdates(patchedModule);
       }
 

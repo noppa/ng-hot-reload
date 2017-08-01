@@ -40,7 +40,8 @@ function decorateStateProvider(moduleName, $injector, $stateProvider) {
     const updates = updatesProvider($rootScope, moduleName, 'uiRouter.state');
     updaters.forEach(u => {
       updates.tap(u.dependencies, $rootScope, function(evt, info) {
-        if (u.is($state)) {
+        if (!evt.defaultPrevented && u.is($state)) {
+          evt.preventDefault();
           $state.reload();
           return true;
         }
