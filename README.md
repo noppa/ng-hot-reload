@@ -8,7 +8,7 @@ Webpack is superb and ESNext features are awesome, but many great projects preda
 
 ![hot](https://github.com/noppa/ng-hot-reload/raw/master/assets/preview.gif "hot hot hot")
 
-Hot Module Replacement (HMR) is a technique popularized by [Webpack](https://webpack.js.org/), [React](https://facebook.github.io/react/) and [Redux](http://redux.js.org/) to modify the modules of an application while the app is running, without a full reload. This library provides the tools to do something very similar for angularjs apps: when a file is modified, ng-hot-reload swaps the implementation of the changed directive ordirective or component on a running browser environment so that you'll be able to see the result of code changes immediately.  
+Hot Module Replacement (HMR) is a technique popularized by [Webpack](https://webpack.js.org/), [React](https://facebook.github.io/react/) and [Redux](http://redux.js.org/) to modify the modules of an application while the app is running, without a full reload. This library provides the tools to do something very similar for angularjs apps: when a file is modified, ng-hot-reload swaps the implementation of the changed directive or component on a running browser environment so that you'll be able to see the result of code changes immediately.  
 It also attempts to preserve some of the component state so that your debugging efforts don't need to start from scratch, although admittedly this feature is not as thorough or reliable as the state reloading that you would get with Redux.
 
 ## Usage
