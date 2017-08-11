@@ -1,5 +1,6 @@
 import castArray  from 'lodash/castArray';
 import includes   from 'lodash/includes';
+import schedule   from './util/schedule';
 
 export const RECOMPILE = 'ng-hot-reload/recompile';
 const identifierForDependency = ({ name, type }) => type + '/' + name;
@@ -27,7 +28,7 @@ export default function($rootScope, moduleName, type) {
    */
   function update(name) {
     const id = updateId.next();
-    setTimeout(function() {
+    schedule(() => {
       // Broadcast the update event
       $rootScope.$broadcast(RECOMPILE, {
         moduleName,
@@ -35,8 +36,8 @@ export default function($rootScope, moduleName, type) {
         name,
         id,
       });
-    }, 0);
-  };
+    });
+  }
 
   function tap(deps, $scope, cb) {
     deps = castArray(deps);
@@ -51,6 +52,14 @@ export default function($rootScope, moduleName, type) {
     });
   }
 
+  /**
+   * Registers a listener for the RECOMPILE event.
+   * @param {string[]} deps Dependencies, formatted with
+   *  `identifierForDependency`
+   * @param {angular.IScope} $scope Scope of the directive
+   * @param {Function} cb Callback to call when the RECOMPILE event occurs
+   * @return {void}
+   */
   function onUpdate(deps, $scope, cb) {
     return tap(deps, $scope, (evt, info) => {
       if (!evt.defaultPrevented) {

@@ -1,6 +1,7 @@
 // @ts-nocheck
 /* eslint-env node */
 const path = require('path');
+const webpack = require('webpack');
 
 const config = {
   entry: {
@@ -33,6 +34,11 @@ const config = {
     ],
     extensions: ['.js'],
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      TESTING: false,
+    }),
+  ],
 };
 
 module.exports = config;

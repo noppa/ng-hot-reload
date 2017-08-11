@@ -1,4 +1,5 @@
-var args = require('yargs').argv;
+const args = require('yargs').argv;
+const webpack = require('webpack');
 
 module.exports = function(config) {
   config.set({
@@ -37,6 +38,11 @@ module.exports = function(config) {
           publicPath: false,
         },
       },
+      plugins: [
+        new webpack.DefinePlugin({
+          TESTING: true,
+        }),
+      ],
     }),
 
     reporters: ['progress'],
