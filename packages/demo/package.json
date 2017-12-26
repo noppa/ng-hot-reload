@@ -31,7 +31,7 @@
     "html-webpack-plugin": "~2.29.0",
     "ng-hot-reload-loader": "^1.0.1",
     "ng-hot-reload-standalone": "^1.0.1",
-    "webpack": "~3.4.1",
-    "webpack-dev-server": "~2.6.1"
+    "webpack": "3.10.0",
+    "webpack-dev-server": "2.9.7"
   }
 }

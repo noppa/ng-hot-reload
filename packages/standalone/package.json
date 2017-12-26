@@ -25,6 +25,6 @@
   },
   "devDependencies": {
     "raw-loader": "~0.5.1",
-    "webpack": "~3.4.1"
+    "webpack": "3.10.0"
   }
 }
