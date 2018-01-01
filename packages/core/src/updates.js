@@ -39,15 +39,16 @@ export default function($rootScope, moduleName, type) {
     });
   }
 
-  function tap(deps, $scope, cb) {
+  function onUpdate(deps, $scope, cb) {
     deps = castArray(deps);
     $scope.$on(RECOMPILE, (evt, info) => {
+      console.log('recompile', evt, info);
       const
         identifier = identifierForDependency(info),
         canReceive = includes(deps, identifier);
 
       if (canReceive) {
-        cb(evt, info);
+        setTimeout(() => cb(evt, info));
       }
     });
   }
@@ -60,21 +61,16 @@ export default function($rootScope, moduleName, type) {
    * @param {Function} cb Callback to call when the RECOMPILE event occurs
    * @return {void}
    */
-  function onUpdate(deps, $scope, cb) {
-    return tap(deps, $scope, (evt, info) => {
-      if (!evt.defaultPrevented) {
-        evt.preventDefault();
-        cb(evt, info);
-        return true;
-      }
-      return false;
-    });
-  }
+  // function onUpdate(deps, $scope, cb) {
+  //   tap(deps, $scope, (evt, info) => {
+  //     cb(evt, info);
+  //   });
+  // }
 
   return {
     update,
     onUpdate,
-    tap,
+    tap: onUpdate,
   };
 };
 
