@@ -28,9 +28,9 @@ describe('updates', function() {
       onUpdate.callback
     );
 
-    templateUpdates.update('foobar.html');
-
     $timeout.flush();
+
+    templateUpdates.update('foobar.html');
 
     expect(onUpdate.callback).toHaveBeenCalledTimes(1);
   });
