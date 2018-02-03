@@ -30,14 +30,12 @@ export default function($rootScope, moduleName, type) {
    */
   function update(name) {
     const id = updateId.next();
-    schedule(() => {
-      // Broadcast the update event
-      $rootScope.$broadcast(RECOMPILE, {
-        moduleName,
-        type,
-        name,
-        id,
-      });
+    // Broadcast the update event
+    $rootScope.$broadcast(RECOMPILE, {
+      moduleName,
+      type,
+      name,
+      id,
     });
   }
 
@@ -51,26 +49,32 @@ export default function($rootScope, moduleName, type) {
    */
   function onUpdate(deps, $scope, cb) {
     deps = castArray(deps);
-    $scope.$on(RECOMPILE, (evt, info) => {
-      const identifier = identifierForDependency(info);
-      const canReceive = includes(deps, identifier);
-      // Check if the scope or its parent scope is already
-      // being recompiled.
-      const isCompiling = Boolean(
-        $scope[SCOPE_COMPILING]
-        || $scope.$parent && $scope.$parent[SCOPE_COMPILING]
-      );
+    // NOTE: `schedule` must be used here because we might get called
+    // *from* a onUpdate callback when a directive is being recompiled.
+    // Calling $scope.on synchronously would cause an infinite loop
+    // because the event could already be ongoing.
+    schedule(() => {
+      $scope.$on(RECOMPILE, (evt, info) => {
+        const identifier = identifierForDependency(info);
+        const canReceive = includes(deps, identifier);
+        // Check if the scope or its parent scope is already
+        // being recompiled.
+        const isCompiling = Boolean(
+          $scope[SCOPE_COMPILING]
+          || $scope.$parent && $scope.$parent[SCOPE_COMPILING]
+        );
 
-      if (canReceive && !isCompiling) {
-        $scope[SCOPE_COMPILING] = true;
-        cb(evt, info);
-      } else {
-        $scope[SCOPE_COMPILING] = isCompiling;
-      }
-      // Reset the flag after the (synchronous) event
-      // has been processed.
-      schedule(() => {
-        $scope[SCOPE_COMPILING] = false;
+        if (canReceive && !isCompiling) {
+          $scope[SCOPE_COMPILING] = true;
+          cb(evt, info);
+        } else {
+          $scope[SCOPE_COMPILING] = isCompiling;
+        }
+        // Reset the flag after the (synchronous) event
+        // has been processed.
+        schedule(() => {
+          $scope[SCOPE_COMPILING] = false;
+        });
       });
     });
   }
