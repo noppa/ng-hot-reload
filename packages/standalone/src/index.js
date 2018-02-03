@@ -16,14 +16,12 @@ function ngHotReloadStandalone({
   angular = 'angular',
   forceRefresh = true,
   preserveState = true,
-  uiRouter = true,
   logLevel = 'warn',
 } = {}) {
   const wrapOptions = {
     angular,
     forceRefresh,
     preserveState,
-    uiRouter,
     port,
   };
   const wrap = (path, file) => wrapFile(path, file, wrapOptions);
