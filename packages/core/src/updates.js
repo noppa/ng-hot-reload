@@ -30,7 +30,7 @@ export default function($rootScope, moduleName, type) {
    */
   function update(name) {
     const id = updateId.next();
-    // Broadcast the update event
+    // Broadcast the update event.
     $rootScope.$broadcast(RECOMPILE, {
       moduleName,
       type,
@@ -70,8 +70,8 @@ export default function($rootScope, moduleName, type) {
         } else {
           $scope[SCOPE_COMPILING] = isCompiling;
         }
-        // Reset the flag after the (synchronous) event
-        // has been processed.
+        // Reset the flag after the event
+        // has been processed synchronously.
         schedule(() => {
           $scope[SCOPE_COMPILING] = false;
         });
