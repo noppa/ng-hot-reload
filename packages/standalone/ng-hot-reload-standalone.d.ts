@@ -36,11 +36,6 @@ type Options = {
    */
   preserveState?: boolean;
   /**
-   * Is ui.router module used in the project.
-   * Default: true
-   */
-  uiRouter?: boolean;
-  /**
    * Print console messages from the library.
    */
   logLevel?: 'debug'|'warn'|'error'|'none';

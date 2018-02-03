@@ -2,14 +2,10 @@
 const logos = {
   ng1: 'https://angular.io/assets/images/logos/angularjs/AngularJS-Shield.svg',
   ng2: 'https://angular.io/assets/images/logos/angular/angular.svg',
-  react: 'https://cdn.worldvectorlogo.com/logos/react.svg',
+  react: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/768px-React-icon.svg.png',
   vue: 'https://vuejs.org/images/logo.png',
   ember: 'https://emberjs.com/images/brand/ember_Ember-Light-e42a2b30.png',
 };
-
-
-
-
 
 function PreviewController() {
   this.frameworks = [

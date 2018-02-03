@@ -3,7 +3,6 @@ import merge from 'lodash/merge';
 const defaultOptions = () => ({
   forceRefresh: true,
   preserveState: true,
-  uiRouter: true,
   logLevel: 'warn',
 });
 

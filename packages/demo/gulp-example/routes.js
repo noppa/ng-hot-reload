@@ -12,6 +12,6 @@ function config($stateProvider) {
     })
     .state('preview', {
       url: '/preview',
-      template: '<preview></preview>',
+      component: 'preview',
     });
 }

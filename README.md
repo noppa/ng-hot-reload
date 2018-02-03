@@ -51,10 +51,6 @@ instances when they are reloaded. Preserving
 state is an experimental feature and quite "hackish"
 so it may cause problems in some cases. Setting this
 to `false` might help if you run into weird errors.
-- `uiRouter` (boolean, default: `true`)  
-Is [ui.router](https://github.com/angular-ui/ui-router) module used in the project?
-If it is, ng-hot-reload can watch changes to `$state` controllers and templates and
-update `$state` instead of refresing when those change.
 
 ## License
 MIT
