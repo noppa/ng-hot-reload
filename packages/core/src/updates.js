@@ -1,7 +1,9 @@
 import castArray  from 'lodash/castArray';
 import includes   from 'lodash/includes';
 import schedule   from './util/schedule';
+import makePrivateKey from './util/make-private-key';
 
+const SCOPE_COMPILING = makePrivateKey('ng-hot-reload/recompiling');
 export const RECOMPILE = 'ng-hot-reload/recompile';
 const identifierForDependency = ({ name, type }) => type + '/' + name;
 
@@ -39,20 +41,6 @@ export default function($rootScope, moduleName, type) {
     });
   }
 
-  function onUpdate(deps, $scope, cb) {
-    deps = castArray(deps);
-    $scope.$on(RECOMPILE, (evt, info) => {
-      console.log('recompile', evt, info);
-      const
-        identifier = identifierForDependency(info),
-        canReceive = includes(deps, identifier);
-
-      if (canReceive) {
-        setTimeout(() => cb(evt, info));
-      }
-    });
-  }
-
   /**
    * Registers a listener for the RECOMPILE event.
    * @param {string[]} deps Dependencies, formatted with
@@ -61,11 +49,31 @@ export default function($rootScope, moduleName, type) {
    * @param {Function} cb Callback to call when the RECOMPILE event occurs
    * @return {void}
    */
-  // function onUpdate(deps, $scope, cb) {
-  //   tap(deps, $scope, (evt, info) => {
-  //     cb(evt, info);
-  //   });
-  // }
+  function onUpdate(deps, $scope, cb) {
+    deps = castArray(deps);
+    $scope.$on(RECOMPILE, (evt, info) => {
+      const identifier = identifierForDependency(info);
+      const canReceive = includes(deps, identifier);
+      // Check if the scope or its parent scope is already
+      // being recompiled.
+      const isCompiling = Boolean(
+        $scope[SCOPE_COMPILING]
+        || $scope.$parent && $scope.$parent[SCOPE_COMPILING]
+      );
+
+      if (canReceive && !isCompiling) {
+        $scope[SCOPE_COMPILING] = true;
+        cb(evt, info);
+      } else {
+        $scope[SCOPE_COMPILING] = isCompiling;
+      }
+      // Reset the flag after the (synchronous) event
+      // has been processed.
+      schedule(() => {
+        $scope[SCOPE_COMPILING] = false;
+      });
+    });
+  }
 
   return {
     update,
