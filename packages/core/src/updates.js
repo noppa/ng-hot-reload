@@ -1,7 +1,9 @@
 import castArray  from 'lodash/castArray';
 import includes   from 'lodash/includes';
 import schedule   from './util/schedule';
+import makePrivateKey from './util/make-private-key';
 
+const SCOPE_COMPILING = makePrivateKey('ng-hot-reload/recompiling');
 export const RECOMPILE = 'ng-hot-reload/recompile';
 const identifierForDependency = ({ name, type }) => type + '/' + name;
 
@@ -28,27 +30,12 @@ export default function($rootScope, moduleName, type) {
    */
   function update(name) {
     const id = updateId.next();
-    schedule(() => {
-      // Broadcast the update event
-      $rootScope.$broadcast(RECOMPILE, {
-        moduleName,
-        type,
-        name,
-        id,
-      });
-    });
-  }
-
-  function tap(deps, $scope, cb) {
-    deps = castArray(deps);
-    $scope.$on(RECOMPILE, (evt, info) => {
-      const
-        identifier = identifierForDependency(info),
-        canReceive = includes(deps, identifier);
-
-      if (canReceive) {
-        cb(evt, info);
-      }
+    // Broadcast the update event.
+    $rootScope.$broadcast(RECOMPILE, {
+      moduleName,
+      type,
+      name,
+      id,
     });
   }
 
@@ -61,20 +48,41 @@ export default function($rootScope, moduleName, type) {
    * @return {void}
    */
   function onUpdate(deps, $scope, cb) {
-    return tap(deps, $scope, (evt, info) => {
-      if (!evt.defaultPrevented) {
-        evt.preventDefault();
-        cb(evt, info);
-        return true;
-      }
-      return false;
+    deps = castArray(deps);
+    // NOTE: `schedule` must be used here because we might get called
+    // *from* a onUpdate callback when a directive is being recompiled.
+    // Calling $scope.on synchronously would cause an infinite loop
+    // because the event could already be ongoing.
+    schedule(() => {
+      $scope.$on(RECOMPILE, (evt, info) => {
+        const identifier = identifierForDependency(info);
+        const canReceive = includes(deps, identifier);
+        // Check if the scope or its parent scope is already
+        // being recompiled.
+        const isCompiling = Boolean(
+          $scope[SCOPE_COMPILING]
+          || $scope.$parent && $scope.$parent[SCOPE_COMPILING]
+        );
+
+        if (canReceive && !isCompiling) {
+          $scope[SCOPE_COMPILING] = true;
+          cb(evt, info);
+        } else {
+          $scope[SCOPE_COMPILING] = isCompiling;
+        }
+        // Reset the flag after the event
+        // has been processed synchronously.
+        schedule(() => {
+          $scope[SCOPE_COMPILING] = false;
+        });
+      });
     });
   }
 
   return {
     update,
     onUpdate,
-    tap,
+    tap: onUpdate,
   };
 };
 

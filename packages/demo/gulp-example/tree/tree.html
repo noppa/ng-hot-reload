@@ -1,0 +1,6 @@
+<div style="margin-left: 20px; background: silver; margin-top: 20px;">
+  Tree items have been compiled {{$ctrl.compileCount}} times.
+  <div ng-if="$ctrl.depth > 0">
+    <tree depth="$ctrl.depth - 1"></tree>
+  </div>
+</div>
