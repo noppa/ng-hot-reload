@@ -1,18 +1,16 @@
 import once   from 'lodash/once';
-import { debug as logDebug } from './util/log';
 import angularProvider, { setAngular } from './ng/angular';
 import directiveProvider  from './directive';
 import componentProvider  from './component';
 import controllerProvider from './controller';
 import manualReload       from './util/manual-reload';
-import getOptions, { setOptions } from './options';
+import { setOptions } from './options';
 import { updateId } from './updates';
 import {
   decorateTemplateRequest,
   getTemplatePathPrefix,
   getTemplatePathSuffix,
 } from './template';
-import { decorateStateProvider } from './ui-router';
 
 const modules = new Map();
 let
@@ -76,7 +74,6 @@ const initializer = once(angular => {
       }
 
       const module = modules.get(name),
-        options = getOptions(),
         result = {},
         decorate = decorator(result);
 
@@ -89,10 +86,6 @@ const initializer = once(angular => {
           controller: decorate(module.controller.create),
         }
       );
-
-      if (options.uiRouter) {
-        setupUiRouterUpdates(patchedModule);
-      }
 
       return patchedModule;
     },
@@ -138,38 +131,6 @@ function updater() {
       });
     },
   });
-}
-
-const setupUiRouterUpdates = once(function(_module) {
-  /**
-   * Initialized when we get to run `decorateStateProvider`
-   * @type {Function}
-   */
-  let initStateUpdaters;
-  _module
-    .config(['$injector', function($injector) {
-      const $stateProvider = attemptGetInjectable($injector, '$stateProvider');
-      if ($stateProvider) {
-        initStateUpdaters =
-          decorateStateProvider(name, $injector, $stateProvider);
-      }
-    }])
-    .run(['$injector', '$rootScope', function($injector, $rootScope) {
-      if (initStateUpdaters) {
-        const $state = attemptGetInjectable($injector, '$state');
-        if ($state) {
-          initStateUpdaters($rootScope, $state);
-        }
-      }
-    }]);
-});
-
-function attemptGetInjectable($injector, recipeName) {
-  try {
-    return $injector.get(recipeName);
-  } catch (err) {
-    logDebug(err);
-  }
 }
 
 function updateTemplate(filePath, file) {
