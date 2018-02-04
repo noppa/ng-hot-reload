@@ -135,6 +135,15 @@ function updater() {
     __ngHotReload$didRegisterProviders: false,
   };
 
+  const updateIdOnStart = currentUpdateId();
+  setTimeout(function() {
+    if (currentUpdateId() === updateIdOnStart) {
+      // No updates were made within timeout. Force reload.
+      manualReload(
+        'None of the handlers was able to hot reload the modified file.');
+    }
+  }, 10);
+
   return Object.assign(loader, angular, {
     module: function(name) {
       const module = modules.get(name);
@@ -144,15 +153,6 @@ function updater() {
       }
       const result = {};
       const decorate = decorator(loader, result);
-
-      const updateIdOnStart = updateId.current;
-      setTimeout(function() {
-        if (updateId.current === updateIdOnStart) {
-          // No updates were made within timeout. Force reload.
-          manualReload(
-            'None of the handlers was able to hot reload the modified file.');
-        }
-      }, 10);
 
       return Object.assign(result, angular.module(name), {
         directive: decorate('directive', module.directive.update),
