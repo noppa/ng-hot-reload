@@ -17,7 +17,8 @@ let
   templateCache,
   initialized = false;
 
-const decorator = module_ => newProvider => (name, factory) => {
+const decorator = (loader, module_) => newProvider => (name, factory) => {
+  loader.__ngHotReload$didRegisterProviders = true;
   newProvider.call(module_, name, factory);
   return module_;
 };
@@ -45,6 +46,16 @@ function decorateAngular(options) {
   return initialized ? updater() : initializer(options.angular);
 }
 
+const currentUpdateId = () => updateId.current;
+const initLazyVars = once(angular => {
+  setAngular(angular);
+  templateCache = decorateTemplateRequest();
+
+  angular.module('ng').run(function() {
+    initialized = true;
+  });
+});
+
 /**
  * Creates a decorated version of angular where method "module" is
  * switched to a version that initializes directives to be ready
@@ -55,15 +66,15 @@ function decorateAngular(options) {
  * @return {Angular} New object that acts like angular but with
  *      some methods changed.
  */
-const initializer = once(angular => {
-  setAngular(angular);
-  templateCache = decorateTemplateRequest();
+const initializer = angular => {
+  initLazyVars(angular);
+  const loader = {
+    // Flag that signals to loaders that the mocked angular
+    // was indeed used to create something.
+    __ngHotReload$didRegisterProviders: false,
+  };
 
-  angular.module('ng').run(function() {
-    initialized = true;
-  });
-
-  return Object.assign({}, angular, {
+  return Object.assign(loader, angular, {
     module: function(name) {
       if (!modules.has(name)) {
         modules.set(name, {
@@ -75,7 +86,7 @@ const initializer = once(angular => {
 
       const module = modules.get(name),
         result = {},
-        decorate = decorator(result);
+        decorate = decorator(loader, result);
 
       const patchedModule = Object.assign(
         result,
@@ -90,7 +101,7 @@ const initializer = once(angular => {
       return patchedModule;
     },
   });
-});
+};
 
 /**
  * Creates a decorated version of angular where method "module" is
@@ -104,8 +115,11 @@ const initializer = once(angular => {
  */
 function updater() {
   const angular = angularProvider();
+  const loader = {
+    __ngHotReload$didRegisterProviders: false,
+  };
 
-  return Object.assign({}, angular, {
+  return Object.assign(loader, angular, {
     module: function(name) {
       const module = modules.get(name);
       if (!module) {
@@ -113,16 +127,16 @@ function updater() {
         return;
       }
       const result = {};
-      const decorate = decorator(result);
+      const decorate = decorator(loader, result);
 
-      const updateIdOnStart = updateId.current;
-      setTimeout(function() {
-        if (updateId.current === updateIdOnStart) {
-          // No updates were made within timeout. Force reload.
-          manualReload(
-            'None of the handlers was able to hot reload the modified file.');
-        }
-      }, 10);
+      // const updateIdOnStart = updateId.current;
+      // setTimeout(function() {
+      //   if (updateId.current === updateIdOnStart) {
+      //     // No updates were made within timeout. Force reload.
+      //     manualReload(
+      //       'None of the handlers was able to hot reload the modified file.');
+      //   }
+      // }, 10);
 
       return Object.assign(result, angular.module(name), {
         directive: decorate(module.directive.update),
@@ -152,4 +166,5 @@ export {
   decorateAngular,
   manualReload,
   templatesPublicApi as template,
+  currentUpdateId,
 };
