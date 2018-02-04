@@ -18,6 +18,7 @@ function controllerProvider(moduleName) {
       '$rootScope',
     ].concat(deps);
 
+    // @ts-ignore
     return angular.module(moduleName).controller(name, ngHotReload$Controller);
 
     function ngHotReload$Controller($controller, $rootScope, ...rest) {
