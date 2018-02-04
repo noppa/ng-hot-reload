@@ -34,7 +34,6 @@
   },
   "globals": {
     "Map": false,
-    "WeakMap": false,
     "Set": false,
     "Symbol": false,
     "angular": false,

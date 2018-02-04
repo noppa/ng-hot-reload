@@ -13,28 +13,28 @@ import {
 } from './template';
 
 const modules = new Map();
-const factoryCache = new WeakMap();
+const factoryCache = new Map();
 let
   templateCache,
   initialized = false;
 
 
-const decorator = (loader, module_) => newProvider => (name, factory) => {
+const decorator =
+(loader, module_) => (providerType, newProvider) => (name, factory) => {
   loader.__ngHotReload$didRegisterProviders = true;
 
   // Test if the function is being called with the exact same value as before.
   // This can happen with webpack when update has been accepted further
   // up the tree.
-  const type = typeof factory;
-  const noUpdates = (type === 'function' || type === 'object')
-    && factoryCache.has(factory)
-    && factoryCache.get(factory) === name;
+  const cacheKey = `${module_.name}/${providerType}/${name}`;
+  const noUpdates = factoryCache.has(cacheKey)
+    && factoryCache.get(cacheKey) === factory;
 
   if (noUpdates) {
     return module_;
   }
 
-  factoryCache.set(factory, name);
+  factoryCache.set(cacheKey, factory);
   newProvider.call(module_, name, factory);
   return module_;
 };
@@ -108,9 +108,9 @@ const initializer = angular => {
         result,
         angular.module.apply(angular, arguments),
         {
-          directive: decorate(module.directive.create),
-          component: decorate(module.component.create),
-          controller: decorate(module.controller.create),
+          directive: decorate('directive', module.directive.create),
+          component: decorate('component', module.component.create),
+          controller: decorate('controller', module.controller.create),
         }
       );
 
@@ -155,9 +155,9 @@ function updater() {
       }, 10);
 
       return Object.assign(result, angular.module(name), {
-        directive: decorate(module.directive.update),
-        component: decorate(module.component.update),
-        controller: decorate(module.controller.update),
+        directive: decorate('directive', module.directive.update),
+        component: decorate('component', module.component.update),
+        controller: decorate('controller', module.controller.update),
       });
     },
   });
