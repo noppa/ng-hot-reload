@@ -12,8 +12,7 @@ Hot Module Replacement (HMR) is a technique popularized by [Webpack](https://web
 It also attempts to preserve some of the component state so that your debugging efforts don't need to start from scratch, although admittedly this feature is not as thorough or reliable as the state reloading that you would get with Redux.
 
 ## Usage
-#### Warning
-Some of the stuff that this library does is quite hackish and use angular's
+**Warning:** Some of the stuff that this library does is quite hackish and use angular's
 internal/private apis, so **they might break in the future**. Luckily this is
 a development tool that you can easily opt in and out of, so it doesn't really
 matter if it's "production ready" or not.
