@@ -1,4 +1,3 @@
-console.log('date file');
 class DateComponentController {
 
 }

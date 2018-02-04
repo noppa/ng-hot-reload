@@ -13,12 +13,28 @@ import {
 } from './template';
 
 const modules = new Map();
+const factoryCache = new WeakMap();
 let
   templateCache,
   initialized = false;
 
+
 const decorator = (loader, module_) => newProvider => (name, factory) => {
   loader.__ngHotReload$didRegisterProviders = true;
+
+  // Test if the function is being called with the exact same value as before.
+  // This can happen with webpack when update has been accepted further
+  // up the tree.
+  const type = typeof factory;
+  const noUpdates = (type === 'function' || type === 'object')
+    && factoryCache.has(factory)
+    && factoryCache.get(factory) === name;
+
+  if (noUpdates) {
+    return module_;
+  }
+
+  factoryCache.set(factory, name);
   newProvider.call(module_, name, factory);
   return module_;
 };
@@ -129,14 +145,14 @@ function updater() {
       const result = {};
       const decorate = decorator(loader, result);
 
-      // const updateIdOnStart = updateId.current;
-      // setTimeout(function() {
-      //   if (updateId.current === updateIdOnStart) {
-      //     // No updates were made within timeout. Force reload.
-      //     manualReload(
-      //       'None of the handlers was able to hot reload the modified file.');
-      //   }
-      // }, 10);
+      const updateIdOnStart = updateId.current;
+      setTimeout(function() {
+        if (updateId.current === updateIdOnStart) {
+          // No updates were made within timeout. Force reload.
+          manualReload(
+            'None of the handlers was able to hot reload the modified file.');
+        }
+      }, 10);
 
       return Object.assign(result, angular.module(name), {
         directive: decorate(module.directive.update),
