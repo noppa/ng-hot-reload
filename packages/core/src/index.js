@@ -14,12 +14,10 @@ import {
 
 const modules = new Map();
 const factoryCache = new Map();
-let
-  templateCache,
-  initialized = false;
+let templateCache;
 
 const decorator =
-(loader, module_) => (providerType, newProvider) => (name, factory) => {
+(loader, module_, providerType, newProvider) => (name, factory) => {
   loader.__ngHotReload$didRegisterProviders = true;
 
   // Test if the function is being called with the exact same value as before.
@@ -30,6 +28,11 @@ const decorator =
     && factoryCache.get(cacheKey) === factory;
 
   if (noUpdates) {
+    // This counts as an update even though no changes were made.
+    // Increment the updates counter so that the automatic
+    // refresh check in decorateAngular function doesn't force reload
+    // because of this.
+    updateId.next();
     return module_;
   }
 
@@ -37,6 +40,12 @@ const decorator =
   newProvider.call(module_, name, factory);
   return module_;
 };
+
+const currentUpdateId = () => updateId.current;
+const initLazyVars = once(angular => {
+  setAngular(angular);
+  templateCache = decorateTemplateRequest();
+});
 
 /**
  * Creates a decorated version of angular where method "module" is
@@ -56,108 +65,66 @@ const decorator =
 function decorateAngular(options) {
   if (options) {
     setOptions(options);
+    initLazyVars(options.angular);
   }
-
-  return initialized ? updater() : initializer(options.angular);
-}
-
-const currentUpdateId = () => updateId.current;
-const initLazyVars = once(angular => {
-  setAngular(angular);
-  templateCache = decorateTemplateRequest();
-
-  angular.module('ng').run(function() {
-    initialized = true;
-  });
-});
-
-/**
- * Creates a decorated version of angular where method "module" is
- * switched to a version that initializes directives to be ready
- * for hot reloading later.
- *
- * @private
- * @param {Angular} angular The original, unmodified angular instance.
- * @return {Angular} New object that acts like angular but with
- *      some methods changed.
- */
-const initializer = angular => {
-  initLazyVars(angular);
-  const loader = {
+  const angular = angularProvider();
+  const angularMock = {
     // Flag that signals to loaders that the mocked angular
     // was indeed used to create something.
     __ngHotReload$didRegisterProviders: false,
   };
 
-  return Object.assign(loader, angular, {
-    module: function(name) {
+  return Object.assign(angularMock, angular, {
+    module(name, ...rest) {
       if (!modules.has(name)) {
         modules.set(name, {
           directive: directiveProvider(name),
           component: componentProvider(name),
           controller: controllerProvider(name),
+          initialized: undefined,
         });
       }
 
-      const module = modules.get(name),
-        result = {},
-        decorate = decorator(loader, result);
+      const moduleApi = modules.get(name);
+      const moduleMock = {};
+      /** @type{boolean|void} */
+      const isInitialized = moduleApi.initialized;
 
-      const patchedModule = Object.assign(
-        result,
-        angular.module.apply(angular, arguments),
+      let originalModule;
+      if (isInitialized) {
+        originalModule = angular.module.call(angular, name);
+
+        const updateId = currentUpdateId();
+        setTimeout(() => {
+          if (updateId === currentUpdateId()) {
+            manualReload('File was changed but no updates were initiated.');
+          }
+        }, 10);
+      } else {
+        originalModule = angular.module.call(angular, name, ...rest);
+        if (isInitialized === undefined) {
+          moduleApi.initialized = false;
+          originalModule.run(() => {
+            moduleApi.initialized = true;
+          });
+        }
+      }
+
+      const updateOrCreate = isInitialized ? 'update' : 'create';
+      const decorate = providerType => decorator(
+        angularMock, moduleMock,
+        providerType, moduleApi[providerType][updateOrCreate]);
+
+      Object.assign(
+        moduleMock,
+        originalModule,
         {
-          directive: decorate('directive', module.directive.create),
-          component: decorate('component', module.component.create),
-          controller: decorate('controller', module.controller.create),
+          directive: decorate('directive'),
+          component: decorate('component'),
+          controller: decorate('controller'),
         }
       );
-
-      return patchedModule;
-    },
-  });
-};
-
-/**
- * Creates a decorated version of angular where method "module" is
- * switched to a version that updates existing directives when
- * called with new directive factories.
- *
- * @private
- * @param {*} angular The original, unmodified angular instance.
- * @return {*} New object that acts like angular but with
- *      some methods changed.
- */
-function updater() {
-  const angular = angularProvider();
-  const loader = {
-    __ngHotReload$didRegisterProviders: false,
-  };
-
-  const updateIdOnStart = currentUpdateId();
-  setTimeout(function() {
-    if (currentUpdateId() === updateIdOnStart) {
-      // No updates were made within timeout. Force reload.
-      manualReload(
-        'None of the handlers was able to hot reload the modified file.');
-    }
-  }, 10);
-
-  return Object.assign(loader, angular, {
-    module: function(name) {
-      const module = modules.get(name);
-      if (!module) {
-        manualReload(`New module "${name}".`);
-        return;
-      }
-      const result = {};
-      const decorate = decorator(loader, result);
-
-      return Object.assign(result, angular.module(name), {
-        directive: decorate('directive', module.directive.update),
-        component: decorate('component', module.component.update),
-        controller: decorate('controller', module.controller.update),
-      });
+      return moduleMock;
     },
   });
 }
