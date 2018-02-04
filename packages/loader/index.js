@@ -1,6 +1,7 @@
 var template = require('lodash.template'),
   fs = require('fs'),
   path = require('path'),
+  loaderUtils = require('loader-utils'),
   templatePath = path.join(__dirname, 'src', 'source.js.tpl'),
   compiled = template(fs.readFileSync(templatePath, 'utf8')),
   corePath = require.resolve('ng-hot-reload-core');
@@ -14,6 +15,7 @@ function transform(source, map) {
   if(this.cacheable) {
     this.cacheable();
   }
+  var options = loaderUtils.getOptions(this) || {};
 
   if(noTransform.test(this.resourcePath)) {
     return this.callback(null, source, map);
@@ -22,7 +24,12 @@ function transform(source, map) {
   var result = compiled({
     corePath: JSON.stringify(corePath),
     source: source,
-    requireAngular: '(require("angular"), angular)',
+    requireAngular: typeof options.requireAngular === 'string' ?
+      options.requireAngular
+      : '(require("angular"), angular)',
+    // Boolean options that default to true.
+    forceRefresh: options.forceRefresh !== false,
+    preserveState: options.preserveState !== false,
   });
 
   return result;

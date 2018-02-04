@@ -9,6 +9,7 @@
   "author": "noppa",
   "license": "MIT",
   "dependencies": {
+    "loader-utils": "^1.1.0",
     "lodash.template": "^4.4.0",
     "ng-hot-reload-core": "^1.0.1"
   }

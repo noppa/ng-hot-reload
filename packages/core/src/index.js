@@ -18,7 +18,6 @@ let
   templateCache,
   initialized = false;
 
-
 const decorator =
 (loader, module_) => (providerType, newProvider) => (name, factory) => {
   loader.__ngHotReload$didRegisterProviders = true;
