@@ -1,7 +1,5 @@
 class HomeController {
-  constructor() {
-    this.houseEmoji = '🏠';
-  }
+  constructor() {}
 }
 
 angular.module('hot-reload-demo').controller('HomeController', HomeController);

@@ -13,11 +13,28 @@ import {
 } from './template';
 
 const modules = new Map();
+const factoryCache = new Map();
 let
   templateCache,
   initialized = false;
 
-const decorator = module_ => newProvider => (name, factory) => {
+
+const decorator =
+(loader, module_) => (providerType, newProvider) => (name, factory) => {
+  loader.__ngHotReload$didRegisterProviders = true;
+
+  // Test if the function is being called with the exact same value as before.
+  // This can happen with webpack when update has been accepted further
+  // up the tree.
+  const cacheKey = `${module_.name}/${providerType}/${name}`;
+  const noUpdates = factoryCache.has(cacheKey)
+    && factoryCache.get(cacheKey) === factory;
+
+  if (noUpdates) {
+    return module_;
+  }
+
+  factoryCache.set(cacheKey, factory);
   newProvider.call(module_, name, factory);
   return module_;
 };
@@ -45,6 +62,16 @@ function decorateAngular(options) {
   return initialized ? updater() : initializer(options.angular);
 }
 
+const currentUpdateId = () => updateId.current;
+const initLazyVars = once(angular => {
+  setAngular(angular);
+  templateCache = decorateTemplateRequest();
+
+  angular.module('ng').run(function() {
+    initialized = true;
+  });
+});
+
 /**
  * Creates a decorated version of angular where method "module" is
  * switched to a version that initializes directives to be ready
@@ -55,15 +82,15 @@ function decorateAngular(options) {
  * @return {Angular} New object that acts like angular but with
  *      some methods changed.
  */
-const initializer = once(angular => {
-  setAngular(angular);
-  templateCache = decorateTemplateRequest();
+const initializer = angular => {
+  initLazyVars(angular);
+  const loader = {
+    // Flag that signals to loaders that the mocked angular
+    // was indeed used to create something.
+    __ngHotReload$didRegisterProviders: false,
+  };
 
-  angular.module('ng').run(function() {
-    initialized = true;
-  });
-
-  return Object.assign({}, angular, {
+  return Object.assign(loader, angular, {
     module: function(name) {
       if (!modules.has(name)) {
         modules.set(name, {
@@ -75,22 +102,22 @@ const initializer = once(angular => {
 
       const module = modules.get(name),
         result = {},
-        decorate = decorator(result);
+        decorate = decorator(loader, result);
 
       const patchedModule = Object.assign(
         result,
         angular.module.apply(angular, arguments),
         {
-          directive: decorate(module.directive.create),
-          component: decorate(module.component.create),
-          controller: decorate(module.controller.create),
+          directive: decorate('directive', module.directive.create),
+          component: decorate('component', module.component.create),
+          controller: decorate('controller', module.controller.create),
         }
       );
 
       return patchedModule;
     },
   });
-});
+};
 
 /**
  * Creates a decorated version of angular where method "module" is
@@ -104,8 +131,11 @@ const initializer = once(angular => {
  */
 function updater() {
   const angular = angularProvider();
+  const loader = {
+    __ngHotReload$didRegisterProviders: false,
+  };
 
-  return Object.assign({}, angular, {
+  return Object.assign(loader, angular, {
     module: function(name) {
       const module = modules.get(name);
       if (!module) {
@@ -113,7 +143,7 @@ function updater() {
         return;
       }
       const result = {};
-      const decorate = decorator(result);
+      const decorate = decorator(loader, result);
 
       const updateIdOnStart = updateId.current;
       setTimeout(function() {
@@ -125,9 +155,9 @@ function updater() {
       }, 10);
 
       return Object.assign(result, angular.module(name), {
-        directive: decorate(module.directive.update),
-        component: decorate(module.component.update),
-        controller: decorate(module.controller.update),
+        directive: decorate('directive', module.directive.update),
+        component: decorate('component', module.component.update),
+        controller: decorate('controller', module.controller.update),
       });
     },
   });
@@ -152,4 +182,5 @@ export {
   decorateAngular,
   manualReload,
   templatesPublicApi as template,
+  currentUpdateId,
 };

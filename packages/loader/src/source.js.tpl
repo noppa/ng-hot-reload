@@ -15,11 +15,13 @@
     })();/* ng-hot-reload-loader */
   } finally {
     (function() {
-      module.hot.accept(function(err) {
-        if (err) {
-          console.error(err);
-        }
-      });
+      if (module.hot && angular.__ngHotReload$didRegisterProviders) {
+        module.hot.accept(function(err) {
+          if (err) {
+            console.error(err);
+          }
+        });
+      }
     })();
   }
 })(<%= requireAngular %>);
