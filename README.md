@@ -12,9 +12,11 @@ Hot Module Replacement (HMR) is a technique popularized by [Webpack](https://web
 It also attempts to preserve some of the component state so that your debugging efforts don't need to start from scratch, although admittedly this feature is not as thorough or reliable as the state reloading that you would get with Redux.
 
 ## Usage
-#### Note: This library is a work in progress!
-You are quite likely to face some issues, but hopefully the overall experience should still be nicer than the manual refreshing that we used to do.
-Also, some of the stuff that this library does is quite hackish and use angular's internal/private apis, so **they might break in the future**. Luckily this is a development tool that you can opt in and out of, so I suppose we don't need to worry about "production readiness".
+#### Warning
+Some of the stuff that this library does is quite hackish and use angular's
+internal/private apis, so **they might break in the future**. Luckily this is
+a development tool that you can easily opt in and out of, so it doesn't really
+matter if it's "production ready" or not.
 
 This repository is a [monorepo](https://github.com/babel/babel/blob/master/doc/design/monorepo.md) that contains these four packages:
 - [core](https://www.npmjs.com/package/ng-hot-reload-core) is a base-implementation for this library that runs on the client (browser). It's something that the other packages depend on, you probably won't need to use it directly.
