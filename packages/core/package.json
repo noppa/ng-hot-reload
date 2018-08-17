@@ -16,8 +16,9 @@
   "license": "MIT",
   "devDependencies": {
     "@types/angularjs": "1.5.14-alpha",
-    "@types/jasmine": "2.5.53",
+    "@types/jasmine": "2.8.8",
     "lodash": "^4.17.4",
-    "webpack": "3.10.0"
+    "webpack": "4.16.5",
+    "webpack-command": "^0.4.1"
   }
 }
