@@ -5,7 +5,8 @@
   "main": "bundle.js",
   "author": "noppa",
   "scripts": {
-    "test": "protractor protractor.config.js",
+    "test:gulp": "protractor protractor.config.js --params.package standalone",
+    "test:webpack": "protractor protractor.config.js --params.package loader",
     "webpack-example": "node server.js",
     "gulp-example": "gulp serve"
   },
