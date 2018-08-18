@@ -14,7 +14,7 @@
   "private": true,
   "dependencies": {
     "angular": "^1.6.5",
-    "angular-ui-router": "1.0.3",
+    "angular-ui-router": "1.0.20",
     "express": "^4.15.3"
   },
   "devDependencies": {
@@ -26,13 +26,13 @@
     "gulp-if": "^2.0.2",
     "gulp-iife": "^0.3.0",
     "gulp-inject": "^4.2.0",
-    "gulp-sourcemaps": "2.6.0",
-    "gulp-watch": "^4.3.11",
-    "html-loader": "~0.4.5",
-    "html-webpack-plugin": "~2.29.0",
+    "gulp-sourcemaps": "2.6.4",
+    "gulp-watch": "^5.0.1",
+    "html-loader": "~0.5.5",
+    "html-webpack-plugin": "~3.2.0",
     "ng-hot-reload-loader": "^2.0.0",
     "ng-hot-reload-standalone": "^2.0.0",
-    "webpack": "3.10.0",
-    "webpack-dev-server": "2.9.7"
+    "webpack": "4.16.5",
+    "webpack-dev-server": "3.1.5"
   }
 }
