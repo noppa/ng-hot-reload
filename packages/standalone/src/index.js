@@ -16,7 +16,6 @@ function ngHotReloadStandalone({
   angular = 'angular',
   forceRefresh = true,
   preserveState = true,
-  logLevel = 'warn',
 } = {}) {
   const wrapOptions = {
     angular,

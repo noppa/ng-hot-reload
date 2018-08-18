@@ -231,7 +231,7 @@ const directiveProvider = moduleName => {
         }
 
         updates.update(name);
-      } catch(err) {
+      } catch (err) {
         manualReload(String(err && err.message || err));
       }
     } else if (updateQueue) {

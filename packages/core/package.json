@@ -7,10 +7,10 @@
     "dist"
   ],
   "scripts": {
-    "build": "webpack",
-    "build:prod": "webpack --optimize-minimize",
+    "build": "webpack --mode development",
+    "build:prod": "webpack --mode production",
     "test": "echo Run tests in the root directory of this repo.",
-    "prepublish": "npm run build:prod"
+    "prepublishOnly": "npm run build:prod"
   },
   "author": "noppa",
   "license": "MIT",
