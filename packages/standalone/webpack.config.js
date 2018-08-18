@@ -4,13 +4,15 @@ const webpack = require('webpack');
 
 const config = {
   target: 'node',
+  devtool: 'cheap-source-map',
   entry: {
     'ng-hot-reload-standalone': path.join(__dirname, 'src', 'index.js'),
   },
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js',
-    libraryTarget: 'commonjs2',
+    libraryTarget: 'umd',
+    globalObject: 'typeof self !== \'undefined\' ? self : this',
   },
   module: {
     rules: [
@@ -71,4 +73,4 @@ const clientConfig = {
   ],
 };
 
-module.exports = [config, clientConfig];
+module.exports = config;

@@ -5,9 +5,6 @@ import through      from 'through2';
 import clientTemplate from 'raw-loader!./client.tpl.js';
 import coreLib        from 'raw-loader!ng-hot-reload-core';
 
-module.exports = ngHotReloadStandalone;
-module.exports.default = ngHotReloadStandalone;
-
 const moduleRegex = /(\/|\\)(node_modules|bower_components)(\/|\\)/;
 
 function ngHotReloadStandalone({
