@@ -22,7 +22,7 @@ function hasIsolateScope({ scope }) {
  * Factory for the functions that handle calls to angular.module(..).directive.
  *
  * @param {string} moduleName Name of the module
- * @return {Object<{ create: Function, update: Function }>} Api for creating
+ * @return {{ create: Function, update: Function }} Api for creating
  *        and updating directives.
  */
 const directiveProvider = moduleName => {
@@ -231,7 +231,7 @@ const directiveProvider = moduleName => {
         }
 
         updates.update(name);
-      } catch(err) {
+      } catch (err) {
         manualReload(String(err && err.message || err));
       }
     } else if (updateQueue) {

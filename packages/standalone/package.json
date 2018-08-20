@@ -9,9 +9,9 @@
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack",
-    "build:prod": "webpack --optimize-minimize",
-    "prepublish": "npm run build:prod"
+    "build": "webpack --mode development",
+    "build:prod": "webpack --mode production",
+    "prepublishOnly": "yarn run build:prod"
   },
   "types": "./ng-hot-reload-standalone.d.ts",
   "keywords": [],
@@ -21,10 +21,11 @@
     "express": "^4.15.3",
     "ng-hot-reload-core": "^2.0.0",
     "through2": "~2.0.3",
-    "ws": "~3.0.0"
+    "ws": "~6.0.0"
   },
   "devDependencies": {
     "raw-loader": "~0.5.1",
-    "webpack": "3.10.0"
+    "webpack": "4.16.5",
+    "webpack-command": "^0.4.1"
   }
 }

@@ -4,6 +4,7 @@ const webpack = require('webpack');
 
 const config = {
   target: 'node',
+  devtool: 'cheap-source-map',
   entry: {
     'ng-hot-reload-standalone': path.join(__dirname, 'src', 'index.js'),
   },
@@ -13,7 +14,7 @@ const config = {
     libraryTarget: 'commonjs2',
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         loader: 'babel-loader',
@@ -60,6 +61,7 @@ const clientConfig = {
     filename: '[name].js',
     libraryTarget: 'umd',
     library: 'ngHotReloadStandalone',
+    globalObject: 'typeof self !== \'undefined\' ? self : this',
   },
   plugins: [
     new webpack.DefinePlugin({

@@ -58,7 +58,7 @@ const initLazyVars = once(angular => {
  * instead update the previously created directive.
  *
  * @param {Object} options Options for the loader.
- * @param {Angular} options.angular Unmodified version of angular, only
+ * @param {angular} options.angular Unmodified version of angular, only
  *      required in the first run.
  * @return {*} Modified version of angular.
  */

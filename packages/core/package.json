@@ -7,17 +7,18 @@
     "dist"
   ],
   "scripts": {
-    "build": "webpack",
-    "build:prod": "webpack --optimize-minimize",
+    "build": "webpack --mode development",
+    "build:prod": "webpack --mode production",
     "test": "echo Run tests in the root directory of this repo.",
-    "prepublish": "npm run build:prod"
+    "prepublishOnly": "npm run build:prod"
   },
   "author": "noppa",
   "license": "MIT",
   "devDependencies": {
-    "@types/angularjs": "1.5.14-alpha",
-    "@types/jasmine": "2.5.53",
+    "@types/angular": "1.6.50",
+    "@types/jasmine": "2.8.8",
     "lodash": "^4.17.4",
-    "webpack": "3.10.0"
+    "webpack": "4.16.5",
+    "webpack-command": "^0.4.1"
   }
 }

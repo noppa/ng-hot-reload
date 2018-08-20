@@ -1,5 +1,5 @@
 import angularProvider from './ng/angular';
-import privateKey from './ng/private-key';
+import isPrivateKey from './ng/private-key';
 import controllerDefinition from './util/controller-definition.js';
 
 function componentProvider(moduleName) {
@@ -14,7 +14,7 @@ function componentProvider(moduleName) {
      * and this function should be kept functionally equivalent to that one.
      *
      * @param {string} name Name of the component
-     * @param {Object} options Component definition object
+     * @param {Record<string, any>} options Component definition object
      * @return {*} Whatever this.directive returns.
      */
   function registerComponent(name, options) {
@@ -35,7 +35,7 @@ function componentProvider(moduleName) {
         };
 
         forEach(options, (val, key) => {
-          if (privateKey(key)) {
+          if (isPrivateKey(key)) {
             def[key] = val;
           }
         });
