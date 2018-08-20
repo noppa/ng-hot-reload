@@ -10,7 +10,7 @@
     "build": "webpack --mode development",
     "build:prod": "webpack --mode production",
     "test": "echo Run tests in the root directory of this repo.",
-    "prepublishOnly": "npm run build:prod"
+    "prepublishOnly": "yarn build:prod"
   },
   "author": "noppa",
   "license": "MIT",
