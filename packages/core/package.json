@@ -15,7 +15,7 @@
   "author": "noppa",
   "license": "MIT",
   "devDependencies": {
-    "@types/angularjs": "1.5.14-alpha",
+    "@types/angular": "1.6.50",
     "@types/jasmine": "2.8.8",
     "lodash": "^4.17.4",
     "webpack": "4.16.5",
