@@ -9,13 +9,9 @@ var browserSyncSpa = require('browser-sync-spa');
 var del = require('del');
 var path = require('path');
 
-console.log('AAAA');
-
 var ngHotReload = require('ng-hot-reload-standalone')({
   start: false,
 });
-
-console.log('BBB');
 
 function isJsSourceFile(file) {
   return /\.js$/.test(file.path) && !/node_modules/.test(file.path);
