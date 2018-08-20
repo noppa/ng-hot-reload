@@ -3,4 +3,4 @@ yarn.lock
 src/
 webpack.config.js
 specs.webpack.js
-tsconfig.json
+jsconfig.json
