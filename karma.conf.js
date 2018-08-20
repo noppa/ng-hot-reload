@@ -21,6 +21,7 @@ module.exports = function(config) {
     },
 
     webpack: Object.assign(require('./packages/core/webpack.config.js'), {
+      mode: 'development',
       devServer: {
         stats: {
           hash: false,
