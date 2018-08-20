@@ -19,7 +19,7 @@ matter if it's "production ready" or not.
 
 This repository is a [monorepo](https://github.com/babel/babel/blob/master/doc/design/monorepo.md) that contains these four packages:
 - [core](https://www.npmjs.com/package/ng-hot-reload-core) is a base-implementation for this library that runs on the client (browser). It's something that the other packages depend on, you probably won't need to use it directly.
-- [loader](https://www.npmjs.com/package/ng-hot-reload-loader) is a Webpack loader that uses [Webpack’s HMR feature](https://webpack.js.org/concepts/hot-module-replacement/) to load the file changes. Currently this package has some features missing; you can’t pass options to the client yet, for example.
+- [loader](https://www.npmjs.com/package/ng-hot-reload-loader) is a Webpack loader that uses [Webpack’s HMR feature](https://webpack.js.org/concepts/hot-module-replacement/) to load the file changes.
 - [standalone](https://www.npmjs.com/package/ng-hot-reload-standalone) provides methods to start a standalone WebSocket server and send updates to the client. This package integrates quite nicely with [Gulp](https://gulpjs.com/) but it should also be possible to use it with pretty much any other build tool that is able to watch and react to file changes if you are willing to put some effort into gluing the pieces together.
 - [demo](https://github.com/noppa/ng-hot-reload/tree/master/packages/demo) package contains demo implementations using both Webpack and Gulp. It's a good read-through if you are planning to integrate this library to your build. The package also contains some e2e tests for this project which you only need to worry about if you want to contribute to the project.
 
