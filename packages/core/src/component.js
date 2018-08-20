@@ -14,7 +14,7 @@ function componentProvider(moduleName) {
      * and this function should be kept functionally equivalent to that one.
      *
      * @param {string} name Name of the component
-     * @param {Object} options Component definition object
+     * @param {Record<string, any>} options Component definition object
      * @return {*} Whatever this.directive returns.
      */
   function registerComponent(name, options) {
