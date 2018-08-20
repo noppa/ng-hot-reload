@@ -1,5 +1,5 @@
 import angularProvider from './ng/angular';
-import privateKey from './ng/private-key';
+import isPrivateKey from './ng/private-key';
 import controllerDefinition from './util/controller-definition.js';
 
 function componentProvider(moduleName) {
@@ -35,7 +35,7 @@ function componentProvider(moduleName) {
         };
 
         forEach(options, (val, key) => {
-          if (privateKey(key)) {
+          if (isPrivateKey(key)) {
             def[key] = val;
           }
         });
