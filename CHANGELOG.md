@@ -1,3 +1,6 @@
+## 2.0.1
+- Updated build dependencies, no breaking changes
+
 ## 2.0.0
 - Fix [issue #4](https://github.com/noppa/ng-hot-reload/issues/4)
 - Remove special support for UI-router  
