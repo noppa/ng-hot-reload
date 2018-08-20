@@ -3,6 +3,7 @@ var webpack = require('webpack'),
   path = require('path');
 
 module.exports = {
+  mode: 'development',
   entry: [
     'webpack-dev-server/client?http://localhost:8080',
     'webpack/hot/only-dev-server',
@@ -14,10 +15,10 @@ module.exports = {
     publicPath: '/',
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /(\.jsx|\.js)$/,
-        loader: 'ng-hot-reload-loader!babel-loader',
+        loader: ['ng-hot-reload-loader', 'babel-loader'],
         exclude: /node_modules/,
       },
       {
