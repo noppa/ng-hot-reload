@@ -11,8 +11,7 @@ const config = {
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js',
-    libraryTarget: 'umd',
-    globalObject: 'typeof self !== \'undefined\' ? self : this',
+    libraryTarget: 'commonjs2',
   },
   module: {
     rules: [
@@ -62,6 +61,7 @@ const clientConfig = {
     filename: '[name].js',
     libraryTarget: 'umd',
     library: 'ngHotReloadStandalone',
+    globalObject: 'typeof self !== \'undefined\' ? self : this',
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -73,4 +73,4 @@ const clientConfig = {
   ],
 };
 
-module.exports = config;
+module.exports = [config, clientConfig];
