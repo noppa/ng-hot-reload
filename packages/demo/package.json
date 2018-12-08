@@ -13,26 +13,26 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "angular": "^1.7.3",
+    "angular": "^1.7.5",
     "angular-ui-router": "1.0.20",
-    "express": "^4.15.3"
+    "express": "^4.16.4"
   },
   "devDependencies": {
-    "browser-sync": "^2.18.12",
+    "browser-sync": "^2.26.3",
     "browser-sync-spa": "^1.0.3",
     "cheerio": "~1.0.0-rc.2",
     "del": "^3.0.0",
     "gulp": "^3.9.1",
     "gulp-if": "^2.0.2",
-    "gulp-iife": "^0.3.0",
-    "gulp-inject": "^4.2.0",
+    "gulp-iife": "^0.4.0",
+    "gulp-inject": "^5.0.2",
     "gulp-sourcemaps": "2.6.4",
     "gulp-watch": "^5.0.1",
     "html-loader": "~0.5.5",
     "html-webpack-plugin": "~3.2.0",
     "ng-hot-reload-loader": "^2.0.2",
     "ng-hot-reload-standalone": "^2.0.2",
-    "webpack": "4.16.5",
-    "webpack-dev-server": "3.1.5"
+    "webpack": "4.27.1",
+    "webpack-dev-server": "3.1.10"
   }
 }
