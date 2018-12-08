@@ -2033,10 +2033,6 @@ next-tick@1:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
 
-ng-hot-reload-core@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/ng-hot-reload-core/-/ng-hot-reload-core-2.0.2.tgz#b7af24dbd38f3651c6c6c71a629173cf3eb46615"
-
 node-libs-browser@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/node-libs-browser/-/node-libs-browser-2.1.0.tgz#5f94263d404f6e44767d726901fff05478d600df"
