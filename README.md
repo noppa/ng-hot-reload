@@ -1,4 +1,4 @@
-# ng-hot-reload
+# 🔥 ng-hot-reload
 
 #### Developing legacy apps doesn't need to suck <sup><i>(so bad)</i></sup>!
 
@@ -38,24 +38,21 @@ Check out `gulpfile.js` in [the demo package](https://github.com/noppa/ng-hot-re
 ## Client options
 The options that you can pass to the library depend on the package you use, but these options should work in all:
 
-- `angular` (string, default: `"angular"` for standalone package and `"(require('angular'), angular)"` for Webpack)  
-JavaScript expression that will be
-evaluated to get a reference to angular.
-- `forceRefresh` (boolean, default: `true`)  
-Whether to reload window automatically
-when a change in source files can't be
-hot-reloaded.  
-Note that Webpack DevServer
-also has its own option [hotOnly](https://webpack.js.org/configuration/dev-server/#devserver-hotonly),
-which should also be configured correctly to get the
-behaviour you want when hot reloading fails.
-- `preserveState` (boolean, default: `true`)  
-If true, the library attempts to
-preserve some state in scope and controller
-instances when they are reloaded. Preserving
-state is an experimental feature and quite "hackish"
-so it may cause problems in some cases. Setting this
-to `false` might help if you run into weird errors.
+- `angular` (string, default: `"angular"` for standalone package and
+`"(require('angular'), angular)"` for Webpack) JavaScript expression that
+will be evaluated to get a reference to angular.
+- `forceRefresh` (boolean,
+default: `true`) Whether to reload window automatically when a change in
+source files can't be hot-reloaded. Note that Webpack DevServer also has its
+own option
+[hotOnly](https://webpack.js.org/configuration/dev-server/#devserver-hotonly),
+which should also be configured correctly to get the behaviour you want when
+hot reloading fails.
+- `preserveState` (boolean, default: `true`) If true,
+the library attempts to preserve some state in scope and controller instances
+when they are reloaded. Preserving state is an experimental feature and quite
+"hackish" so it may cause problems in some cases. Setting this to `false`
+might help if you run into weird errors.
 
 ## License
 MIT
