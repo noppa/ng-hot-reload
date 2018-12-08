@@ -12,12 +12,12 @@ var template = require('lodash.template'),
 var noTransform = /ng-hot-reload([\\/]packages[\\/]|-)(core|loader|standalone)/;
 
 function transform(source, map) {
-  if(this.cacheable) {
+  if (this.cacheable) {
     this.cacheable();
   }
   var options = loaderUtils.getOptions(this) || {};
 
-  if(noTransform.test(this.resourcePath)) {
+  if (noTransform.test(this.resourcePath)) {
     return this.callback(null, source, map);
   }
 

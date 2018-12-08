@@ -7,7 +7,7 @@ module.exports = function(...filePath) {
   let sourceDir;
   if (pkg === 'standalone') {
     sourceDir = 'gulp-example';
-  } else if(pkg === 'loader') {
+  } else if (pkg === 'loader') {
     sourceDir = 'webpack-example';
   } else {
     const errorMsg = `Unknown value ${JSON.stringify(pkg)} for option ` +

@@ -35,7 +35,8 @@ describe('bugfixes', function() {
       const componentFilePath = srcPath('elements', 'button.component.js');
       const originalComponentFile = await readFile(componentFilePath, 'utf8');
 
-      const dateInput = () => element(by.css('element-date input[type="date"]'));
+      const dateInput = () =>
+        element(by.css('element-date input[type="date"]'));
 
       // Programmatically set the value of the input element. We could just
       // .sendKeys() to it, but then we'd run into localization issues if the
