@@ -1,3 +1,6 @@
+## 2.0.3
+- Updated build dependencies, no breaking changes
+
 ## 2.0.2
 - Updated build dependencies, no breaking changes
 
