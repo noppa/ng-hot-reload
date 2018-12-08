@@ -15,10 +15,10 @@
   "author": "noppa",
   "license": "MIT",
   "devDependencies": {
-    "@types/angular": "1.6.50",
-    "@types/jasmine": "2.8.8",
-    "lodash": "^4.17.4",
-    "webpack": "4.16.5",
-    "webpack-command": "^0.4.1"
+    "@types/angular": "1.6.51",
+    "@types/jasmine": "3.3.0",
+    "lodash": "^4.17.11",
+    "webpack": "4.27.1",
+    "webpack-command": "^0.4.2"
   }
 }
