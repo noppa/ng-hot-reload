@@ -10,10 +10,13 @@ angular.module('hot-reload-demo')
   .component('fade', {
     controller: FadeController,
     template: `
-    <div ng-if="$ctrl.bool" class="fade">
-        Fade me in out
-    </div>
-    <button ng-click="$ctrl.visible=true">Fade In!</button>
-    <button ng-click="$ctrl.visible=false">Fade Out!</button>
+    <div class="fade-wrapper">
+      <div ng-if="$ctrl.visible" class="fade-in">
+        👻 Boo!
+      </div>
+      <button ng-click="$ctrl.visible=true" ng-if="!$ctrl.visible">
+        Be spooked
+      </button>
+     </div>
     `,
   });
