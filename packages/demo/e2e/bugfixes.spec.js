@@ -28,10 +28,19 @@ describe('bugfixes', function() {
     }
   });
 
+  it('should work with ngAnimate (issue #14)', async function() {
+    const spookButton = element(by.cssContainingText('button', 'Be spooked'));
+    spookButton.click();
+    const fadeInMessage = element(by.css('.fade-in'));
+    const classNames = (await fadeInMessage.getAttribute('class')).split(' ');
+    expect(classNames).toContain('ng-enter');
+  });
+
   if (browser.params.package === 'loader') {
     // This test is only relevant for webpack builds.
-    it('should update components that are registered in a separate file (issue #4)', // eslint-disable-line
-    async function() {
+    it(
+    'should update components that are registered in a separate file (issue #4)'
+    , async function() {
       const componentFilePath = srcPath('elements', 'button.component.js');
       const originalComponentFile = await readFile(componentFilePath, 'utf8');
 
