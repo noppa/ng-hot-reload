@@ -42,11 +42,13 @@ gulp.task('serve', ['clean'], function() {
     '!./gulp-example/protractor.config.js',
     '!./gulp-example/e2e/**/*',
     './gulp-example/**/*.html',
+    './gulp-example/**/*.css',
   ];
 
   var allFiles = [
     './node_modules/angular/angular.js',
     './node_modules/angular-ui-router/release/angular-ui-router.js',
+    './node_modules/angular-animate/angular-animate.js',
     './node_modules/ng-hot-reload-standalone/dist/client.js',
   ].concat(sourceFiles);
 
