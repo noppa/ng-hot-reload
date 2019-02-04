@@ -58,7 +58,7 @@ const initLazyVars = once(angular => {
  * instead update the previously created directive.
  *
  * @param {Object} options Options for the loader.
- * @param {angular} options.angular Unmodified version of angular, only
+ * @param {any} options.angular Unmodified version of angular, only
  *      required in the first run.
  * @return {*} Modified version of angular.
  */
@@ -92,7 +92,7 @@ function decorateAngular(options) {
 
       let originalModule;
       if (isInitialized) {
-        originalModule = angular.module.call(angular, name);
+        originalModule = angular.module(name);
 
         const updateId = currentUpdateId();
         setTimeout(() => {
@@ -101,7 +101,7 @@ function decorateAngular(options) {
           }
         }, 10);
       } else {
-        originalModule = angular.module.call(angular, name, ...rest);
+        originalModule = angular.module(name, ...rest);
         if (isInitialized === undefined) {
           moduleApi.initialized = false;
           originalModule.run(() => {

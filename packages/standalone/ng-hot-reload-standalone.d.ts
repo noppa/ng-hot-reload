@@ -86,7 +86,7 @@ interface NgHotReloadStandalone {
   wrap(path: string, file: string): string;
 
   /**
-   * Returns a stram transofrm that can be used
+   * Returns a stream transofrm that can be used
    * with gulp pipes. This transform automatically
    * calls `wrap` and `reload` for the files that
    * are passed through. 

@@ -4,7 +4,7 @@ const webpack = require('webpack');
 
 const config = {
   target: 'node',
-  devtool: 'cheap-source-map',
+  devtool: 'source-map',
   entry: {
     'ng-hot-reload-standalone': path.join(__dirname, 'src', 'index.js'),
   },
@@ -53,6 +53,7 @@ const config = {
 
 const clientConfig = {
   target: 'web',
+  devtool: 'source-map',
   entry: {
     client: path.join(__dirname, 'src', 'client-prebuilt.js'),
   },

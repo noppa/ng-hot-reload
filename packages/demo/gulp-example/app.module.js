@@ -1,1 +1,1 @@
-angular.module('hot-reload-demo', ['ui.router']);
+angular.module('hot-reload-demo', ['ui.router', 'ngAnimate']);

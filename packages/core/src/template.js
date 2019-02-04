@@ -1,6 +1,7 @@
 import angularProvider from './ng/angular';
 import updates from './updates';
 import manualReload from './util/manual-reload';
+import fromPairs from 'lodash/fromPairs';
 
 let
   templatePathPrefix =
@@ -32,19 +33,35 @@ function decorateTemplateRequest(moduleName = 'ng') {
   let templateUpdates, $templateCache;
   const angular = angularProvider();
 
-  // Override the $templateCache service so we can react to template changes
+  // Override the $templateRequest service so we can react to template changes
   angular.module(moduleName).config(['$provide', function($provide) {
     $provide.decorator('$templateRequest', ['$delegate', '$templateCache', '$q',
     function($delegate, _$templateCache_, $q) {
       $templateCache = _$templateCache_;
 
-      return function ngHotReloadRequestTemplate(tpl, ...rest) {
+      function ngHotReloadRequestTemplate(tpl, ...rest) {
         const result = $delegate.call(this, tpl, ...rest);
         result.then(template => {
           setFilePath(tpl, template);
         });
         return result;
-      };
+      }
+
+      // Proxy all the properties of the original $templateRequest service,
+      // namely, `totalPendingRequests`.
+      const proxyProperties = Object.keys($delegate).map(key => [key, {
+        get: function() {
+          return $delegate[key];
+        },
+        set: function(value) {
+          return ($delegate[key] = value);
+        },
+      }]);
+      Object.defineProperties(
+        ngHotReloadRequestTemplate,
+        fromPairs(proxyProperties));
+
+      return ngHotReloadRequestTemplate;
     }]);
   }]);
 

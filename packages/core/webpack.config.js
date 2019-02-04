@@ -4,6 +4,7 @@ const path = require('path');
 const webpack = require('webpack');
 
 const config = {
+  devtool: 'source-map',
   entry: {
     'ng-hot-reload-core': path.join(__dirname, 'src', 'index.js'),
   },
