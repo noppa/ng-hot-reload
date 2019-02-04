@@ -2,13 +2,26 @@ var webpack = require('webpack'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   path = require('path');
 
-module.exports = {
-  mode: 'development',
-  entry: [
+var mode = process.env.NODE_ENV === 'production'
+  ? 'production'
+  : 'development';
+
+var entry = ['./webpack-example/index.js'];
+var jsLoaders = ['babel-loader'];
+
+if (mode === 'development') {
+  // Enables hot-reloading using the ng-hot-reload library
+  // Only used in development, not in production.
+  jsLoaders = ['ng-hot-reload-loader'].concat(jsLoaders);
+  entry = [
     'webpack-dev-server/client?http://localhost:8080',
     'webpack/hot/only-dev-server',
-    './webpack-example/index.js',
-  ],
+  ].concat(entry);
+}
+
+module.exports = {
+  mode: mode,
+  entry: entry,
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'bundle.js',
@@ -18,7 +31,7 @@ module.exports = {
     rules: [
       {
         test: /\.jsx?$/,
-        loader: ['ng-hot-reload-loader', 'babel-loader'],
+        loader: jsLoaders,
         exclude: /node_modules/,
       },
       {
