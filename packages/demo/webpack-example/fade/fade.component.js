@@ -7,9 +7,9 @@ class FadeController {
 }
 
 angular.module('hot-reload-demo')
-  .component('fade', {
-    controller: FadeController,
-    template: `
+    .component('fade', {
+      controller: FadeController,
+      template: `
     <div class="fade-wrapper">
       <div ng-if="$ctrl.visible" class="fade-in">
         👻 Boo!
@@ -19,4 +19,4 @@ angular.module('hot-reload-demo')
       </button>
      </div>
     `,
-  });
+    });

@@ -17,12 +17,12 @@ function PreviewController() {
   ];
   this.getSelected = () =>
     this.frameworks.filter(x => x.selected)
-      .map(x => x.name)
-      .join(', ');
+        .map(x => x.name)
+        .join(', ');
 }
 
 angular.module('hot-reload-demo')
-  .component('preview', {
-    controller: PreviewController,
-    templateUrl: 'preview/preview.template.html',
-  });
+    .component('preview', {
+      controller: PreviewController,
+      templateUrl: 'preview/preview.template.html',
+    });

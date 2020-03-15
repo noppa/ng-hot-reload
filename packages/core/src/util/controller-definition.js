@@ -26,7 +26,7 @@ export default function controllerDefinition({ controller, controllerAs }) {
       // got this far, the app wouldn't have worked anyway so...
       // @ts-ignore
       throw angular.$$minErr('$controller')('ctrlfmt',
-        'Badly formed controller string \'{0}\'. ' +
+          'Badly formed controller string \'{0}\'. ' +
         'Must match `__name__ as __id__` or `__name__`.', controller);
     }
     name = match[1];

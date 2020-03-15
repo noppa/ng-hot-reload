@@ -15,7 +15,7 @@ const
   eligibleForReload = hasIsolateScope;
 
 function hasIsolateScope({ scope }) {
-    return scope === true || isObject(scope);
+  return scope === true || isObject(scope);
 }
 
 /**
@@ -56,146 +56,146 @@ const directiveProvider = moduleName => {
     return angular.module(moduleName).directive(name, ngHotReload$Directive);
 
     function ngHotReload$Directive(_$injector_, $templateCache, $compile,
-      $animate, $timeout, $rootScope) {
-        $injector = _$injector_;
-        if (!updates) {
-          updates = updatesProvider($rootScope, moduleName, 'directive');
+        $animate, $timeout, $rootScope) {
+      $injector = _$injector_;
+      if (!updates) {
+        updates = updatesProvider($rootScope, moduleName, 'directive');
+      }
+      const depId = identifierForDependency({ name, type: 'directive' });
+      // The directive might've changed before it was initialized
+      // the first time. If that's the case, there should be
+      // new updated directiveFactory in updateQueue.
+      if (updateQueue && updateQueue.has(name)) {
+        directiveFactory = updateQueue.get(name);
+        updateQueue.delete(name);
+        if (updateQueue.size === 0) {
+          updateQueue = null;
         }
-        const depId = identifierForDependency({ name, type: 'directive' });
-        // The directive might've changed before it was initialized
-        // the first time. If that's the case, there should be
-        // new updated directiveFactory in updateQueue.
-        if (updateQueue && updateQueue.has(name)) {
-          directiveFactory = updateQueue.get(name);
-          updateQueue.delete(name);
-          if (updateQueue.size === 0) {
-            updateQueue = null;
-          }
-        }
+      }
 
-        const stateDataKey = `ng-hot-reload/directive/state/${name}`;
+      const stateDataKey = `ng-hot-reload/directive/state/${name}`;
 
-        // Initialized directive definition.
-        // This is the object that gets returned from
-        // ```
-        // angular.module(..).directive(name, function(){ .. })
-        //                                         here ^^^^^^
-        // ```
-        // and contains configuration fields like "controller", "template" etc.
-        //
-        let originalDirective = $injector.invoke(directiveFactory, this);
+      // Initialized directive definition.
+      // This is the object that gets returned from
+      // ```
+      // angular.module(..).directive(name, function(){ .. })
+      //                                         here ^^^^^^
+      // ```
+      // and contains configuration fields like "controller", "template" etc.
+      //
+      let originalDirective = $injector.invoke(directiveFactory, this);
 
-        if (!eligibleForReload(originalDirective)) {
-          return originalDirective;
-        }
+      if (!eligibleForReload(originalDirective)) {
+        return originalDirective;
+      }
 
-        if (isFunction(originalDirective)) {
-          originalDirective = { compile: originalDirective };
-        }
+      if (isFunction(originalDirective)) {
+        originalDirective = { compile: originalDirective };
+      }
 
-        const result = {
-          [$originalCompile]: originalDirective.compile,
-        };
+      const result = {
+        [$originalCompile]: originalDirective.compile,
+      };
 
-        return Object.assign(result, originalDirective, {
-          compile() {
-            const
-              directive = getDirective(name)[0],
-              originalCompile = isFunction(directive[$originalCompile]) ?
+      return Object.assign(result, originalDirective, {
+        compile() {
+          const
+            directive = getDirective(name)[0],
+            originalCompile = isFunction(directive[$originalCompile]) ?
                   // We have received an updated compile-function
-                  directive[$originalCompile]
-                : isFunction(directive.link) ?
-                    () => directive.link
-                    : undefined;
+                  directive[$originalCompile] :
+                isFunction(directive.link) ?
+                    () => directive.link :
+                    undefined;
 
-            const originalLink =
+          const originalLink =
               originalCompile && originalCompile.apply(this, arguments);
 
-            // Store the current directive version to so that we know
-            // if some other directive has cached it and we need to
-            // force recompilation.
-            const directiveVersion = directiveVersions.get(name);
+          // Store the current directive version to so that we know
+          // if some other directive has cached it and we need to
+          // force recompilation.
+          const directiveVersion = directiveVersions.get(name);
 
-            return link;
+          return link;
 
-            function link($scope, $element) {
-              let controllerAs, initialState;
-              const keepState = getOptions().preserveState;
-              if (keepState) {
-                controllerAs = controllerDefinition(directive).controllerAs;
-                // Save the initial scope to be used later
-                // when the hotswap happens
-                initialState = preserveState.snapshot($scope, controllerAs);
-              }
+          function link($scope, $element) {
+            let controllerAs, initialState;
+            const keepState = getOptions().preserveState;
+            if (keepState) {
+              controllerAs = controllerDefinition(directive).controllerAs;
+              // Save the initial scope to be used later
+              // when the hotswap happens
+              initialState = preserveState.snapshot($scope, controllerAs);
+            }
 
-              if (directiveVersion < directiveVersions.get(name)) {
-                // This happens when something, like ngIf-directive,
-                // has cached the compiled directive and its link-function to
-                // be used after, say, when ngIf directive's condition changes.
-                // If the directive source has been updated, we *need* that
-                // recompilation step to get the updates applied.
-                recompile(false);
-              } else {
-                // Register onUpdate callback that watches changes to
-                // any of the directive's dependencies and to the
-                // directive itself.
-                const deps = [depId].concat(
+            if (directiveVersion < directiveVersions.get(name)) {
+              // This happens when something, like ngIf-directive,
+              // has cached the compiled directive and its link-function to
+              // be used after, say, when ngIf directive's condition changes.
+              // If the directive source has been updated, we *need* that
+              // recompilation step to get the updates applied.
+              recompile(false);
+            } else {
+              // Register onUpdate callback that watches changes to
+              // any of the directive's dependencies and to the
+              // directive itself.
+              const deps = [depId].concat(
                   getDependencies(directiveFactory, directive, $injector));
-                updates.onUpdate(deps, $scope, (evt, info) => {
-                  recompile(keepState);
-                });
+              updates.onUpdate(deps, $scope, (evt, info) => {
+                recompile(keepState);
+              });
 
-                if (keepState) {
-                  // If we have saved the state of the directive before
-                  // updating, we can "roll back" the previous state
-                  // so that development can continue from the
-                  // directive's previous state.
-                  const prevStateData = $element.data(stateDataKey);
-                  if (prevStateData) {
-                    $element.removeData(stateDataKey);
-                    const
-                      newState = preserveState.snapshot($scope, controllerAs),
-                      unchanged = preserveState.unchangedProperties(
+              if (keepState) {
+                // If we have saved the state of the directive before
+                // updating, we can "roll back" the previous state
+                // so that development can continue from the
+                // directive's previous state.
+                const prevStateData = $element.data(stateDataKey);
+                if (prevStateData) {
+                  $element.removeData(stateDataKey);
+                  const
+                    newState = preserveState.snapshot($scope, controllerAs),
+                    unchanged = preserveState.unchangedProperties(
                         prevStateData.initialState, newState);
 
-                    preserveState.rollback(unchanged,
+                  preserveState.rollback(unchanged,
                       prevStateData.currentState, $scope, controllerAs);
-                  }
                 }
               }
+            }
 
-              function recompile(keepState) {
-                //
-                // Showtime!
-                // update-function should've updated angular's registry
-                // of directive definitions by now, so now we just need to
-                // force re-compilation of the directive and move some
-                // of the old state to the new scope.
-                //
-                const
-                  scope = $scope.$parent,
-                  currentState = keepState &&
+            function recompile(keepState) {
+              //
+              // Showtime!
+              // update-function should've updated angular's registry
+              // of directive definitions by now, so now we just need to
+              // force re-compilation of the directive and move some
+              // of the old state to the new scope.
+              //
+              const
+                scope = $scope.$parent,
+                currentState = keepState &&
                     preserveState.snapshot($scope, controllerAs);
 
-                if (keepState) {
-                  $element.data(stateDataKey,
+              if (keepState) {
+                $element.data(stateDataKey,
                     { currentState, initialState });
-                }
-                // Destroy the old scope to let controllers etc.
-                // do their cleanup work.
-                $timeout(() => $scope.$destroy());
-
-                $compile($element)(scope);
               }
+              // Destroy the old scope to let controllers etc.
+              // do their cleanup work.
+              $timeout(() => $scope.$destroy());
 
-              if (angular.isFunction(originalLink)) {
-                // Call the user-defined link-function
-                return originalLink.apply(this, arguments);
-              }
-            };
-          },
-        });
-      }
+              $compile($element)(scope);
+            }
+
+            if (angular.isFunction(originalLink)) {
+              // Call the user-defined link-function
+              return originalLink.apply(this, arguments);
+            }
+          };
+        },
+      });
+    }
   }
 
   function update(name, factoryFn) {
@@ -204,9 +204,8 @@ const directiveProvider = moduleName => {
 
     if ($injector) {
       try {
-        let
-          oldDirective = getDirective(name),
-          newDirective = clone($injector.invoke(factoryFn, this));
+        const oldDirective = getDirective(name);
+        let newDirective = clone($injector.invoke(factoryFn, this));
 
         if (isFunction(newDirective)) {
           newDirective = { [$originalCompile]: newDirective };

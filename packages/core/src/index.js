@@ -24,8 +24,8 @@ const decorator =
   // This can happen with webpack when update has been accepted further
   // up the tree.
   const cacheKey = `${module_.name}/${providerType}/${name}`;
-  const noUpdates = factoryCache.has(cacheKey)
-    && factoryCache.get(cacheKey) === factory;
+  const noUpdates = factoryCache.has(cacheKey) &&
+    factoryCache.get(cacheKey) === factory;
 
   if (noUpdates) {
     // This counts as an update even though no changes were made.
@@ -112,17 +112,17 @@ function decorateAngular(options) {
 
       const updateOrCreate = isInitialized ? 'update' : 'create';
       const decorate = providerType => decorator(
-        angularMock, moduleMock,
-        providerType, moduleApi[providerType][updateOrCreate]);
+          angularMock, moduleMock,
+          providerType, moduleApi[providerType][updateOrCreate]);
 
       Object.assign(
-        moduleMock,
-        originalModule,
-        {
-          directive: decorate('directive'),
-          component: decorate('component'),
-          controller: decorate('controller'),
-        }
+          moduleMock,
+          originalModule,
+          {
+            directive: decorate('directive'),
+            component: decorate('component'),
+            controller: decorate('controller'),
+          },
       );
       return moduleMock;
     },

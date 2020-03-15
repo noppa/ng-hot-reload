@@ -10,9 +10,9 @@ const
   root = process.cwd(),
   files = new Map(),
   getFileType = path =>
-    scriptFileReg.test(path) ? 'script'
-    : htmlFileReg.test(path) ? 'template'
-    : 'unknown';
+    scriptFileReg.test(path) ? 'script' :
+    htmlFileReg.test(path) ? 'template' :
+    'unknown';
 
 app.get('*.js', (req, res) => {
   const src = req.path.replace(/^\//, '');

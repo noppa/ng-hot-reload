@@ -36,33 +36,33 @@ function decorateTemplateRequest(moduleName = 'ng') {
   // Override the $templateRequest service so we can react to template changes
   angular.module(moduleName).config(['$provide', function($provide) {
     $provide.decorator('$templateRequest', ['$delegate', '$templateCache', '$q',
-    function($delegate, _$templateCache_, $q) {
-      $templateCache = _$templateCache_;
+      function($delegate, _$templateCache_, $q) {
+        $templateCache = _$templateCache_;
 
-      function ngHotReloadRequestTemplate(tpl, ...rest) {
-        const result = $delegate.call(this, tpl, ...rest);
-        result.then(template => {
-          setFilePath(tpl, template);
-        });
-        return result;
-      }
+        function ngHotReloadRequestTemplate(tpl, ...rest) {
+          const result = $delegate.call(this, tpl, ...rest);
+          result.then(template => {
+            setFilePath(tpl, template);
+          });
+          return result;
+        }
 
-      // Proxy all the properties of the original $templateRequest service,
-      // namely, `totalPendingRequests`.
-      const proxyProperties = Object.keys($delegate).map(key => [key, {
-        get: function() {
-          return $delegate[key];
-        },
-        set: function(value) {
-          return ($delegate[key] = value);
-        },
+        // Proxy all the properties of the original $templateRequest service,
+        // namely, `totalPendingRequests`.
+        const proxyProperties = Object.keys($delegate).map(key => [key, {
+          get: function() {
+            return $delegate[key];
+          },
+          set: function(value) {
+            return ($delegate[key] = value);
+          },
+        }]);
+        Object.defineProperties(
+            ngHotReloadRequestTemplate,
+            fromPairs(proxyProperties));
+
+        return ngHotReloadRequestTemplate;
       }]);
-      Object.defineProperties(
-        ngHotReloadRequestTemplate,
-        fromPairs(proxyProperties));
-
-      return ngHotReloadRequestTemplate;
-    }]);
   }]);
 
   angular.module(moduleName).run(['$rootScope', function($rootScope) {
@@ -77,8 +77,8 @@ function decorateTemplateRequest(moduleName = 'ng') {
         templateUpdates.update(key);
       } else {
         const msg = templateUpdates ?
-          `Template ${filePath} hasn't been used yet.`
-          : 'App was not initialized yet.';
+          `Template ${filePath} hasn't been used yet.` :
+          'App was not initialized yet.';
         manualReload(msg);
       }
     },
@@ -95,7 +95,7 @@ function matchFilePath(file) {
     file.length;
 
   const filePath = file.substring(
-    filePathStart + templatePathPrefix.length, filePathEnd);
+      filePathStart + templatePathPrefix.length, filePathEnd);
 
   return {
     filePath,

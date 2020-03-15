@@ -67,10 +67,10 @@ function copyData($rootScope, obj, depth) {
     }
 
     if (type === 'object') {
-      const uncopyable = angular.isElement(obj)
-        || obj === window
-        || isInjectedValue(obj)
-        || $rootScopeProto.isPrototypeOf(obj);
+      const uncopyable = angular.isElement(obj) ||
+        obj === window ||
+        isInjectedValue(obj) ||
+        $rootScopeProto.isPrototypeOf(obj);
 
       const result = !uncopyable && clone(obj);
       if (!result || result.constructor !== obj.constructor) {

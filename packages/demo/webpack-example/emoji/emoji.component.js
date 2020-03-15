@@ -5,7 +5,7 @@ class EmojiComponentController {
 }
 
 angular.module('hot-reload-demo')
-  .component('emoji', {
-    controller: EmojiComponentController,
-    template: `<span ng-bind="$ctrl.icon"></span>`,
-  });
+    .component('emoji', {
+      controller: EmojiComponentController,
+      template: `<span ng-bind="$ctrl.icon"></span>`,
+    });
