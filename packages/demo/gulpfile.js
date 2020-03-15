@@ -1,15 +1,15 @@
-var gulp = require('gulp');
-var iife = require('gulp-iife');
-var inject = require('gulp-inject');
-var watch = require('gulp-watch');
-var gulpIf = require('gulp-if');
-var sourcemaps = require('gulp-sourcemaps');
-var browserSync = require('browser-sync');
-var browserSyncSpa = require('browser-sync-spa');
-var del = require('del');
-var path = require('path');
+const gulp = require('gulp');
+const iife = require('gulp-iife');
+const inject = require('gulp-inject');
+const watch = require('gulp-watch');
+const gulpIf = require('gulp-if');
+const sourcemaps = require('gulp-sourcemaps');
+const browserSync = require('browser-sync');
+const browserSyncSpa = require('browser-sync-spa');
+const del = require('del');
+const path = require('path');
 
-var ngHotReload = require('ng-hot-reload-standalone')({
+const ngHotReload = require('ng-hot-reload-standalone')({
   start: false,
 });
 
@@ -24,7 +24,7 @@ gulp.task('clean', function() {
 });
 
 gulp.task('serve', gulp.series('clean', function() {
-  var bs = browserSync.create();
+  const bs = browserSync.create();
 
   bs.use(browserSyncSpa({}));
   bs.init({
@@ -42,7 +42,7 @@ gulp.task('serve', gulp.series('clean', function() {
     },
   });
 
-  var sourceFiles = [
+  const sourceFiles = [
     './gulp-example/app.module.js',
     './gulp-example/**/*.js',
     '!./gulp-example/protractor.config.js',
@@ -51,7 +51,7 @@ gulp.task('serve', gulp.series('clean', function() {
     './gulp-example/**/*.css',
   ];
 
-  var allFiles = [
+  const allFiles = [
     './node_modules/angular/angular.js',
     './node_modules/angular-ui-router/release/angular-ui-router.js',
     './node_modules/angular-animate/angular-animate.js',
