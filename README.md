@@ -23,6 +23,12 @@ This repository is a [monorepo](https://github.com/babel/babel/blob/master/doc/d
 - [standalone](https://www.npmjs.com/package/ng-hot-reload-standalone) provides methods to start a standalone WebSocket server and send updates to the client. This package integrates quite nicely with [Gulp](https://gulpjs.com/) but it should also be possible to use it with pretty much any other build tool that is able to watch and react to file changes if you are willing to put some effort into gluing the pieces together.
 - [demo](https://github.com/noppa/ng-hot-reload/tree/master/packages/demo) package contains demo implementations using both Webpack and Gulp. It's a good read-through if you are planning to integrate this library to your build. The package also contains some e2e tests for this project which you only need to worry about if you want to contribute to the project.
 
+### Limitations
+
+ng-hot-reload is a tool focused on making UI development more pleasant with AngularJS. It's not perfect, and it won't cover 100% of the code edits you make — a full reload is still needed every once in a while. Understanding the limitations of this library may help you achieve the best development experience with hot reloading.
+
+For a noncomprehensive guide to what you might want to do or avoid doing with the library, see [Limitations](Limitations.md).
+
 ### Installation for Webpack build
 
 `npm install --save-dev ng-hot-reload-loader`
