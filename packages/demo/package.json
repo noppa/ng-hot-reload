@@ -34,7 +34,9 @@
     "html-webpack-plugin": "~3.2.0",
     "ng-hot-reload-loader": "^2.1.0",
     "ng-hot-reload-standalone": "^2.1.0",
+    "protractor": "^5.4.3",
     "style-loader": "^1.1.3",
+    "webdriver-manager": "^12.1.7",
     "webpack": "4.42.0",
     "webpack-dev-server": "3.10.3"
   },
