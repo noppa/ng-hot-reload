@@ -1,15 +1,15 @@
-var gulp = require('gulp');
-var iife = require('gulp-iife');
-var inject = require('gulp-inject');
-var watch = require('gulp-watch');
-var gulpIf = require('gulp-if');
-var sourcemaps = require('gulp-sourcemaps');
-var browserSync = require('browser-sync');
-var browserSyncSpa = require('browser-sync-spa');
-var del = require('del');
-var path = require('path');
+const gulp = require('gulp');
+const iife = require('gulp-iife');
+const inject = require('gulp-inject');
+const watch = require('gulp-watch');
+const gulpIf = require('gulp-if');
+const sourcemaps = require('gulp-sourcemaps');
+const browserSync = require('browser-sync');
+const browserSyncSpa = require('browser-sync-spa');
+const del = require('del');
+const path = require('path');
 
-var ngHotReload = require('ng-hot-reload-standalone')({
+const ngHotReload = require('ng-hot-reload-standalone')({
   start: false,
 });
 
@@ -17,8 +17,14 @@ function isJsSourceFile(file) {
   return /\.js$/.test(file.path) && !/node_modules/.test(file.path);
 }
 
-gulp.task('serve', ['clean'], function() {
-  var bs = browserSync.create();
+gulp.task('clean', function() {
+  return del([
+    'dist',
+  ]);
+});
+
+gulp.task('serve', gulp.series('clean', function() {
+  const bs = browserSync.create();
 
   bs.use(browserSyncSpa({}));
   bs.init({
@@ -36,7 +42,7 @@ gulp.task('serve', ['clean'], function() {
     },
   });
 
-  var sourceFiles = [
+  const sourceFiles = [
     './gulp-example/app.module.js',
     './gulp-example/**/*.js',
     '!./gulp-example/protractor.config.js',
@@ -45,7 +51,7 @@ gulp.task('serve', ['clean'], function() {
     './gulp-example/**/*.css',
   ];
 
-  var allFiles = [
+  const allFiles = [
     './node_modules/angular/angular.js',
     './node_modules/angular-ui-router/release/angular-ui-router.js',
     './node_modules/angular-animate/angular-animate.js',
@@ -54,35 +60,29 @@ gulp.task('serve', ['clean'], function() {
 
   // Move js files to dist folder.
   gulp.src(allFiles)
-    .pipe(sourcemaps.init())
-    .pipe(gulpIf(isJsSourceFile, iife()))
-    // Wrap js files with ng-hot-reload's initial wrapper.
-    .pipe(ngHotReload.stream({
-      includeClient: false,
-    }))
-    .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('./dist'));
+      .pipe(sourcemaps.init())
+      .pipe(gulpIf(isJsSourceFile, iife()))
+  // Wrap js files with ng-hot-reload's initial wrapper.
+      .pipe(ngHotReload.stream({
+        includeClient: false,
+      }))
+      .pipe(sourcemaps.write('.'))
+      .pipe(gulp.dest('./dist'));
 
   // Inject source file paths to index.html using gulp-inject plugin.
   gulp.src('./index.html')
-    .pipe(inject(gulp.src(allFiles, {
-      read: false,
-    })))
-    .pipe(gulp.dest('./dist'));
+      .pipe(inject(gulp.src(allFiles, {
+        read: false,
+      })))
+      .pipe(gulp.dest('./dist'));
 
   ngHotReload.start();
 
   // Watch changes to the source files, pipe through `ngHotReload.stream`
   // and then to "dist" folder.
   return watch(sourceFiles)
-    .pipe(ngHotReload.stream({
-      includeClient: false,
-    }))
-    .pipe(gulp.dest('./dist'));
-});
-
-gulp.task('clean', function() {
-  return del([
-    'dist',
-  ]);
-});
+      .pipe(ngHotReload.stream({
+        includeClient: false,
+      }))
+      .pipe(gulp.dest('./dist'));
+}));

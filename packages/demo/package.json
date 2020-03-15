@@ -13,29 +13,37 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "angular": "^1.7.5",
-    "angular-animate": "^1.7.6",
-    "angular-ui-router": "1.0.20",
-    "express": "^4.16.4"
+    "angular": "^1.7.9",
+    "angular-animate": "^1.7.9",
+    "angular-ui-router": "1.0.25",
+    "express": "^4.17.1"
   },
   "devDependencies": {
-    "browser-sync": "^2.26.3",
+    "browser-sync": "^2.26.7",
     "browser-sync-spa": "^1.0.3",
-    "cheerio": "~1.0.0-rc.2",
-    "css-loader": "^2.1.0",
-    "del": "^3.0.0",
-    "gulp": "^3.9.1",
-    "gulp-if": "^2.0.2",
+    "cheerio": "~1.0.0-rc.3",
+    "css-loader": "^3.4.2",
+    "del": "^5.1.0",
+    "gulp": "^4.0.2",
+    "gulp-if": "^3.0.0",
     "gulp-iife": "^0.4.0",
-    "gulp-inject": "^5.0.2",
-    "gulp-sourcemaps": "2.6.4",
+    "gulp-inject": "^5.0.5",
+    "gulp-sourcemaps": "2.6.5",
     "gulp-watch": "^5.0.1",
     "html-loader": "~0.5.5",
     "html-webpack-plugin": "~3.2.0",
     "ng-hot-reload-loader": "^2.1.0",
     "ng-hot-reload-standalone": "^2.1.0",
-    "style-loader": "^0.23.1",
-    "webpack": "4.27.1",
-    "webpack-dev-server": "3.1.14"
+    "protractor": "^5.4.3",
+    "style-loader": "^1.1.3",
+    "webdriver-manager": "^12.1.7",
+    "webpack": "4.42.0",
+    "webpack-dev-server": "3.10.3"
+  },
+  "resolutions": {
+    "lodash": "4.17.15"
+  },
+  "engines": {
+    "node": ">=8.x"
   }
 }

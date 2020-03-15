@@ -57,17 +57,18 @@ function snapshot(scope, controllerAs) {
  * Returns the property names whose values have not been changed.
  * @param {Object} oldState A state snapshot from the snapshot function.
  * @param {Object} newState A state snapshot from the snapshot function.
- * @return {Object<{$ctrl: string[], $scope: string[]}>} List of property names.
+ * @return {{$ctrl: string[], $scope: string[]}} List of property names.
  */
 function unchangedProperties(oldState, newState) {
-  let $scope = [], $ctrl;
+  const $scope = [];
+  let $ctrl;
 
   oldState.$scope.forEach(
-    _unchangedPropertiesCb(isEqual, $scope, newState.$scope));
+      _unchangedPropertiesCb(isEqual, $scope, newState.$scope));
   if (oldState.$ctrl && newState.$ctrl) {
     $ctrl = [];
     oldState.$ctrl.forEach(
-      _unchangedPropertiesCb(isEqual, $ctrl, newState.$ctrl));
+        _unchangedPropertiesCb(isEqual, $ctrl, newState.$ctrl));
   }
   return {
     $scope,

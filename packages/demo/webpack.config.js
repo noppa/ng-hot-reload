@@ -2,9 +2,9 @@ var webpack = require('webpack'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   path = require('path');
 
-var mode = process.env.NODE_ENV === 'production'
-  ? 'production'
-  : 'development';
+var mode = process.env.NODE_ENV === 'production' ?
+  'production' :
+  'development';
 
 var entry = ['./webpack-example/index.js'];
 var jsLoaders = ['babel-loader'];

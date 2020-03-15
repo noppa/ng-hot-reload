@@ -1,17 +1,17 @@
 
 angular.module('hot-reload-demo')
-  .config(['$stateProvider', config]);
+    .config(['$stateProvider', config]);
 
 function config($stateProvider) {
   $stateProvider
-    .state('home', {
-      url: '',
-      templateUrl: 'home.view.html',
-      controller: 'HomeController',
-      controllerAs: 'vm',
-    })
-    .state('preview', {
-      url: '/preview',
-      component: 'preview',
-    });
+      .state('home', {
+        url: '',
+        templateUrl: 'home.view.html',
+        controller: 'HomeController',
+        controllerAs: 'vm',
+      })
+      .state('preview', {
+        url: '/preview',
+        component: 'preview',
+      });
 }

@@ -60,8 +60,8 @@ export default function($rootScope, moduleName, type) {
         // Check if the scope or its parent scope is already
         // being recompiled.
         const isCompiling = Boolean(
-          $scope[SCOPE_COMPILING]
-          || $scope.$parent && $scope.$parent[SCOPE_COMPILING]
+            $scope[SCOPE_COMPILING] ||
+          $scope.$parent && $scope.$parent[SCOPE_COMPILING],
         );
 
         if (canReceive && !isCompiling) {

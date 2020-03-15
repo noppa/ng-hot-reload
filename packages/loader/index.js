@@ -25,8 +25,8 @@ function transform(source, map) {
     corePath: JSON.stringify(corePath),
     source: source,
     requireAngular: typeof options.requireAngular === 'string' ?
-      options.requireAngular
-      : '(require("angular"), angular)',
+      options.requireAngular :
+      '(require("angular"), angular)',
     // Boolean options that default to true.
     forceRefresh: options.forceRefresh !== false,
     preserveState: options.preserveState !== false,

@@ -9,10 +9,10 @@ class TreeComponentController {
 }
 
 angular.module('hot-reload-demo')
-  .component('tree', {
-    templateUrl: 'tree/tree.html',
-    controller: TreeComponentController,
-    bindings: {
-      depth: '<',
-    },
-  });
+    .component('tree', {
+      templateUrl: 'tree/tree.html',
+      controller: TreeComponentController,
+      bindings: {
+        depth: '<',
+      },
+    });

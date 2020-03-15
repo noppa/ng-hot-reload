@@ -15,7 +15,7 @@ class CounterController {
 }
 
 angular.module('hot-reload-demo')
-  .component('counter', {
-    controller: CounterController,
-    template,
-  });
+    .component('counter', {
+      controller: CounterController,
+      template,
+    });
