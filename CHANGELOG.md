@@ -1,3 +1,7 @@
+## 3.0.0
+- Add souce map support [#19](https://github.com/noppa/ng-hot-reload/issues/19) 
+- Drop support for Node versions older than 8
+
 ## 2.1.0
 - Fixed/added ngAnimate support [#14](https://github.com/noppa/ng-hot-reload/issues/14)
   [759484a](https://github.com/noppa/ng-hot-reload/commit/759484ab8f713163cc216acd1b8201ff665592f4)
