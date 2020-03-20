@@ -8,7 +8,9 @@
     "test:gulp": "protractor protractor.config.js --params.package standalone",
     "test:webpack": "protractor protractor.config.js --params.package loader",
     "webpack-example": "node server.js",
-    "gulp-example": "gulp serve"
+    "webpack-typescript-example": "node server.js --typescript",
+    "gulp-example": "gulp serve",
+    "typescript-example-check": "tsc --project webpack-typescript-example/tsconfig.json --noEmit"
   },
   "license": "MIT",
   "private": true,
@@ -19,6 +21,7 @@
     "express": "^4.17.1"
   },
   "devDependencies": {
+    "@types/angular": "1.6.57",
     "browser-sync": "^2.26.7",
     "browser-sync-spa": "^1.0.3",
     "cheerio": "~1.0.0-rc.3",
@@ -36,6 +39,8 @@
     "ng-hot-reload-standalone": "^2.1.0",
     "protractor": "^5.4.3",
     "style-loader": "^1.1.3",
+    "typescript": "^3.8.3",
+    "ts-loader": "6.2.1",
     "webdriver-manager": "^12.1.7",
     "webpack": "4.42.0",
     "webpack-dev-server": "3.10.3"

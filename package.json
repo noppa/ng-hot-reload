@@ -24,5 +24,6 @@
     "lerna": "3.20.2",
     "webpack": "4.42.0",
     "yargs": "^15.3.0"
-  }
+  },
+  "workspaces": ["packages/*"]
 }

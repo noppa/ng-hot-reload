@@ -1,29 +1,31 @@
-var template = require('lodash.template'),
+const template = require('lodash.template'),
   fs = require('fs'),
   path = require('path'),
   loaderUtils = require('loader-utils'),
   templatePath = path.join(__dirname, 'src', 'source.js.tpl'),
   compiled = template(fs.readFileSync(templatePath, 'utf8')),
-  corePath = require.resolve('ng-hot-reload-core');
-
+  corePath = require.resolve('ng-hot-reload-core'),
+  sourceMap = require('source-map');
 
 // Tests that we don't modify our own library files, i.e. files that are in
 // ng-hot-reload/packages or one of the suffixed ng-hot-reload-* directories.
 var noTransform = /ng-hot-reload([\\/]packages[\\/]|-)(core|loader|standalone)/;
 
-function transform(source, map) {
+async function transform(source, map) {
+  const callback = this.async();
   if (this.cacheable) {
     this.cacheable();
   }
-  var options = loaderUtils.getOptions(this) || {};
+  const options = loaderUtils.getOptions(this) || {};
 
   if (noTransform.test(this.resourcePath)) {
-    return this.callback(null, source, map);
+    return callback(null, source, map);
   }
 
-  var result = compiled({
+  const sourcePlaceholder = '<SOUCE_PLACEHOLDER>';
+  const result = compiled({
     corePath: JSON.stringify(corePath),
-    source: source,
+    source: sourcePlaceholder,
     requireAngular: typeof options.requireAngular === 'string' ?
       options.requireAngular :
       '(require("angular"), angular)',
@@ -31,8 +33,15 @@ function transform(source, map) {
     forceRefresh: options.forceRefresh !== false,
     preserveState: options.preserveState !== false,
   });
-
-  return result;
+  const [topPart, bottomPart] = result.split(sourcePlaceholder);
+  await sourceMap.SourceMapConsumer.with(map, null, async (consumer) => {
+    const node = sourceMap.SourceNode.fromStringWithSourceMap(source, consumer);
+    node.prepend(topPart);
+    node.add(bottomPart);
+    const result = node.toStringWithSourceMap();
+    const newMap = result.map.toJSON();
+    callback(null, result.code, newMap);
+  });
 }
 
 module.exports = transform;
