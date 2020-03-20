@@ -1,7 +1,7 @@
 {
   "main": "index.js",
   "name": "ng-hot-reload-loader",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "Webpack hot loader for angularjs apps",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,7 +11,7 @@
   "dependencies": {
     "loader-utils": "^1.4.0",
     "lodash.template": "^4.5.0",
-    "ng-hot-reload-core": "^2.1.0",
+    "ng-hot-reload-core": "^3.0.0",
     "source-map": "^0.7.3"
   },
   "engines": {

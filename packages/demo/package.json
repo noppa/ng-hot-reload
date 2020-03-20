@@ -1,6 +1,6 @@
 {
   "name": "ng-hot-reload-demo",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "Demo for the ng-hot-reload package",
   "main": "bundle.js",
   "author": "noppa",
@@ -35,12 +35,12 @@
     "gulp-watch": "^5.0.1",
     "html-loader": "~0.5.5",
     "html-webpack-plugin": "~3.2.0",
-    "ng-hot-reload-loader": "^2.1.0",
-    "ng-hot-reload-standalone": "^2.1.0",
+    "ng-hot-reload-loader": "^3.0.0",
+    "ng-hot-reload-standalone": "^3.0.0",
     "protractor": "^5.4.3",
     "style-loader": "^1.1.3",
-    "typescript": "^3.8.3",
     "ts-loader": "6.2.1",
+    "typescript": "^3.8.3",
     "webdriver-manager": "^12.1.7",
     "webpack": "4.42.0",
     "webpack-dev-server": "3.10.3"
