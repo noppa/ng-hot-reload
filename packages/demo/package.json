@@ -8,7 +8,8 @@
     "test:gulp": "protractor protractor.config.js --params.package standalone",
     "test:webpack": "protractor protractor.config.js --params.package loader",
     "webpack-example": "node server.js",
-    "gulp-example": "gulp serve"
+    "gulp-example": "gulp serve",
+    "typescript-example-check": "tsc --project webpack-typescript-example/tsconfig.json --noEmit"
   },
   "license": "MIT",
   "private": true,
@@ -20,7 +21,6 @@
   },
   "devDependencies": {
     "@types/angular": "1.6.57",
-    "@types/jquery": "3.3.1",
     "browser-sync": "^2.26.7",
     "browser-sync-spa": "^1.0.3",
     "cheerio": "~1.0.0-rc.3",
