@@ -22,7 +22,7 @@ if (mode === 'development') {
 module.exports = {
   mode: mode,
   entry: entry,
-  devtool: 'inline-source-map',
+  devtool: 'source-map',
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'bundle.js',
