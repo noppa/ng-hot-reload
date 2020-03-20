@@ -1,6 +1,12 @@
-var webpack = require('webpack'),
-  WebpackDevServer = require('webpack-dev-server'),
-  config = require('./webpack.config.js');
+const webpack = require('webpack');
+const WebpackDevServer = require('webpack-dev-server');
+const useTypeScript = process.argv.includes('--typescript');
+
+const config = require(
+  useTypeScript ?
+  './webpack-ts.config.js' :
+  './webpack.config.js',
+);
 
 new WebpackDevServer(webpack(config), {
   publicPath: '/',
