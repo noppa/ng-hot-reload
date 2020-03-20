@@ -35,18 +35,12 @@ async function transform(source, map) {
   });
   const [topPart, bottomPart] = result.split(sourcePlaceholder);
   await sourceMap.SourceMapConsumer.with(map, null, async (consumer) => {
-    try {
-      const node = sourceMap.SourceNode.fromStringWithSourceMap(source, consumer);
-      node.prepend(topPart);
-      node.add(bottomPart);
-      const result = node.toStringWithSourceMap();
-      const newMap = result.map.toJSON();
-      console.log(newMap);
-      callback(null, result.code, newMap);
-    } catch (err) {
-      console.log('blaaa');
-      console.error(err);
-    }
+    const node = sourceMap.SourceNode.fromStringWithSourceMap(source, consumer);
+    node.prepend(topPart);
+    node.add(bottomPart);
+    const result = node.toStringWithSourceMap();
+    const newMap = result.map.toJSON();
+    callback(null, result.code, newMap);
   });
 }
 
