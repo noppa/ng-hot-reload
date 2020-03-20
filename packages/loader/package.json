@@ -11,7 +11,8 @@
   "dependencies": {
     "loader-utils": "^1.4.0",
     "lodash.template": "^4.5.0",
-    "ng-hot-reload-core": "^2.1.0"
+    "ng-hot-reload-core": "^2.1.0",
+    "source-map": "^0.7.3"
   },
   "engines": {
     "node": ">=8.x"
