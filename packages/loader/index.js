@@ -1,4 +1,3 @@
-const path = require('path');
 const loaderUtils = require('loader-utils');
 const corePath = require.resolve('ng-hot-reload-core');
 const sourceMap = require('source-map');
