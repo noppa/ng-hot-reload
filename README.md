@@ -45,7 +45,7 @@ Check out `gulpfile.js` in [the demo package](https://github.com/noppa/ng-hot-re
 The options that you can pass to the library depend on the package you use, but these options should work in all:
 
 - `angular` (string, default: `"angular"` for standalone package and
-`"(require('angular'), angular)"` for Webpack) JavaScript expression that
+`'require("angular")'` for Webpack) JavaScript expression that
 will be evaluated to get a reference to angular.
 - `forceRefresh` (boolean,
 default: `true`) Whether to reload window automatically when a change in

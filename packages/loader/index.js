@@ -63,7 +63,7 @@ async function transform(source, map) {
   const bottomPart = codeWrapperBottom({
     requireAngular: typeof options.requireAngular === 'string' ?
       options.requireAngular :
-      '(require("angular"), angular)',
+      'require("angular")',
   });
 
   if (!map) {
