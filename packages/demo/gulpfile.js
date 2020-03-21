@@ -36,7 +36,10 @@ gulp.task('serve', gulp.series('clean', function() {
       index: path.join(__dirname, 'dist', 'index.html'),
       routes: {
         '/gulp-example': 'dist',
-        '/node_modules': 'node_modules',
+        // Due to yarn workspaces fearure that is used in this monorepo,
+        // node_modules are actually located in the root folder.
+        '/node_modules': '../../node_modules',
+        '/standalone': '../standalone',
       },
       ghostMode: false,
     },
@@ -52,11 +55,12 @@ gulp.task('serve', gulp.series('clean', function() {
   ];
 
   const allFiles = [
-    './node_modules/angular/angular.js',
-    './node_modules/angular-ui-router/release/angular-ui-router.js',
-    './node_modules/angular-animate/angular-animate.js',
-    './node_modules/ng-hot-reload-standalone/dist/client.js',
-  ].concat(sourceFiles);
+    'angular/angular.js',
+    'angular-ui-router/release/angular-ui-router.js',
+    'angular-animate/angular-animate.js',
+    'ng-hot-reload-standalone/dist/client.js',
+  ].map(_ => require.resolve(_))
+      .concat(sourceFiles);
 
   // Move js files to dist folder.
   gulp.src(allFiles)
