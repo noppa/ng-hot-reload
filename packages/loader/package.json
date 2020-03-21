@@ -10,7 +10,6 @@
   "license": "MIT",
   "dependencies": {
     "loader-utils": "^1.4.0",
-    "lodash.template": "^4.5.0",
     "ng-hot-reload-core": "^3.0.0",
     "source-map": "^0.7.3"
   },
