@@ -1,3 +1,7 @@
+## 3.1.0
+- Fix a crash when using webpack loader *without* source maps
+- Change default code that is used to require angular in webpack loader (should not be a breaking change).
+
 ## 3.0.0
 - Add souce map support [#19](https://github.com/noppa/ng-hot-reload/issues/19) 
 - Drop support for Node versions older than 8
