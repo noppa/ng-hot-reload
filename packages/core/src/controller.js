@@ -23,6 +23,7 @@ function controllerProvider(moduleName) {
 
     function ngHotReload$Controller($controller, $rootScope, ...rest) {
       updates = updatesProvider($rootScope, moduleName, 'controller');
+      /** @type {Function} */
       const ctor = controllers.get(name);
       if (!angular.equals(deps, angular.injector().annotate(ctor))) {
         manualReload(`Controller ${name} has updated its dependencies.`);
@@ -37,6 +38,19 @@ function controllerProvider(moduleName) {
       deps.forEach((name, i) => {
         locals[name] = rest[i];
       });
+
+      const ngVersion = angular.version.minor;
+      if (ngVersion < 7 && this != null && Object.keys(this).length) {
+        // We are in older version of Angular that still supports providing
+        // bindings to controller constructor at initialization time and based
+        // on the properies attached to `this` it seems that bindings are
+        // provided. We need to use $controller's internal delayed invokation
+        // API here to be able to pass bindings to the instance before running
+        // the constructor.
+        const constructController = $controller(ctor, locals, true);
+        Object.assign(constructController.instance, this);
+        return constructController();
+      }
 
       return $controller(ctor, locals);
     }
