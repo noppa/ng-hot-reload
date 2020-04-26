@@ -34,7 +34,7 @@ describe('bugfixes', function() {
     const spookButton = await container.element(
         by.cssContainingText('button', 'Be spooked'),
     );
-    await spookButton.click();
+    spookButton.click();
     const until = protractor.ExpectedConditions;
     const fadeInEl = container.element(by.css('.fade-in.ng-enter'));
     await browser.wait(
