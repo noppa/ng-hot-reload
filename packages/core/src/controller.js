@@ -47,7 +47,7 @@ function controllerProvider(moduleName) {
         // provided. We need to use $controller's internal delayed invokation
         // API here to be able to pass bindings to the instance before running
         // the constructor.
-        const constructController = $controller(ctor, locals, true);
+        const constructController = $controller(ctor, locals, /* later: */true);
         Object.assign(constructController.instance, this);
         return constructController();
       }
