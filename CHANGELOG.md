@@ -1,3 +1,11 @@
+## 3.2.0
+- Fixes #24. AngularJS versions older than 1.7 supported passing component/directive bindings
+  to the "this" context of a controller constructor. ng-hot-reload was't complying with this
+  behaviour and the bindings were available only in $onInit lifecycle event. This is fixed
+  in 592f3cd728. If the AngularJS version is lower than 1.7 and there are bindings to pass,
+  construction is done lazily and the this-context of the constructor is fixed to include
+  the bindings before being called.
+
 ## 3.1.0
 - Fix a crash when using webpack loader *without* source maps
 - Change default code that is used to require angular in webpack loader (should not be a breaking change).
