@@ -1,7 +1,8 @@
 const
   fs = require('fs'),
   util = require('util'),
-  srcPath = require('./src-path.js');
+  srcPath = require('./src-path.js'),
+  protractor = require('protractor');
 
 const
   readFile = util.promisify(fs.readFile),
@@ -29,11 +30,18 @@ describe('bugfixes', function() {
       });
 
   it('should work with ngAnimate (issue #14)', async function() {
-    const spookButton = element(by.cssContainingText('button', 'Be spooked'));
-    spookButton.click();
-    const fadeInMessage = element(by.css('.fade-in'));
-    const classNames = (await fadeInMessage.getAttribute('class')).split(' ');
-    expect(classNames).toContain('ng-enter');
+    const container = await element(by.css('.fade-wrapper'));
+    const spookButton = await container.element(
+        by.cssContainingText('button', 'Be spooked'),
+    );
+    await spookButton.click();
+    const until = protractor.ExpectedConditions;
+    const fadeInEl = container.element(by.css('.fade-in.ng-enter'));
+    await browser.wait(
+        until.presenceOf(fadeInEl),
+        4000,
+        '.ng-enter not appearing to fade-in element',
+    );
   });
 
   if (browser.params.package === 'loader') {
