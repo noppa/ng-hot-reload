@@ -93,9 +93,8 @@ const directiveProvider = moduleName => {
         originalDirective = { compile: originalDirective };
       }
 
-      const result = {
-        [$originalCompile]: originalDirective.compile,
-      };
+      const result = Object.create(Object.getPrototypeOf(originalDirective));
+      result[$originalCompile] = originalDirective.compile;
 
       return Object.assign(result, originalDirective, {
         compile() {
