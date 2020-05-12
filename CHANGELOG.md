@@ -1,3 +1,7 @@
+## 3.2.1
+- Keep the prototype of the original directive, [see PR #26](https://github.com/noppa/ng-hot-reload/pull/26).
+Thanks [martonbrunner](https://github.com/martonbrunner)!
+
 ## 3.2.0
 - Fixes [#24](https://github.com/noppa/ng-hot-reload/issues/24).
   AngularJS versions older than 1.7 supported passing component/directive bindings
