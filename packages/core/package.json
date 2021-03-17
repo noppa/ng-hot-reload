@@ -15,11 +15,11 @@
   "author": "noppa",
   "license": "MIT",
   "devDependencies": {
-    "@types/angular": "1.6.57",
-    "@types/jasmine": "3.5.9",
-    "lodash": "^4.17.15",
-    "webpack": "4.42.0",
-    "webpack-cli": "^3.3.11"
+    "@types/angular": "1.8.1",
+    "@types/jasmine": "3.6.7",
+    "lodash": "4.17.21",
+    "webpack": "^5.26.0",
+    "webpack-cli": "^4.5.0"
   },
   "engines": {
     "node": ">=8.x"
