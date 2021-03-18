@@ -13,7 +13,7 @@ const config = {
     filename: '[name].js',
     library: 'ngHotReloadCore',
     libraryTarget: 'umd',
-    globalObject: 'typeof self !== \'undefined\' ? self : this',
+    globalObject: '(typeof self !== \'undefined\' ? self : this)',
   },
   module: {
     rules: [

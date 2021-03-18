@@ -46,7 +46,7 @@ function start(port) {
       }
 
       wss.clients.forEach(client => {
-        if (client.readyState = WebSocket.OPEN) {
+        if (client.readyState === WebSocket.OPEN) {
           client.send(JSON.stringify({
             message: 'reload',
             fileType,

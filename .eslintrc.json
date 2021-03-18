@@ -30,7 +30,8 @@
       "no-undef": 2,
       "no-multi-spaces": 0,
       "max-len": [1, { "code": 80, "ignoreUrls": true }],
-      "quote-props": [2, "as-needed"]
+      "quote-props": [2, "as-needed"],
+      "no-cond-assign": "error"
   },
   "globals": {
     "Map": false,

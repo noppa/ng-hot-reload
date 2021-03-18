@@ -32,7 +32,7 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: tsLoaders,
+        use: tsLoaders,
         exclude: /node_modules/,
       },
       {
@@ -41,7 +41,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: ['style-loader', 'css-loader'],
+        use: ['style-loader', 'css-loader'],
       },
     ],
   },
