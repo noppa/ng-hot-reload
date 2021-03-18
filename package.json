@@ -27,6 +27,7 @@
   },
   "workspaces": ["packages/*"],
   "resolutions": {
+    "lodash": "4.17.21",
     "minimist": "1.2.5"
   }
 }
