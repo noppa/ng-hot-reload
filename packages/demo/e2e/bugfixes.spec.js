@@ -8,7 +8,7 @@ const
   writeFile = util.promisify(fs.writeFile);
 
 // Tests for fixed bugs
-fdescribe('bugfixes', function() {
+describe('bugfixes', function() {
   afterEach(() => {
     browser.waitForAngularEnabled(true);
   });
