@@ -1,0 +1,20 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Debug protractor tests",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceFolder}/packages/demo",
+      "program": "node_modules/.bin/protractor",
+      "args": [
+        "protractor.config.js",
+        // Switch to "loader" to debug webpack
+        "--params.package standalone"
+      ]
+    }
+  ]
+}
