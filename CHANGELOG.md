@@ -1,3 +1,9 @@
+## 3.3.0
+- Update build dependencies to keep dependabot and npm audit happy.
+  Should not cause breaking changes
+- Fix a non-reported bug in standalone package, where `readyState` of the
+  websocket client wasn't read correctly
+
 ## 3.2.1
 - Keep the prototype of the original directive, [see PR #26](https://github.com/noppa/ng-hot-reload/pull/26).
 Thanks [@martonbrunner](https://github.com/martonbrunner)!
