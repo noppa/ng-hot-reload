@@ -1,15 +1,18 @@
 const
   fs = require('fs'),
   util = require('util'),
-  srcPath = require('./src-path.js'),
-  protractor = require('protractor');
+  srcPath = require('./src-path.js');
 
 const
   readFile = util.promisify(fs.readFile),
   writeFile = util.promisify(fs.writeFile);
 
 // Tests for fixed bugs
-describe('bugfixes', function() {
+fdescribe('bugfixes', function() {
+  afterEach(() => {
+    browser.waitForAngularEnabled(true);
+  });
+
   it('should update all component instances when there are many',
       async function() {
         const componentFilePath = srcPath('emoji', 'emoji.component.js');
@@ -30,18 +33,18 @@ describe('bugfixes', function() {
       });
 
   it('should work with ngAnimate (issue #14)', async function() {
+    browser.waitForAngularEnabled(false);
+
     const container = await element(by.css('.fade-wrapper'));
     const spookButton = await container.element(
         by.cssContainingText('button', 'Be spooked'),
     );
-    spookButton.click();
-    const until = protractor.ExpectedConditions;
-    const fadeInEl = container.element(by.css('.fade-in.ng-enter'));
-    await browser.wait(
-        until.presenceOf(fadeInEl),
-        4000,
-        '.ng-enter not appearing to fade-in element',
-    );
+    await spookButton.click();
+    await browser.sleep(500);
+    const fadeInEl = await container.element(by.css('.fade-in'));
+    /** @type {string} */
+    const className = await fadeInEl.getAttribute('class');
+    expect(className).toContain('ng-enter');
   });
 
   if (browser.params.package === 'loader') {
