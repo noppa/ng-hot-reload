@@ -27,7 +27,7 @@ Thanks [@martonbrunner](https://github.com/martonbrunner)!
 - Change default code that is used to require angular in webpack loader (should not be a breaking change).
 
 ## 3.0.0
-- Add souce map support [#19](https://github.com/noppa/ng-hot-reload/issues/19) 
+- Add souce map support [#19](https://github.com/noppa/ng-hot-reload/issues/19)
 - Drop support for Node versions older than 8
 
 ## 2.1.0
@@ -46,7 +46,7 @@ Thanks [@martonbrunner](https://github.com/martonbrunner)!
 
 ## 2.0.0
 - Fix [issue #4](https://github.com/noppa/ng-hot-reload/issues/4)
-- Remove special support for UI-router  
+- Remove special support for UI-router
   UI-router supports [routing to a component](https://ui-router.github.io/guide/ng1/route-to-component),
   which works much better with this library than the hacky route reloading that we tried to do before.
 - Fix an issue that caused only the first component to update in cases where there were more than one
