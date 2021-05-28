@@ -21,12 +21,12 @@
     "express": "^4.17.1",
     "ng-hot-reload-core": "^3.3.0",
     "through2": "~4.0.2",
-    "ws": "^7.4.4"
+    "ws": "^7.4.6"
   },
   "devDependencies": {
     "raw-loader": "~4.0.2",
-    "webpack": "^5.26.3",
-    "webpack-cli": "^4.5.0"
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.0"
   },
   "engines": {
     "node": ">=8.x"
