@@ -1,3 +1,7 @@
+## 3.3.1
+- Update build dependencies to keep dependabot and npm audit happy.
+  Should not cause breaking changes
+
 ## 3.3.0
 - Update build dependencies to keep dependabot and npm audit happy.
   Should not cause breaking changes
