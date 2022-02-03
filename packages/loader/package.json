@@ -9,7 +9,7 @@
   "author": "noppa",
   "license": "MIT",
   "dependencies": {
-    "loader-utils": "^2.0.0",
+    "loader-utils": "^3.2.0",
     "ng-hot-reload-core": "^3.3.1",
     "source-map": "^0.7.3"
   },
