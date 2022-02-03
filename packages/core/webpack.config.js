@@ -2,6 +2,7 @@
 /* eslint-env node */
 const path = require('path');
 const webpack = require('webpack');
+const EslintPlugin = require('eslint-webpack-plugin');
 
 const config = {
   devtool: 'source-map',
@@ -22,11 +23,6 @@ const config = {
         loader: 'babel-loader',
         exclude: /node_modules/,
       },
-      {
-        test: /\.js$/,
-        loader: 'eslint-loader',
-        exclude: /node_modules/,
-      },
     ],
   },
   resolve: {
@@ -37,6 +33,7 @@ const config = {
     extensions: ['.js'],
   },
   plugins: [
+    new EslintPlugin(),
     new webpack.DefinePlugin({
       TESTING: false,
     }),
