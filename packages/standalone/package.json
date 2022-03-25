@@ -18,15 +18,15 @@
   "author": "noppa",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^4.17.2",
     "ng-hot-reload-core": "^3.3.1",
     "through2": "~4.0.2",
-    "ws": "^7.4.6"
+    "ws": "^8.4.2"
   },
   "devDependencies": {
     "raw-loader": "~4.0.2",
-    "webpack": "^5.38.1",
-    "webpack-cli": "^4.7.0"
+    "webpack": "^5.68.0",
+    "webpack-cli": "^4.9.2"
   },
   "engines": {
     "node": ">=8.x"

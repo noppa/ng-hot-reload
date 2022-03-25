@@ -1,6 +1,7 @@
 /* eslint-env node */
 const path = require('path');
 const webpack = require('webpack');
+const EslintPlugin = require('eslint-webpack-plugin');
 
 const config = {
   target: 'node',
@@ -19,11 +20,6 @@ const config = {
         test: /\.js$/,
         loader: 'babel-loader',
         exclude: /node_modules|ng-hot-reload-core|\.tpl\.js$/,
-      },
-      {
-        test: /\.js$/,
-        loader: 'eslint-loader',
-        exclude: /node_modules|ng-hot-reload-core/,
       },
     ],
   },
@@ -49,6 +45,7 @@ const config = {
     ],
     extensions: ['.js'],
   },
+  plugins: [new EslintPlugin()],
 };
 
 const clientConfig = {
@@ -65,6 +62,7 @@ const clientConfig = {
     globalObject: 'typeof self !== \'undefined\' ? self : this',
   },
   plugins: [
+    new EslintPlugin(),
     new webpack.DefinePlugin({
       options: JSON.stringify({
         port: 3100,

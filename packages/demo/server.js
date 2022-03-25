@@ -9,7 +9,6 @@ const config = require(
 );
 
 new WebpackDevServer(webpack(config), {
-  publicPath: '/',
   hot: true,
   historyApiFallback: true,
 }).listen(8080, 'localhost', function(err, result) {

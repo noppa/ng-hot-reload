@@ -1,4 +1,3 @@
-const loaderUtils = require('loader-utils');
 const corePath = require.resolve('ng-hot-reload-core');
 const sourceMap = require('source-map');
 
@@ -48,7 +47,7 @@ async function transform(source, map) {
   if (this.cacheable) {
     this.cacheable();
   }
-  const options = loaderUtils.getOptions(this) || {};
+  const options = this.getOptions() || {};
 
   if (noTransform.test(this.resourcePath)) {
     return this.callback(null, source, map);
