@@ -1,6 +1,6 @@
 {
   "name": "ng-hot-reload-standalone",
-  "version": "3.3.1",
+  "version": "3.3.2",
   "description": "Standalone api for ng-hot-reload library",
   "main": "dist/ng-hot-reload-standalone.js",
   "files": [
@@ -19,7 +19,7 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.17.2",
-    "ng-hot-reload-core": "^3.3.1",
+    "ng-hot-reload-core": "^3.3.2",
     "through2": "~4.0.2",
     "ws": "^8.4.2"
   },

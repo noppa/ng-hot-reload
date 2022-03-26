@@ -1,7 +1,7 @@
 {
   "main": "index.js",
   "name": "ng-hot-reload-loader",
-  "version": "3.3.1",
+  "version": "3.3.2",
   "description": "Webpack hot loader for angularjs apps",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,7 +9,7 @@
   "author": "noppa",
   "license": "MIT",
   "dependencies": {
-    "ng-hot-reload-core": "^3.3.1",
+    "ng-hot-reload-core": "^3.3.2",
     "source-map": "^0.7.3"
   },
   "engines": {
