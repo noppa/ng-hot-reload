@@ -1,3 +1,8 @@
+## 3.3.2
+- Update build dependencies and drop dependency to loader-utils in
+  the Webpack loader package. Keeps dependabot and npm audit happy,
+  should not cause breaking changes.
+
 ## 3.3.1
 - Update build dependencies to keep dependabot and npm audit happy.
   Should not cause breaking changes
