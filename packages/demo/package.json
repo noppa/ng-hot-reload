@@ -42,7 +42,7 @@
     "ts-loader": "^9.2.6",
     "typescript": "^4.5.5",
     "webdriver-manager": "^12.1.8",
-    "webpack": "5.68.0",
+    "webpack": "5.76.0",
     "webpack-dev-server": "4.7.4"
   },
   "engines": {
